@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/appBackground"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:paddingBottom="15dp"
+    android:paddingTop="15dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <ImageView
+            android:id="@+id/artist_item_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="0" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/artist_item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="#000"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/artist_item_song_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="#989898"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/artist_item_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="0"
+
+            android:foregroundTint="#434343"
+            android:padding="5dp"
+            android:src="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
+            android:theme="@style/Theme.AppCompat.Light" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/expanded_area"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/artist_sub_rv"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_grey"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:id="@+id/artist_song_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:paddingBottom="6dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="6dp"
+                android:text="SONGS"
+                android:textColor="@color/accent_material_light"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/artist_shuffle_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:paddingBottom="6dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="6dp"
+                android:text="SHUFFLE"
+                android:textColor="@color/accent_material_light"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

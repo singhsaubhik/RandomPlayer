@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_playlist"
+            android:icon="@drawable/library_music"
+            android:title="Play List" />
+        <item
+            android:id="@+id/nav_folder"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Folder" />
+        <item
+            android:id="@+id/nav_nowplaying"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Now Playing" />
+
+    </group>
+
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/nav_setting"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="Setting" />
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_info_black_24dp"
+                android:title="About us" />
+        </menu>
+    </item>
+
+</menu>

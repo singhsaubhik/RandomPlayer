@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_sort_name"
+        android:orderInCategory="100"
+        android:title="By Name"
+        app:showAsAction="never"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/action_sort_year"
+        android:orderInCategory="100"
+        android:title="By Year"
+        android:checkable="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_size"
+        android:orderInCategory="100"
+        android:title="By Size"
+        android:checkable="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_no_of_album"
+        android:orderInCategory="100"
+        android:title="By No. of Albums"
+        android:checkable="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_no_of_tracks"
+        android:orderInCategory="100"
+        android:title="By No. of Tracks"
+        android:checkable="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_by_duration"
+        android:orderInCategory="100"
+        android:title="By Duration"
+        android:checkable="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_asc"
+        android:orderInCategory="100"
+        android:title="Asc"
+        android:checkable="true"
+        app:showAsAction="never" />
+
+</menu>

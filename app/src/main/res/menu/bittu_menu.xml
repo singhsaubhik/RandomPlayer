@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/bittu_menu_playOnly"
+        android:title="Play Only"
+        app:showAsAction="never"
+        >
+    </item>
+
+    <item android:id="@+id/bittu_menu_showAlbum"
+        android:title="Go to album"
+        app:showAsAction="never"
+        />
+    <item android:id="@+id/bittu_menu_shareTrack"
+        android:title="Share track"
+        />
+
+    <item android:id="@+id/bittu_menu_deleteTrack"
+        android:title="Delete Track"/>
+
+    <item android:title="Set as ringtone"
+        android:id="@+id/bittu_menu_setAsRintone"/>
+
+    <item android:title="Show info"
+        android:id="@+id/bittu_menu_showInfo"/>
+
+</menu>

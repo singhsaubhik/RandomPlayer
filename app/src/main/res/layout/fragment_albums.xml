@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+
+
+    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+        android:id="@+id/albumsListContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:fastScrollPopupBgColor="@color/colorAccent"
+        app:fastScrollPopupTextColor="@android:color/primary_text_dark"
+        app:fastScrollThumbColor="@color/colorAccent" />
+
+    <!--<com.futuremind.recyclerviewfastscroll.FastScroller
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/album_scroller"
+        android:layout_alignParentRight="true"
+        >
+
+    </com.futuremind.recyclerviewfastscroll.FastScroller>
+    -->
+
+    <LinearLayout
+        android:id="@+id/album_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color400"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" />
+</RelativeLayout>

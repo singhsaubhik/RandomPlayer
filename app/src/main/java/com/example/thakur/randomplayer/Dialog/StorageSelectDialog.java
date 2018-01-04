@@ -1,0 +1,73 @@
+package com.example.thakur.randomplayer.Dialog;
+
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Environment;
+import android.support.v7.app.AlertDialog;
+
+
+import com.example.thakur.randomplayer.R;
+
+import java.io.File;
+import java.io.FileFilter;
+
+/**
+ * Created by nv95 on 06.12.16.
+ */
+
+public class StorageSelectDialog implements DialogInterface.OnClickListener {
+
+    private final AlertDialog mDialog;
+    private final File[] mStorages;
+    private OnDirSelectListener mDirSelectListener;
+
+    public StorageSelectDialog(final Context context) {
+        mStorages = getAvailableStorages(context);
+        String[] names = new String[mStorages.length];
+        for (int i=0;i<mStorages.length;i++) {
+            names[i] = mStorages[i].getName();
+        }
+        mDialog = new AlertDialog.Builder(context)
+                .setItems(names, this)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setNeutralButton("Nue", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDirSelectListener.onDirSelected(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC));
+                    }
+                })
+                .setCancelable(true)
+                .setTitle("Bittu")
+                .create();
+    }
+
+    public StorageSelectDialog setDirSelectListener(OnDirSelectListener dirSelectListener) {
+        this.mDirSelectListener = dirSelectListener;
+        return this;
+    }
+
+    public void show() {
+        mDialog.show();
+    }
+
+    @Override
+    public void onClick(DialogInterface dialogInterface, int position) {
+        File dir = mStorages[position];
+        mDirSelectListener.onDirSelected(dir);
+    }
+
+
+    private static File[] getAvailableStorages(Context context) {
+        File storageRoot = new File("/storage");
+        return storageRoot.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.canRead();
+            }
+        });
+    }
+
+    public interface OnDirSelectListener {
+        void onDirSelected(File dir);
+    }
+}

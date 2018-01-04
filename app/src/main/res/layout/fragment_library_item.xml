@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/trackItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="?android:selectableItemBackground"
+    >
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardViewForAlbumGragment"
+            android:layout_width="@dimen/action_bar_size"
+            android:layout_height="@dimen/action_bar_size"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/fli_image_view_margin"
+            android:layout_weight="0.5"
+            android:innerRadius="0dp"
+            android:shape="oval"
+            android:thicknessRatio="1.9"
+            app:cardUseCompatPadding="true"
+            android:padding="5dp"
+            app:cardBackgroundColor="@color/colorTransparent">
+
+            <ImageView
+                android:id="@+id/imageVIewForStubAlbumArt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:scaleType="centerCrop"
+                android:contentDescription="album_art">
+
+            </ImageView>
+
+            <TextView
+                android:id="@+id/text_view_for_Artist_genre"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/colorwhite"
+                android:textSize="@dimen/fli_image_view_text" />
+
+        </android.support.v7.widget.CardView>
+
+        <ViewStub
+            android:id="@+id/stub_in_fragment_library_item"
+            android:layout_width="@dimen/action_bar_size"
+            android:layout_height="@dimen/action_bar_size"
+            android:layout="@layout/image_view_for_stub_folder_frag" />
+
+        <LinearLayout
+            android:layout_width="@dimen/fli_title_secondary_view_text_layout"
+            android:layout_height="@dimen/action_bar_size"
+            android:layout_weight="8"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/fli_title_secondary_text_padd"
+            android:paddingRight="@dimen/fli_title_secondary_text_padd">
+            <!-- Title Of Song-->
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                android:text="Invalid Song"
+                android:typeface="monospace"
+                android:textColor="#040404"
+                android:textSize="@dimen/fli_title_view_text" />
+
+            <!-- Artist Name -->
+            <TextView
+                android:id="@+id/secondaryHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/header"
+                android:layout_marginTop="1dip"
+                android:typeface="monospace"
+                android:maxLines="1"
+                android:textSize="@dimen/fli_secondary_view_text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutForCount"
+            android:layout_width="@dimen/fli_count_width"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2">
+            <!-- Rightend Duration -->
+            <TextView
+                android:id="@+id/count"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/fli_count_text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llForPopup"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            >
+
+            <ImageButton
+                android:id="@+id/menuPopup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="?android:selectableItemBackground"
+                android:paddingLeft="@dimen/fli_overflow_padd"
+                android:paddingRight="5dp"
+                android:src="@drawable/ic_more_vert_black_24dp" />
+        </LinearLayout>
+
+</LinearLayout>

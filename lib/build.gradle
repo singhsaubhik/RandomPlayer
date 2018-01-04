@@ -1,0 +1,43 @@
+apply plugin: 'com.android.library'
+
+def libVersion = '13.0.1'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion '25.0.3'
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionName libVersion
+    }
+}
+
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    failOnError  false
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.compile
+}
+
+// build a jar with javadoc
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+dependencies {
+    compile "com.android.support:recyclerview-v7:26.+"
+    compile "com.android.support:design:26.+"
+}

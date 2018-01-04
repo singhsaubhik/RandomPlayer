@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorAccent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.thakur.randomplayer.PlayListList">
+
+    <eightbitlab.com.blurview.BlurView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:blurOverlayColor="#7d000000"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/play_list_list_recycler"
+            android:layout_centerVertical="true"
+            >
+            </com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView>
+        </RelativeLayout>
+
+    </eightbitlab.com.blurview.BlurView>
+
+</RelativeLayout>

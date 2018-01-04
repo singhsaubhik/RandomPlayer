@@ -1,0 +1,632 @@
+<resources>
+    <string name="app_name">Random Player</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_album_content_list">AlbumContentList</string>
+    <string name="large_text">
+        "Material is the metaphor.\n\n"
+
+        "A material metaphor is the unifying theory of a rationalized space and a system of motion."
+        "The material is grounded in tactile reality, inspired by the study of paper and ink, yet "
+        "technologically advanced and open to imagination and magic.\n"
+        "Surfaces and edges of the material provide visual cues that are grounded in reality. The "
+        "use of familiar tactile attributes helps users quickly understand affordances. Yet the "
+        "flexibility of the material creates new affordances that supercede those in the physical "
+        "world, without breaking the rules of physics.\n"
+        "The fundamentals of light, surface, and movement are key to conveying how objects move, "
+        "interact, and exist in space and in relation to each other. Realistic lighting shows "
+        "seams, divides space, and indicates moving parts.\n\n"
+
+        "Bold, graphic, intentional.\n\n"
+
+        "The foundational elements of print based design typography, grids, space, scale, color, "
+        "and use of imagery guide visual treatments. These elements do far more than please the "
+        "eye. They create hierarchy, meaning, and focus. Deliberate color choices, edge to edge "
+        "imagery, large scale typography, and intentional white space create a bold and graphic "
+        "interface that immerse the user in the experience.\n"
+        "An emphasis on user actions makes core functionality immediately apparent and provides "
+        "waypoints for the user.\n\n"
+
+        "Motion provides meaning.\n\n"
+
+        "Motion respects and reinforces the user as the prime mover. Primary user actions are "
+        "inflection points that initiate motion, transforming the whole design.\n"
+        "All action takes place in a single environment. Objects are presented to the user without "
+        "breaking the continuity of experience even as they transform and reorganize.\n"
+        "Motion is meaningful and appropriate, serving to focus attention and maintain continuity. "
+        "Feedback is subtle yet clear. Transitions are efﬁcient yet coherent.\n\n"
+
+        "3D world.\n\n"
+
+        "The material environment is a 3D space, which means all objects have x, y, and z "
+        "dimensions. The z-axis is perpendicularly aligned to the plane of the display, with the "
+        "positive z-axis extending towards the viewer. Every sheet of material occupies a single "
+        "position along the z-axis and has a standard 1dp thickness.\n"
+        "On the web, the z-axis is used for layering and not for perspective. The 3D world is "
+        "emulated by manipulating the y-axis.\n\n"
+
+        "Light and shadow.\n\n"
+
+        "Within the material environment, virtual lights illuminate the scene. Key lights create "
+        "directional shadows, while ambient light creates soft shadows from all angles.\n"
+        "Shadows in the material environment are cast by these two light sources. In Android "
+        "development, shadows occur when light sources are blocked by sheets of material at "
+        "various positions along the z-axis. On the web, shadows are depicted by manipulating the "
+        "y-axis only. The following example shows the card with a height of 6dp.\n\n"
+
+        "Resting elevation.\n\n"
+
+        "All material objects, regardless of size, have a resting elevation, or default elevation "
+        "that does not change. If an object changes elevation, it should return to its resting "
+        "elevation as soon as possible.\n\n"
+
+        "Component elevations.\n\n"
+
+        "The resting elevation for a component type is consistent across apps (e.g., FAB elevation "
+        "does not vary from 6dp in one app to 16dp in another app).\n"
+        "Components may have different resting elevations across platforms, depending on the depth "
+        "of the environment (e.g., TV has a greater depth than mobile or desktop).\n\n"
+
+        "Responsive elevation and dynamic elevation offsets.\n\n"
+
+        "Some component types have responsive elevation, meaning they change elevation in response "
+        "to user input (e.g., normal, focused, and pressed) or system events. These elevation "
+        "changes are consistently implemented using dynamic elevation offsets.\n"
+        "Dynamic elevation offsets are the goal elevation that a component moves towards, relative "
+        "to the component’s resting state. They ensure that elevation changes are consistent "
+        "across actions and component types. For example, all components that lift on press have "
+        "the same elevation change relative to their resting elevation.\n"
+        "Once the input event is completed or cancelled, the component will return to its resting "
+        "elevation.\n\n"
+
+        "Avoiding elevation interference.\n\n"
+
+        "Components with responsive elevations may encounter other components as they move between "
+        "their resting elevations and dynamic elevation offsets. Because material cannot pass "
+        "through other material, components avoid interfering with one another any number of ways, "
+        "whether on a per component basis or using the entire app layout.\n"
+        "On a component level, components can move or be removed before they cause interference. "
+        "For example, a floating action button (FAB) can disappear or move off screen before a "
+        "user picks up a card, or it can move if a snackbar appears.\n"
+        "On the layout level, design your app layout to minimize opportunities for interference. "
+        "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
+        "when a user tries to pick up one of cards.\n\n"
+    </string>
+
+    <string name="songs">Songs</string>
+    <string name="albums">Albums</string>
+    <string name="artists">Artists</string>
+    <string name="last_added">Last Added</string>
+    <string name="more">MORE</string>
+    <string name="pref_general">General</string>
+    <string name="pref_theme">Design</string>
+    <string name="pref_scan">Scan Files</string>
+    <string name="pref_status_trans">Fully Transparent Statusbar</string>
+    <string name="pref_nav_trans">Fully Transparent Navigationbar</string>
+    <string name="pref_draw_over">Shade over album art</string>
+    <string name="pref_scan_sum">Can\'t find your song? Lets Scan.</string>
+    <string name="pref_gplus_com">Google+ Community</string>
+    <string name="pref_gplus_com_sum">Join the community to share with us your feedback</string>
+    <string name="pref_gplus">Google+ Profile</string>
+    <string name="pref_gplus_sum">Follow developer of this application on Google+</string>
+    <string name="pref_twitter">Twitter</string>
+    <string name="pref_twitter_sum">Follow developer of this application on Twitter</string>
+    <string name="pref_home_view">Home Screen</string>
+    <string name="pref_album_view">Album Screen</string>
+    <string name="pref_player_view">Player Screen</string>
+    <string name="pref_grid_num">Number of Columns</string>
+    <string name="pref_grid_num_sum">For grids</string>
+    <string name="pref_extend_tabs">Extend tabs to fit screen</string>
+    <string name="pref_fast_scroll">Enable Fast Scroll</string>
+    <string name="pref_fast_scroll_sum">Fast Scroll will only appear on long lists</string>
+    <string name="ok">OK</string>
+    <string name="storage_permission">We need Storage permission in order to access songs</string>
+    <string name="playlist">Playlist</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="shuffle_caps">SHUFFLE</string>
+    <string name="play">Play</string>
+    <string name="play_next">Play Next</string>
+    <string name="add">Add</string>
+    <string name="add_to_playlist">Add to playlist</string>
+    <string name="choose_playlist">Choose playlist</string>
+    <string name="close">Close</string>
+    <string name="added_to_playlist">Added to playlist</string>
+    <string name="new_playlist">New Playlist</string>
+    <string name="play_caps">PLAY</string>
+    <string name="delete">Delete</string>
+    <string name="cant_play_song">Can\'t play this song</string>
+    <string name="nothing_to_play">Nothing to play</string>
+    <string name="up_next">Up Next</string>
+    <string name="rename">Rename</string>
+    <string name="songs_uppercase">SONGS</string>
+    <string name="api">911da172e486f9339ebc82b65ee89993</string>
+    <string name="artist_fetch_url">http://ws.audioscrobbler.com/2.0/?method=artist.getinfo</string>
+    <string name="dont_leave_blank">Don\'t leave blank</string>
+    <string name="okay">Okay</string>
+    <string name="play_only">Play only</string>
+    <string name="add_playing_queue">Add to playing queue</string>
+    <string name="open_album">Open album</string>
+    <string name="open_artist">Open Artist</string>
+    <string name="share">Share</string>
+    <string name="details">Details</string>
+    <string name="set_as_ringtone">Set as ringtone</string>
+    <string name="delete_from_device">Delete from device</string>
+    <string name="text">Text</string>
+    <string name="file">File</string>
+    <string name="share_song_file">Share Song File</string>
+    <string name="currently_listening_to">Currently listening to&#160;</string>
+    <string name="by">&#160;by&#160;</string>
+    <string name="share_using">Share using</string>
+    <string name="share_as">Share as</string>
+    <string name="song_name"><![CDATA[<b>Song name:&nbsp;</b>]]></string>
+    <string name="album_name"><![CDATA[<b>Album name:&nbsp;</b>]]></string>
+    <string name="artist_name"><![CDATA[<b>Artist Name:&nbsp;</b>]]></string>
+    <string name="file_path"><![CDATA[<b>File Path:&nbsp;</b>]]></string>
+    <string name="file_name"><![CDATA[<b>File name:&nbsp;</b>]]></string>
+    <string name="file_size"><![CDATA[<b>File size:&nbsp;</b>]]></string>
+    <string name="bitrate"><![CDATA[<b>Bitrate:&nbsp;]]></string>
+    <string name="samplingrate"><![CDATA[<b>Sampling Rate:&nbsp;</b>]]></string>
+    <string name="format"><![CDATA[<b>Format:&nbsp;]]></string>
+    <string name="write_setting_permission">Need Write Setting Permission in order to set Ringtone</string>
+    <string name="ringtone_permission_title">Permission Required</string>
+    <string name="ringtone_permission_content">We need Permission to change settings for setting your Ringtone. We will not do anything else!</string>
+    <string name="cancel">Cancel</string>
+    <string name="success">Success</string>
+    <string name="search">Search</string>
+    <string name="cant_proceed">Can\'t Proceed</string>
+    <string name="cant_proceed_msg">Can\'t proceed further to open music player \n As we have not granted all permission required to start player. Would you like to accept those permissions again?</string>
+    <string name="about">About</string>
+    <string name="settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="action_shuffle_all">Shuffle All</string>
+    <string name="action_refresh_library">Refresh Library</string>
+
+    <!-- menu for oveflow menu -->
+    <string name="action_play">Play</string>
+    <string name="action_add_to_playlist">Add to Playlist</string>
+    <string name="action_edit_track_info">Edit Track info</string>
+    <string name="action_clear_offline_lyrics">Clear Lyrics</string>
+    <string name="action_share_offline_lyrics">Share Lyrics</string>
+    <string name="action_switch_offline_lyrics">Switch Lyrics Mode</string>
+    <string name="action_edit_info">Edit info</string>
+    <string name="action_track_info">Track info</string>
+    <string name="action_share">Share</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_go_to_artist">Go to Artist</string>
+    <string name="action_go_to_album">Go to Album</string>
+    <string name="action_play_next">Play Next</string>
+    <string name="action_add_to_q">Add to Queue</string>
+    <string name="action_set_as_ringtone">Set as Ringtone</string>
+
+
+    <!-- menu for drawer -->
+    <string name="nav_tracks">Tracks    </string>
+    <string name="nav_artist">Artists   </string>
+    <string name="nav_albums">Albums    </string>
+    <string name="nav_genre">Genres    </string>
+    <string name="nav_folder">Folder    </string>
+    <string name="nav_playlist">Playlist  </string>
+
+
+    <!-- strings for shared preferences -->
+    <string name="pref_disc_rotation">pref_disc_rotation</string>
+    <string name="pref_disc_rotation_speed">pref_disc_rotation_speed</string>
+    <string name="pref_hide_short_clips">pref_hide_short_clips</string>
+    <string name="pref_album_lib_view">pref_album_lib_view</string>
+    <string name="pref_rescan_lib">pref_rescan_lib_view</string>
+    <string name="pref_click_on_notif">pref_click_on_notif</string>
+    <string name="pref_about_us">pref_click_about</string>
+    <string name="pref_about_licenses">pref_click_license</string>
+    <string name="pref_sleep_timer">pref_sleep_timer</string>
+    <string name="pref_disc_size">dis_size</string>
+    <string name="pref_lock_screen_album_Art">lock_screen_art</string>
+    <string name="pref_shake">shake_status</string>
+    <string name="pref_shake_action">shake_action</string>
+    <string name="pref_theme_color">primary_color</string>
+    <string name="pref_random_theme_current_color">random_theme_current</string>
+    <string name="pref_support_dev">support_dev</string>
+    <string name="pref_hide_tracks_starting_with">hide_tracks_starting_with</string>
+    <string name="pref_hide_tracks_starting_with_1">hide_tracks_starting_with_1</string>
+    <string name="pref_hide_tracks_starting_with_2">hide_tracks_starting_with_2</string>
+    <string name="pref_hide_tracks_starting_with_3">hide_tracks_starting_with_3</string>
+    <string name="pref_reset_pref">reset_pref</string>
+    <string name="pref_opening_tab">opening_tab</string>
+    <string name="pref_text_font">text_font</string>
+    <string name="pref_first_install">first_install</string>
+    <string name="pref_exit_now_playing_at">pref_exit_now_playing_at</string>
+
+    <string name="pref_album_sort_by">a_sort_by</string>
+    <string name="pref_tracks_sort_by">t_sort_by</string>
+    <string name="pref_artist_sort_by">art_sort_by</string>
+    <string name="pref_genre_sort_by">g_sort_by</string>
+    <string name="pref_order_by">order_by</string>
+    <string name="pref_version_code">version_code</string>
+
+    <string name="pref_show_edit_track_info_dialog">pref_show_edit_track_info_dialog</string>
+    <string name="pref_show_lock_info_dialog">show_lock_info_dialog</string>
+    <string name="pref_hide_lock_button">hide_music_lock_button</string>
+    <string name="pref_swipe_right">pref_swipe_right</string>
+
+    <!-- info messages preferences  -->
+    <string name="pref_lock_button_info_shown">pref_lock_button_info_shown</string>
+    <string name="pref_disclaimer_accepted">pref_disc_acceted</string>
+    <string name="pref_mini_player_info_shown">pref_mini_player_info_shown</string>
+    <string name="pref_sorting_info_shown">pref_sorting_info_shown</string>
+    <string name="pref_feedback">pref_feed_back</string>
+    <string name="pref_fav_info_shown">pref_fav_info_shown</string>
+    <string name="pref_current_queue_info_shown">pref_current_queue_info_shown</string>
+    <string name="pref_swipe_right_shown">pref_swipe_right_shown</string>
+    <string name="pref_remove_ads">remove_ad</string>
+    <string name="pref_batch_download">batch_download</string>
+    <string name="pref_terms_of_use">pref_terms_use</string>
+
+    <string name="pref_tab_seq">pref_tab_seq</string>
+
+    <string name="title_remove_ads">Remove Ads</string>
+    <string name="title_text_font">Music Library Text Font</string>
+    <string name="title_batch_download">Batch Lyrics Download</string>
+    <string name="title_hide_lock_button">Hide Music Lock Button</string>
+    <string name="title_opening_tab">Manage Tabs</string>
+    <string name="title_reset_pref">Reset Preferences to Default</string>
+    <string name="title_hide_tracks_starting_with">Hide Tracks Starting With</string>
+    <string name="title_feedback">Provide Feedback</string>
+    <string name="title_support_dev">Support Development (Donate)</string>
+    <string name="title_theme">Base Theme</string>
+    <string name="title_theme_color">Primary Color</string>
+    <string name="title_shake_action">Shake will</string>
+    <string name="title_shake">Shake Control</string>
+    <string name="title_lock_screen_album_Art">Lock Screen Album Art</string>
+    <string name="title_disc_size">Disc Size</string>
+    <string name="title_sleep_timer">Sleep Timer</string>
+    <string name="title_licenses">Licenses </string>
+    <string name="title_about_us">About </string>
+    <string name="title_terms_of_use">Terms of Use</string>
+    <string name="title_tag_editor">Music Tag Editor </string>
+    <string name="title_click_on_notif">Click on Notification Opens</string>
+    <string name="title_rescan_lib">Rescan Music Library</string>
+    <string name="title_album_lib_view">Album Library View</string>
+    <string name="title_hide_short_clips">Hide Audio Tracks Shorter Than</string>
+
+    <!-- strings for abput us -->
+    <string name="au_email_id">amit.bhandari.c@gmail.com</string>
+    <string name="au_version">Version 1.0.0 </string>
+    <string name="au_made_with_love">Made with </string>
+    <string name="au_made_in_india">in India </string>
+
+    <!-- strings for preferences details    -->
+    <string name="tab_seq_pref_info">Hold the Handle and Drag the Tabs to Change the Sequence on Startup Screen.</string>
+
+
+    <!-- strings for licenses -->
+    <string name="li_title">Third party Libraries used</string>
+    <string name="li_libraries"> \ Picasso
+        \nSlidingUpPanel by Umano
+        \nRecycler-fast-scroller</string>
+    <string name="li_apache_lic">All the libraries are licensed under apache license. You can see license on a link given below.</string>
+    <string name="li_apache_lic_link">&lt;a href="https://www.apache.org/licenses/LICENSE-2.0">Apache license&lt;/a></string>
+    <string name="li_icon">Thank you Inderjeet Singh for designing the app icon </string>
+
+    <!-- AdMob ad unit IDs -->
+    <string name="banner_main_activity">ca-app-pub-3876828674787345/1978517310</string>
+    <string name="banner_secondary_activity">ca-app-pub-3876828674787345/3455250515</string>
+    <string name="banner_play_queue">ca-app-pub-3876828674787345/1838916512</string>
+    <string name="banner_disc_frag">ca-app-pub-3876828674787345/6408716910</string>
+    <string name="banner_art_info_frag">ca-app-pub-3876828674787345/7885450119</string>
+    <string name="banner_lyric_frag">ca-app-pub-3876828674787345/9362183312</string>
+    <string name="banner_settings_activity">ca-app-pub-3876828674787345/3315649710</string>
+    <string name="banner_about_us_activity">ca-app-pub-3876828674787345/4792382919</string>
+    <string name="inter_settings_activity">ca-app-pub-3876828674787345/6269116115</string>
+    <string name="inter_about_us_activity">ca-app-pub-3876828674787345/7745849318</string>
+    <string name="inter_licenses_activity">ca-app-pub-3876828674787345/9222582513</string>
+
+
+    <string name="donate_coffee">donate_coffee</string>
+    <string name="donate_beer">donate_beer</string>
+    <string name="donate_beer_box">donate_beer_box</string>
+
+
+    <string name="remove_ads">remove_ads</string>
+
+    0    <!-- share app -->
+    <string name="share_app">https://play.google.com/store/apps/details?id=com.bhandari.music</string>
+
+    <!-- rate app -->
+    <string name="rate_us">If you like the app, please take a time to leave a review on store as it encourages me more to deliver
+        more stuff!</string>
+
+    <!-- tag editor -->
+    <string name="touch_art">Touch the album art to change</string>
+    <string name="changes_discard_alert_te">You have made changes in some tags, do you want to save those?</string>
+
+    <!--music lock alert message -->
+    <string name="lock_info">How often have you ruined the song because of wrong touch! Imagine you are enoying the best part of the song
+        while going through library and by mistake you click on some song and baaam, your mood is ruined. This button is here for rescue.
+        Whenever you want to enjoy a song without interruption and browse gallery meanwhile, just lock the music by using this button and
+        player will not change song unless and until you unlock it again!</string>
+
+    <string name="tag_edit_info">All the changes done in music tag are local to device. Actual audio file is not modified!</string>
+
+    <string name="album_art_dir_name">albumArtThumbsABMusic</string>
+
+    <string name="tap_to_refresh_lyrics">Lyrics not found, Touch here to retry!</string>
+    <string name="lyrics_coming_soon">Lyrics coming soon!</string>
+    <string name="tap_to_refresh_art_bio">Unable to fetch artist bio, Please make sure audio is correctly tagged! \n
+        Touch here to retry!</string>
+    <string name="lyrics_loading">Loading lyrics, please wait…</string>
+    <string name="no_connection">No connection! Touch here to retry!</string>
+    <string name="artist_info_loading">Loading artist bio, please wait…!</string>
+    <string name="artist_info_no_result">Unable to search artist bio, make sure that audio tags are correct and touch here to retry!</string>
+    <string name="lyrics_tag_update">Please make sure audio tags are correct!</string>
+    <string name="artist_tag_update">Please make sure audio tags are correct!</string>
+    <string name="update_tags">Update</string>
+    <string name="sync_lyrics">Click to Sync Lyrics</string>
+    <string name="double_tap_art_info">Double tap here to see artist bio!</string>
+    <string name="lyric_copy_right_msg">Lyrics obtained from ViewLyrics.com!
+    \n Lyrics are property of their respective owner and I claim no right on it! \n
+    If you think, copyright infringement is happening, please drop a mail to contact in about section and
+    I will take the content down!</string>
+
+    <!--first time info messages -->
+    <string name="music_lock_primary">Try music lock feature</string>
+    <string name="music_lock_secondary">Tap the button to lock the music!</string>
+
+    <string name="mini_player_primary">Smooth music control from here!</string>
+    <string name="mini_player_secondary">Tap to launch now playing!</string>
+
+    <string name="sorting_primary">Try sorting your music on the go!</string>
+    <string name="sorting_secondary">Tap the sort music!</string>
+
+    <string name="fav_primary">Add track to fav</string>
+    <string name="fav_secondary">Tap here to add track to My Fav Playlist!"</string>
+
+    <string name="current_queue_primary">Current Queue!</string>
+    <string name="current_queue_secondary">Tap to manage current queue!</string>
+
+    <string name="swipe_right_primary">Swipe right!</string>
+    <string name="swipe_right_secondary">Try swiping right here to see artist info!</string>
+
+    <string name="remove_ads_dialog_message"> Hello World! \n\n Ads are essential for the swift development of the app.
+        You can remove the ads by shelling out few bucks and make me smile! :)\n\n OR \n\n You can leave a review on store and send me the screenshot of the same and I will provide you a
+        free promo code to remove the ads! \n\n Thank you for choosing AB Music!</string>
+
+    <string name="lyrics_disclaimer_title">Disclaimer</string>
+
+    <string name="lyrics_share_text">\n\n\nShared from AB Music Lite https://play.google.com/store/apps/details?id=com.bhandari.music</string>
+
+    <string name="lyrics_disclaimer_content">AB Music (Version 1.0)\n
+Made by Amit Bhandari | All Copyrights Reserved
+\n\n
+AB Music is absolutely legal and does not host or upload any lyrics. AB Music simply aggregate lyrics in convenient and user-friendly environment.
+AB Music is not responsible for the accuracy, compliance, copyright, legality, decency or any other aspect of content of other linked sites.
+If you have any legal issues, please contact the appropriate lyrics website owner or host sites. Any legal issues regarding lyrics in this app
+should be taken up with actual lyrics hosting websites themselves as we are not affiliated with them.
+\n\n
+In case of copyright infringement, please directly contact the responsible parties. AB Music acts like search engine of lyrics found publicly on internet, in principle conducting same way as Google! However AB music strongly believes in protection of Intellectual Property and will be willing to assist when possible and
+applicable.
+        \n\n
+</string>
+
+    <string name="lyrics_disclaimer_title_pos">Accept</string>
+    <string name="lyrics_disclaimer_title_neg">Reject</string>
+
+    <!-- dialogs -->
+    <string name="lyric_art_info_title">Getting started!</string>
+    <string name="lyric_art_info_content">Swipe right for Artist Bio and left for Lyrics</string>
+    <string name="lyric_art_info_buttonn_p">Got it!</string>
+    <string name="lyric_art_info_title_button_neg">Never show Again</string>
+
+    <string name="disclaimer_rejected">Cannot display lyrics right now! Please press back and try again!</string>
+
+
+    <!--licenses -->
+
+    <string name="last_fm_declaration">All the artist bio and images have copyright of last.fm and I claim no ownership
+    for those! </string>
+
+    <string name="apache_libraries">  \u0020android appcompat-v7 \n android support-v4 \n android support design \n
+                                        android support cardview \n com.wang.avi:library  \n com.sothree.slidinguppanel \n
+    com.squareup:seismic \n jp.wasabeef:blurry \n com.github.viethoa:fastscroller \n com.squareup.retrofit:retrofit
+      \n com.squareup.okhttp:okhttp \n com.getkeepsafe.taptargetview:taptargetview \n com.sackcentury:shinebutton:0.1.7 </string>
+
+    <string name="apache_license">Above mentioned libraries are Licensed under the Apache License, Version 2.0 (the "License"); \n
+You may not use this file except in compliance with the License.\n
+You may obtain a copy of the License at\n\n
+
+   http://www.apache.org/licenses/LICENSE-2.0
+\n\n
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</string>
+
+    <string name="MIT_libraries">org.jsoup:jsoup \n </string>
+
+    <string name="MIT_license">Above libraries are licensed under The MIT License\n\n
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. \n
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</string>
+
+    <string name="glide_library">bumptech.glide</string>
+
+    <string name="glide_license">Above library is License under \n\n
+
+Copyright 2014 Google, Inc. All rights reserved.
+\n
+Redistribution and use in source and binary forms, with or without modification, are
+permitted provided that the following conditions are met:
+        \n
+
+   1. Redistributions of source code must retain the above copyright notice, this list of
+         conditions and the following disclaimer.\n
+
+   2. Redistributions in binary form must reproduce the above copyright notice, this list
+         of conditions and the following disclaimer in the documentation and/or other materials
+         provided with the distribution.\n
+
+THIS SOFTWARE IS PROVIDED BY GOOGLE, INC. ``AS IS\'\' AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL GOOGLE, INC. OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+\n
+The views and conclusions contained in the software and documentation are those of the
+authors and should not be interpreted as representing official policies, either expressed
+or implied, of Google, Inc.\n
+---------------------------\n
+License for third_party/disklrucache:
+\n
+Copyright 2012 Jake Wharton\n
+Copyright 2011 The Android Open Source Project
+\n
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+\n\n
+   http://www.apache.org/licenses/LICENSE-2.0
+\n\n
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+\n---------------------------\n
+License for third_party/gif_decoder:
+\n
+Copyright © 2013 Xcellent Creations, Inc.
+\n
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+\n
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+\n
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n
+-----------------------------\n
+License for third_party/gif_encoder/AnimatedGifEncoder.java and
+third_party/gif_encoder/LZWEncoder.java:
+\n
+No copyright asserted on the source code of this class. May be used for any
+purpose, however, refer to the Unisys LZW patent for restrictions on use of
+the associated LZWEncoder class. Please forward any corrections to
+kweiner@fmsware.com.
+\n
+---------------------------\n
+        License_party/gif_encoder/NeuQuant.java
+\n
+Copyright © 1994 Anthony Dekker
+\n
+NEUQUANT Neural-Net quantization algorithm by Anthony Dekker, 1994. See
+"Kohonen neural networks for optimal colour quantization" in "Network:
+Computation in Neural Systems" Vol. 5 (1994) pp 351-367. for a discussion of
+the algorithm.
+\n
+Any party obtaining a copy of these files from the author, directly or
+indirectly, is granted, free of charge, a full and unrestricted irrevocable,
+world-wide, paid up, royalty-free, nonexclusive right and license to deal in
+this software and documentation files (the "Software"), including without
+limitation the rights to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of the Software, and to permit persons who
+receive copies from any such party to do so, with the only requirement being
+that this copyright notice remain intact.</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value" />
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
+
+
+</resources>
