@@ -20,31 +20,30 @@ public class PlaylistDatabase extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "playlisttable";
     private static final String ID = "playlistId";
     private static final String NAME = "playlistName";
-    private static final String SONGCOUNT = "playlistSongCount";
+
 
 
     public PlaylistDatabase(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, 2);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+TABLE_NAME+" (playlistId INTEGER PRIMARY KEY, playlistName TEXT, playlistSongCount INTEGER)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" (playlistId INTEGER PRIMARY KEY AUTOINCREMENT, playlistName TEXT,albumid long)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
+        onCreate(db);
 
     }
 
-    public boolean addPlaylist(int id,String name, int songCount){
+    public boolean addPlaylist(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues v = new ContentValues();
-
-        v.put(ID,id);
         v.put(NAME,name);
-        v.put(SONGCOUNT,songCount);
+
 
         long i = db.insert(TABLE_NAME,null,v);
         if(i==-1){
@@ -56,9 +55,9 @@ public class PlaylistDatabase extends SQLiteOpenHelper {
 
     private Cursor makeCursorToGetAll(){
         SQLiteDatabase db = this.getWritableDatabase();
-        String[] projection = new String[]{ID,NAME,SONGCOUNT};
-        //Cursor cr = db.query(TABLE_NAME,projection,null,null,null,null,NAME+" DESC");
-        Cursor cr = db.rawQuery("SELECT * FROM "+TABLE_NAME,null);
+        String[] projection = new String[]{ID,NAME};
+        Cursor cr = db.query(TABLE_NAME,projection,null,null,null,null,null);
+        //Cursor cr = db.rawQuery("SELECT * FROM "+TABLE_NAME,null);
 
         return cr;
     }

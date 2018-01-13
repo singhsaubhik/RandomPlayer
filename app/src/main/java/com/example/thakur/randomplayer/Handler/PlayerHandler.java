@@ -1,20 +1,15 @@
 package com.example.thakur.randomplayer.Handler;
 
-import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Binder;
-import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
 
-import com.example.thakur.randomplayer.DatabaseHelper.SongDatabase;
 import com.example.thakur.randomplayer.MyApp;
 import com.example.thakur.randomplayer.Services.MusicService;
 import com.example.thakur.randomplayer.items.Song;
