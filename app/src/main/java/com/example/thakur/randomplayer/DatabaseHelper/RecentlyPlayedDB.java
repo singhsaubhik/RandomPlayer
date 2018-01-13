@@ -1,11 +1,18 @@
 package com.example.thakur.randomplayer.DatabaseHelper;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.thakur.randomplayer.Loaders.ListSongs;
+import com.example.thakur.randomplayer.items.Song;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Thakur on 13-01-2018.
@@ -36,6 +43,16 @@ public class RecentlyPlayedDB extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
+    public boolean addSong(long id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(SONG_ID,id);
+        contentValues.put(MYDATE,getDateTime());
+
+
+        return true;
+    }
+
     private Cursor getCursor(){
         SQLiteDatabase db = this.getWritableDatabase();
         String[] projection = new String[]{SONG_ID,MYDATE};
@@ -56,5 +73,30 @@ public class RecentlyPlayedDB extends SQLiteOpenHelper {
         }
 
         return list;
+    }
+
+    public ArrayList<Song> getRecentlyPlayed(Context context){
+        ArrayList<Song> list = new ArrayList<>();
+        ArrayList<Long> ids = new ArrayList<>();
+        ArrayList<Song> finallist = new ArrayList<>();
+
+        list = ListSongs.getSongList(context);
+
+        for(int i=0;i<ids.size();i++){
+            for(int j=0;j<list.size();i++){
+                if(ids.get(i)==list.get(j).getAlbumId()){
+                    finallist.add(list.get(j));
+                }
+            }
+        }
+
+        return finallist;
+    }
+
+    private String getDateTime(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date date = new Date();
+
+        return sdf.format(date);
     }
 }
