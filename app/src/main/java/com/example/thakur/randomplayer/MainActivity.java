@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity
         adapter.add(new SongFragment(),"SongList");
         adapter.add(new AlbumListFragment(),"AlbumList");
         adapter.add(new ArtistList(),"ArtistList");
-        adapter.add(new Playlist(),"Play List");
 
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);

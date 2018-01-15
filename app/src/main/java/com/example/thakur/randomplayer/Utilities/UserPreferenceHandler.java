@@ -18,6 +18,9 @@ public class UserPreferenceHandler {
     private static final String playingSearchList = "Playingsearchlist";
     private static final String lastplayed = "lastplayedsong";
     private static final String lastplayedDur = "lastplayedsongDuration";
+
+    private static final String default_playlist_created = "defaultplaylistcreated";
+
     private final SharedPreferences shp;
 
     public UserPreferenceHandler(Context context) {
@@ -102,12 +105,21 @@ public class UserPreferenceHandler {
 
     //Last played song
     public void setLastPlayed(long songId){
-        shp.edit().putLong(lastplayed,songId);
+        shp.edit().putLong(lastplayed,songId).apply();
     }
-    public void setLastplayedDur(long duration){shp.edit().putLong(lastplayedDur,duration);}
+    public void setLastplayedDur(long duration){shp.edit().putLong(lastplayedDur,duration).apply();}
 
     public long getLastPlayed(){
         return shp.getLong(lastplayed,0);
     }
     public long getLastPlayedDur(){return shp.getLong(lastplayedDur,0);}
+
+    //DefaultPlaylistCreated
+    public void setDefaultPlaylistCreated(boolean val){
+        shp.edit().putBoolean(default_playlist_created,val).apply();
+    }
+
+    public boolean getDefaultPlaylistCreated(){
+        return shp.getBoolean(default_playlist_created,false);
+    }
 }

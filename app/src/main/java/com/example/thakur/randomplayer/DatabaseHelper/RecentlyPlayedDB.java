@@ -80,6 +80,8 @@ public class RecentlyPlayedDB extends SQLiteOpenHelper {
         ArrayList<Long> ids = new ArrayList<>();
         ArrayList<Song> finallist = new ArrayList<>();
 
+        ids = getId();
+
         list = ListSongs.getSongList(context);
 
         for(int i=0;i<ids.size();i++){

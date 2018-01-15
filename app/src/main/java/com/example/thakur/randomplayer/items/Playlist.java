@@ -5,12 +5,12 @@ public class Playlist {
 
     private int playlistId;
     private String playlistName;
-    private long songCount;
+    private long cover_albumId;
 
-    public Playlist(int playlistId, String playlistName, long songCount) {
+    public Playlist(int playlistId, String playlistName, long cover_albumId) {
         this.playlistId = playlistId;
         this.playlistName = playlistName;
-        this.songCount = songCount;
+        this.cover_albumId = cover_albumId;
     }
 
     public int getPlaylistId() {
@@ -21,7 +21,19 @@ public class Playlist {
         return playlistName;
     }
 
-    public long getSongCount() {
-        return songCount;
+    public long getCover_albumId() {
+        return cover_albumId;
+    }
+
+    public void setPlaylistId(int playlistId) {
+        this.playlistId = playlistId;
+    }
+
+    public void setPlaylistName(String playlistName) {
+        this.playlistName = playlistName;
+    }
+
+    public void setCover_albumId(long cover_albumId) {
+        this.cover_albumId = cover_albumId;
     }
 }

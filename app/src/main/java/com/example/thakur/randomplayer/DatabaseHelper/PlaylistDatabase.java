@@ -20,16 +20,18 @@ public class PlaylistDatabase extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "playlisttable";
     private static final String ID = "playlistId";
     private static final String NAME = "playlistName";
+    private static final String COVER_ALBUM_ID = "coveralbumid";
+    private static final int VERSION = 5;
 
 
 
     public PlaylistDatabase(Context context) {
-        super(context, DATABASE_NAME, null, 2);
+        super(context, DATABASE_NAME, null, VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" (playlistId INTEGER PRIMARY KEY AUTOINCREMENT, playlistName TEXT,albumid long)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" (playlistId INTEGER PRIMARY KEY AUTOINCREMENT, playlistName TEXT,coveralbumid long)");
     }
 
     @Override
@@ -43,6 +45,7 @@ public class PlaylistDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues v = new ContentValues();
         v.put(NAME,name);
+        //v.putNull(COVER_ALBUM_ID);
 
 
         long i = db.insert(TABLE_NAME,null,v);
@@ -53,19 +56,19 @@ public class PlaylistDatabase extends SQLiteOpenHelper {
         }
     }
 
-    private Cursor makeCursorToGetAll(){
+    public Cursor makeCursorToGetAll(){
         SQLiteDatabase db = this.getWritableDatabase();
-        String[] projection = new String[]{ID,NAME};
-        Cursor cr = db.query(TABLE_NAME,projection,null,null,null,null,null);
+        String[] projection = new String[]{ID,NAME,COVER_ALBUM_ID};
         //Cursor cr = db.rawQuery("SELECT * FROM "+TABLE_NAME,null);
 
-        return cr;
+        return db.query(TABLE_NAME,projection,null,null,null,null,null);
     }
 
     public ArrayList<Playlist> getAllplaylist(){
         ArrayList<Playlist> list = new ArrayList<>();
         String str;
-        int i,j;
+        int i;
+        long j;
         Cursor cr = makeCursorToGetAll();
         if(cr!=null && cr.getCount()>0){
             cr.moveToFirst();
@@ -79,4 +82,7 @@ public class PlaylistDatabase extends SQLiteOpenHelper {
         }
         return list;
     }
+
+
+
 }

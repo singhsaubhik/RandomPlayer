@@ -3,26 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/colorAccent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorAccent"
     tools:context="com.example.thakur.randomplayer.PlayListList">
 
     <eightbitlab.com.blurview.BlurView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:blurOverlayColor="#7d000000"
-        >
+        app:blurOverlayColor="#7d000000">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/play_list_list_recycler"
-            android:layout_centerVertical="true"
-            >
+                android:id="@+id/play_list_list_recycler"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                app:msrv_snap_count="1"
+
+                >
+
             </com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView>
         </RelativeLayout>
 

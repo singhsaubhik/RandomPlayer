@@ -13,6 +13,7 @@ import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.PlayList;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Utilities.Utils;
+import com.example.thakur.randomplayer.items.Playlist;
 import com.example.thakur.randomplayer.items.Song;
 import com.squareup.picasso.Picasso;
 
@@ -24,10 +25,10 @@ import java.util.ArrayList;
  */
 
 public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapter.PlayListListViewHolder> {
-    private ArrayList<Song> list = new ArrayList<>();
+    private ArrayList<Playlist> list = new ArrayList<>();
     private Context context;
 
-    public PlayListListAdapter(ArrayList<Song> list) {
+    public PlayListListAdapter(ArrayList<Playlist> list) {
         this.list = list;
     }
 
@@ -41,7 +42,9 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
     @Override
     public void onBindViewHolder(PlayListListViewHolder holder, int position) {
 
-        String path = ListSongs.getAlbumArt(context,list.get(position).getAlbumId());
+        holder.title.setText(list.get(position).getPlaylistName());
+
+        String path = ListSongs.getAlbumArt(context,list.get(position).getCover_albumId());
 
         if(Utils.isPathValid(path)){
             Picasso.with(context)
@@ -68,7 +71,7 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
             super(itemView);
 
             imageView = itemView.findViewById(R.id.discrete_big_image);
-            title = itemView.findViewById(R.id.discrete_big_text);
+            title = itemView.findViewById(R.id.playlist_list_name);
             itemView.setOnClickListener(this);
         }
 
@@ -82,4 +85,6 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
             }
         }
     }
+
+
 }
