@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    sothree:umanoPanelHeight="50dp"
+    sothree:umanoPanelHeight="0dp"
     sothree:umanoShadowHeight="4dp"
     sothree:umanoParallaxOffset="100dp"
     sothree:umanoDragView="@+id/dragView"
@@ -61,7 +61,6 @@
 
         </LinearLayout>
 
-        <include layout="@layout/test"/>
 
 
 

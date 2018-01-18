@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item android:id="@+id/playlist_menu_list_playall"
+        android:title="PlayAll"
+        >
+    </item>
+
+    <item android:id="@+id/playlist_menu_list_shuffle"
+        android:title="Shuffle"
+        >
+    </item>
+
+    <item android:id="@+id/playlist_menu_list_rename"
+        android:title="Rename"
+        >
+    </item>
+
+    <item android:id="@+id/playlist_menu_list_delete"
+        android:title="Delete"
+        >
+    </item>
+
+
+
+
+</menu>

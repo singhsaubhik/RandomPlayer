@@ -154,25 +154,6 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                                 break;
 
                             case R.id.bittu_menu_setAsRintone:
-
-                                Dexter.withActivity((Activity) context).withPermission(Manifest.permission.WRITE_SETTINGS)
-                                        .withListener(new PermissionListener() {
-                                            @Override
-                                            public void onPermissionGranted(PermissionGrantedResponse response) {
-                                                Utils.setAsRingtone(context,filteredDataItems.get(getAdapterPosition()).getPath());
-
-                                            }
-
-                                            @Override
-                                            public void onPermissionDenied(PermissionDeniedResponse response) {
-                                                Toast.makeText(context, "We need permission", Toast.LENGTH_SHORT).show();
-                                            }
-
-                                            @Override
-                                            public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                                                showPermissionRationale(token);
-                                            }
-                                        }).check();
                                 break;
 
                             case R.id.bittu_menu_shareTrack:
@@ -269,29 +250,12 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
     }
 
 
-
-    public void showPermissionRationale(final PermissionToken token) {
-        new AlertDialog.Builder(context).setTitle("Permission required")
-                .setMessage("To run all feature in this app we need some permissions please allow them.\nBelieve us there is no harm!!")
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        token.cancelPermissionRequest();
-                    }
-                })
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        token.continuePermissionRequest();
-                    }
-                })
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override public void onDismiss(DialogInterface dialog) {
-                        token.cancelPermissionRequest();
-                    }
-                })
-                .show();
+    public void refresh(ArrayList<Song> list){
+        filteredDataItems.clear();
+        filteredDataItems.addAll(list);
     }
+
+
 
 
 }

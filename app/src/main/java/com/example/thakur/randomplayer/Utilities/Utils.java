@@ -18,7 +18,9 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.graphics.Palette;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -93,20 +95,12 @@ public class Utils {
     }
 
     public static boolean isPathValid(String path){
-        if(path!=null && isFileExist(path)){
-            return true;
-        }else{
-            return false;
-        }
+        return path != "" && path != null && isFileExist(path);
     }
 
     private static boolean isFileExist(String path){
         File file = new File(path);
-        if(file.exists()){
-            return true;
-        }else{
-            return false;
-        }
+        return file.exists();
     }
 
     public static void shareSongFile(Context context, ArrayList<Song> items, int position) {
@@ -276,6 +270,29 @@ public class Utils {
         //Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         context.getContentResolver().notifyChange(Uri.parse("content://media"), null);
         //MusicPlayer.refresh();
+    }
+
+
+    public static int[] getAvailableColor(Context context,Palette palette) {
+        int[] temp = new int[3];
+        if (palette.getVibrantSwatch() != null) {
+            temp[0] = palette.getVibrantSwatch().getRgb();
+            temp[1] = palette.getVibrantSwatch().getBodyTextColor();
+            temp[2] = palette.getVibrantSwatch().getTitleTextColor();
+        } else if (palette.getDarkVibrantSwatch() != null) {
+            temp[0] = palette.getDarkVibrantSwatch().getRgb();
+            temp[1] = palette.getDarkVibrantSwatch().getBodyTextColor();
+            temp[2] = palette.getDarkVibrantSwatch().getTitleTextColor();
+        } else if (palette.getDarkMutedSwatch() != null) {
+            temp[0] = palette.getDarkMutedSwatch().getRgb();
+            temp[1] = palette.getDarkMutedSwatch().getBodyTextColor();
+            temp[2] = palette.getDarkMutedSwatch().getTitleTextColor();
+        } else {
+            temp[0] = ContextCompat.getColor(context, R.color.colorPrimary);
+            temp[1] = ContextCompat.getColor(context, android.R.color.white);
+            temp[2] = 0xffe5e5e5;
+        }
+        return temp;
     }
 
 

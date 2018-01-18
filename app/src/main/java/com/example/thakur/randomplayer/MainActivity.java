@@ -6,13 +6,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,14 +38,38 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.thakur.randomplayer.Adapters.ViewPagerAdapter;
 import com.example.thakur.randomplayer.Fragments.*;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.Services.MusicService;
+import com.example.thakur.randomplayer.Utilities.Utils;
 import com.example.thakur.randomplayer.items.Song;
+import com.mikepenz.iconics.Iconics;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.MiniDrawer;
+import com.mikepenz.materialdrawer.holder.BadgeStyle;
+import com.mikepenz.materialdrawer.holder.ImageHolder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -68,6 +98,13 @@ public class MainActivity extends AppCompatActivity
     public static boolean running = true;
     public boolean isBound;
 
+    //Drawer layout
+    private AccountHeader headerResult = null;
+    private Drawer result = null;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,10 +128,11 @@ public class MainActivity extends AppCompatActivity
 
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        TabLayout viewpagertab =(TabLayout) findViewById(R.id.viewpagertab);
+        SmartTabLayout viewpagertab = (SmartTabLayout) findViewById(R.id.viewpagertab);
         viewPager.setAdapter(adapter);
 
-        viewpagertab.setupWithViewPager(viewPager);
+        viewpagertab.setViewPager(viewPager);
+
 
 
 
@@ -111,6 +149,74 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+
+
+        buildHeader(false, savedInstanceState);
+
+
+
+        result = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withName(R.string.drawer_library).withSelectedBackgroundAnimated(true).withIcon(R.drawable.library_music).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.drawer_folders).withIcon(R.drawable.ic_menu_gallery).withIdentifier(2),
+                        new PrimaryDrawerItem().withName(R.string.drawer_playlist).withIcon(R.drawable.ic_playlist_play_black_24dp).withIdentifier(3),
+                        new PrimaryDrawerItem().withName(R.string.drawer_palaying_queue).withIcon(R.drawable.ic_queue_music_32dp).withIdentifier(4),
+                        new PrimaryDrawerItem().withName(R.string.drawer_nowplaying).withIcon(R.drawable.ic_play_circle_filled_32dp).withIdentifier(5),
+
+                        new DividerDrawerItem(),
+                        new SecondaryDrawerItem().withName("Setting").withIcon(R.drawable.ic_settings_black_24dp),
+                        new SecondaryDrawerItem().withName("About us").withIcon(R.drawable.ic_person_32dp)
+                )
+                        //here we use a customPrimaryDrawerItem we defined in our sample
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        switch(position){
+                            case 1:
+                                break;
+
+                            case 2:
+                                break;
+
+                            case 3:
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        startActivity(new Intent(MainActivity.this,PlayListList.class));
+                                        (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+                                    }
+                                },250);
+
+                                break;
+
+                            case 4:
+                                break;
+
+                            case 5:
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent playerIntent = new Intent(MainActivity.this,PlayerActivity.class);
+                                        //playerIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                        startActivity(playerIntent);
+                                        //startActivity(new Intent(context, com.example.thakur.randomplayer.PlayList.class));
+                                        (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+
+                                    }
+                                },250);
+
+                        }
+                        return false;
+                    }
+                })
+                .withSavedInstance(savedInstanceState)
+                .build();
+
 
 
 
@@ -488,5 +594,26 @@ public class MainActivity extends AppCompatActivity
                     .filter("");
         }
     }
+
+
+    private void buildHeader(final boolean compact, final Bundle savedInstanceState) {
+        ArrayList<Song> list = new ArrayList<>();
+        list.addAll(ListSongs.getSongList(MainActivity.this));
+        String path = ListSongs.getAlbumArt(this,list.get(0).getAlbumId());
+
+
+
+        headerResult = new AccountHeaderBuilder()
+                .withActivity(MainActivity.this)
+                .withHeaderBackground(new ImageHolder(path))
+                .withCompactStyle(compact)
+                .withSavedInstance(savedInstanceState)
+                .build();
+
+        // Create the AccountHeader
+
+    }
+
+
 
 }

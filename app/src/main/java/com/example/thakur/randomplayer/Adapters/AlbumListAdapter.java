@@ -3,8 +3,9 @@ package com.example.thakur.randomplayer.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -12,9 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.thakur.randomplayer.AlbumContentList;
 import com.example.thakur.randomplayer.ItemClickListener;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
@@ -22,10 +28,7 @@ import com.example.thakur.randomplayer.MainActivity;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Utilities.Utils;
 import com.example.thakur.randomplayer.items.Album;
-import com.example.thakur.randomplayer.items.Song;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,12 +66,14 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
         ItemClickListener clickListener;
         TextView albumListName,artist;
         ImageView albumArt;
+        LinearLayout layout;
 
         public AlbumViewHolder(View itemView) {
             super(itemView);
             albumArt = itemView.findViewById(R.id.album_list_img);
             albumListName = itemView.findViewById(R.id.album_list_name);
             artist = itemView.findViewById(R.id.album_list_artist);
+            layout = itemView.findViewById(R.id.album_list_bottom);
 
             itemView.setOnClickListener(this);
 
@@ -93,7 +98,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
     }
 
     @Override
-    public void onBindViewHolder(AlbumViewHolder holder, int position) {
+    public void onBindViewHolder(final AlbumViewHolder holder, int position) {
         reference = filteredDataItems;
         holder.albumListName.setText(reference.get(position).getAlbumTitle());
         holder.artist.setText(reference.get(position).getAlbumArtist());
@@ -103,8 +108,26 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
         String path = reference.get(position).getAlbumArtPath();
 
 
-        setArtistImg(holder,position,size);
+        if(Utils.isPathValid(path)) {
+            Glide.with(context).asBitmap().load(new File(path)).apply(new RequestOptions().override(size))
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            holder.albumArt.setImageBitmap(resource);
 
+                            Palette.Builder b = Palette.from(resource);
+                            b.generate(new Palette.PaletteAsyncListener() {
+                                @Override
+                                public void onGenerated(@NonNull Palette palette) {
+                                    int[] colors = Utils.getAvailableColor(context,palette);
+                                    holder.layout.setBackgroundColor(colors[0]);
+                                    holder.albumListName.setTextColor(colors[1]);
+                                    holder.artist.setTextColor(colors[2]);
+                                }
+                            });
+                        }
+                    });
+        }
 
     }
 
@@ -113,15 +136,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
         return filteredDataItems.size();
     }
 
-    public void setImage(AlbumViewHolder holder, int po)
-    {
 
-
-
-
-
-
-    }
 
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
@@ -166,20 +181,12 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
         return imgFile.exists();
     }
 
-    public boolean isPathValid(String path) {
-        return path != null && fileExist(path);
-    }
 
-    private void setArtistImg(final AlbumViewHolder holder, final int position, final int size) {
-        String path = filteredDataItems.get(position).getAlbumArtPath();
-        if (isPathValid(path))
-            Picasso.with(context).load(new File(path))
-                    .centerCrop().resize(size, size).into(holder.albumArt);
-        else
-            holder.albumArt.setImageBitmap(new Utils(context)
-                    .getBitmapOfVector(R.drawable.default_art, size, size));
-        //handleRevealAnimation(holder, position);
-        //handleColorAnimation(holder, path, size, position);
+
+
+    public void refresh(){
+        this.albumList.clear();
+        this.albumList.addAll(ListSongs.getAlbumList(context));
     }
 
 }

@@ -7,12 +7,14 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission-sdk-23 android:name="android.permission.WRITE_SETTINGS"/>
     <uses-permission-sdk-23 android:name="android.permission.WRITE_SECURE_SETTINGS"/>
     <uses-permission-sdk-23 android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission-sdk-23 android:name="android.permission.INTERNET"/>
 
     <uses-feature
         android:name="android.hardware.sensor.accelerometer"
@@ -54,9 +56,7 @@
             android:name=".PlayList"
             android:theme="@style/Mytheme" />
         <activity android:name=".PlayListList" />
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+
     </application>
 
 </manifest>

@@ -3,9 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="60dp"
-    android:layout_marginStart="60dp"
-    android:layout_marginTop="70dp"
+    android:layout_marginLeft="40dp"
+    android:layout_marginStart="40dp"
     android:orientation="horizontal"
     app:cardUseCompatPadding="true">
 
@@ -24,6 +23,7 @@
     </android.support.v7.widget.CardView>
 
     <LinearLayout
+        android:background="#FFFFFF"
         android:id="@+id/playlist_list_linear_layout"
         android:orientation="horizontal"
         android:layout_below="@+id/playlist_image_cardview"
@@ -31,6 +31,7 @@
         android:layout_height="60dp">
 
         <TextView
+            android:textColor="#000"
             android:maxLines="1"
             android:id="@+id/playlist_list_name"
             android:layout_width="180dp"
@@ -47,6 +48,8 @@
             android:layout_height="match_parent" />
 
     </LinearLayout>
+
+
 
 
 </RelativeLayout>

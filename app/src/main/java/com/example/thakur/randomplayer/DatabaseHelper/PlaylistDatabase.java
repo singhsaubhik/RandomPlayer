@@ -24,65 +24,75 @@ public class PlaylistDatabase extends SQLiteOpenHelper {
     private static final int VERSION = 5;
 
 
-
     public PlaylistDatabase(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" (playlistId INTEGER PRIMARY KEY AUTOINCREMENT, playlistName TEXT,coveralbumid long)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (playlistId INTEGER PRIMARY KEY AUTOINCREMENT, playlistName TEXT,coveralbumid long)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
 
     }
 
-    public boolean addPlaylist(String name){
+    public boolean addPlaylist(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues v = new ContentValues();
-        v.put(NAME,name);
-        //v.putNull(COVER_ALBUM_ID);
 
 
-        long i = db.insert(TABLE_NAME,null,v);
-        if(i==-1){
-            return false;
-        }else{
-            return true;
-        }
+            ContentValues v = new ContentValues();
+            v.put(NAME, name);
+            //v.putNull(COVER_ALBUM_ID);
+
+
+            long i = db.insert(TABLE_NAME, null, v);
+            //db.close();
+            return i != -1;
+
     }
 
-    public Cursor makeCursorToGetAll(){
+    public Cursor makeCursorToGetAll() {
         SQLiteDatabase db = this.getWritableDatabase();
-        String[] projection = new String[]{ID,NAME,COVER_ALBUM_ID};
+        String[] projection = new String[]{ID, NAME, COVER_ALBUM_ID};
         //Cursor cr = db.rawQuery("SELECT * FROM "+TABLE_NAME,null);
 
-        return db.query(TABLE_NAME,projection,null,null,null,null,null);
+        return db.query(TABLE_NAME, projection, null, null, null, null, null);
     }
 
-    public ArrayList<Playlist> getAllplaylist(){
+    public ArrayList<Playlist> getAllplaylist() {
         ArrayList<Playlist> list = new ArrayList<>();
         String str;
         int i;
         long j;
         Cursor cr = makeCursorToGetAll();
-        if(cr!=null && cr.getCount()>0){
+        if (cr != null && cr.getCount() > 0) {
             cr.moveToFirst();
-            while(cr.moveToNext()){
+            while (cr.moveToNext()) {
                 i = cr.getInt(0);
                 str = cr.getString(1);
-                j= cr.getInt(2);
+                j = cr.getInt(2);
 
-                list.add(new Playlist(i,str,j));
+                list.add(new Playlist(i, str, j));
             }
         }
         return list;
     }
 
+    public void renamePlaylist(int id, String newName) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("UPDATE playlisttable SET playlistName" + "='" + newName + "' WHERE " + ID + "='" + id + "'", null);
+        db.close();
+    }
+
+    public void deletePlaylist(int id) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_NAME, "playlistId = ?", new String[]{String.valueOf(id)});
+        db.close();
+    }
 
 
 }

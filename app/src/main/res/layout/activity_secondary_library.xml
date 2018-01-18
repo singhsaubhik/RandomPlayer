@@ -9,6 +9,7 @@
     android:fitsSystemWindows="true"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:theme="@style/Mytheme"
+
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
@@ -26,6 +27,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="@color/primary"
+            app:statusBarScrim="@color/primary_dark"
             app:expandedTitleMarginStart="@dimen/sl_expanded_title_margin_start"
             app:expandedTitleMarginEnd="@dimen/sl_expanded_title_margin_end"
             android:persistentDrawingCache="none"

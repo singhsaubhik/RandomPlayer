@@ -28,6 +28,7 @@ import com.example.thakur.randomplayer.MainActivity;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Utilities.Utils;
 import com.example.thakur.randomplayer.items.Artist;
+import com.example.thakur.randomplayer.items.Song;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -40,7 +41,7 @@ import java.util.ArrayList;
  */
 public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.SimpleItemViewHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
-    private ArrayList<Artist> items;
+    private ArrayList<Artist> items,filteredDataItems;
     private ArtistList fragment;
     private Context context;
     private int expandedPosition = -1;
@@ -295,5 +296,7 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
             rv = (RecyclerView) itemView.findViewById(R.id.artist_sub_rv);
         }
     }
+
+
 
 }

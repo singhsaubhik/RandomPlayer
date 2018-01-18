@@ -13,9 +13,11 @@ import android.widget.RemoteViews;
 
 
 import com.example.thakur.randomplayer.Loaders.ListSongs;
+import com.example.thakur.randomplayer.PlayerActivity;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Services.MusicService;
 import com.example.thakur.randomplayer.Utilities.Utils;
+import com.example.thakur.randomplayer.items.Song;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -42,9 +44,10 @@ public class NotificationHandler {
 
     private Notification.Builder createBuiderNotification(boolean removable) {
 
-        Intent notificationIntent = new Intent();
-        notificationIntent.setAction(MusicService.ACTION_NOTI_CLICK);
-        PendingIntent contentIntent = PendingIntent.getBroadcast(context, 0, notificationIntent, 0);
+        Intent notificationIntent = new Intent(context, PlayerActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+//        notificationIntent.setAction(MusicService.ACTION_NOTI_CLICK);
+        PendingIntent contentIntent = PendingIntent.getActivity(context,0,notificationIntent,0);
         Intent deleteIntent = new Intent();
         deleteIntent.setAction(MusicService.ACTION_NOTI_REMOVE);
         PendingIntent deletePendingIntent = PendingIntent.getBroadcast(context, 0, deleteIntent, 0);
@@ -82,13 +85,13 @@ public class NotificationHandler {
     }
 
 
-    public void changeNotificationDetails(String songName, String artistName, long albumId, boolean playing) {
+    public void changeNotificationDetails(Song song, boolean playing) {
         if (Build.VERSION.SDK_INT >= 16) {
             //createID();
-            notificationCompat.bigContentView.setTextViewText(R.id.noti_name, songName);
-            notificationCompat.bigContentView.setTextViewText(R.id.noti_artist, artistName);
-            notificationCompat.contentView.setTextViewText(R.id.noti_name, songName);
-            notificationCompat.contentView.setTextViewText(R.id.noti_artist, artistName);
+            notificationCompat.bigContentView.setTextViewText(R.id.noti_name, song.getName());
+            notificationCompat.bigContentView.setTextViewText(R.id.noti_artist, song.getArtist());
+            notificationCompat.contentView.setTextViewText(R.id.noti_name, song.getName());
+            notificationCompat.contentView.setTextViewText(R.id.noti_artist, song.getArtist());
             Intent playClick = new Intent();
             playClick.setAction(MusicService.ACTION_PAUSE_SONG);
             PendingIntent playClickIntent = PendingIntent.getBroadcast(context, 21021, playClick, 0);
@@ -111,7 +114,7 @@ public class NotificationHandler {
             notificationCompat.contentView.setOnClickPendingIntent(R.id.noti_next_button, nextClickIntent);
             setPlayPause(playing);
 
-            String path = ListSongs.getAlbumArt(context, albumId);
+            String path = ListSongs.getAlbumArt(context, song.getAlbumId());
 
             try {
                 File f = null;

@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -489,9 +490,13 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             notificationHandler.setNotificationPlayer(false);
         }
 
-        notificationHandler.changeNotificationDetails(songList.get(songPos).getName(),songList.get(songPos).getArtist(),
-                songList.get(songPos).getAlbumId(),
-                mPlayer.getmPlayer().isPlaying());
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                notificationHandler.changeNotificationDetails(songList.get(songPos),mPlayer.getmPlayer().isPlaying());
+            }
+        },300);
+
     }
 
     private void handleNotificationPlayPause(){
@@ -638,6 +643,9 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         //updateNotificationPlayer();
     }
 
+    public Song getCurrentSong(){
+        return songList.get(songPos);
+    }
 
 
 
