@@ -21,7 +21,7 @@ public class PlaylistDatabase extends SQLiteOpenHelper {
     private static final String ID = "playlistId";
     private static final String NAME = "playlistName";
     private static final String COVER_ALBUM_ID = "coveralbumid";
-    private static final int VERSION = 5;
+    private static final int VERSION = 7;
 
 
     public PlaylistDatabase(Context context) {
@@ -30,7 +30,7 @@ public class PlaylistDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (playlistId INTEGER PRIMARY KEY AUTOINCREMENT, playlistName TEXT,coveralbumid long)");
+        db.execSQL("CREATE TABLE " + TABLE_NAME + " (playlistId INTEGER PRIMARY KEY AUTOINCREMENT, playlistName TEXT,coveralbumid long)");
     }
 
     @Override
@@ -43,9 +43,11 @@ public class PlaylistDatabase extends SQLiteOpenHelper {
     public boolean addPlaylist(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        String playlist_name = name.replace(" ","_");
+
 
             ContentValues v = new ContentValues();
-            v.put(NAME, name);
+            v.put(NAME, playlist_name);
             //v.putNull(COVER_ALBUM_ID);
 
 
@@ -75,6 +77,8 @@ public class PlaylistDatabase extends SQLiteOpenHelper {
                 i = cr.getInt(0);
                 str = cr.getString(1);
                 j = cr.getInt(2);
+
+                str = str.replace("_"," ");
 
                 list.add(new Playlist(i, str, j));
             }

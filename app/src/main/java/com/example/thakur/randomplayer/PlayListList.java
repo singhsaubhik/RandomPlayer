@@ -79,6 +79,7 @@ public class PlayListList extends AppCompatActivity {
                             public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                                 new PlaylistDatabase(PlayListList.this).addPlaylist(input.toString());
                                 adapter.refresh(new PlaylistDatabase(PlayListList.this).getAllplaylist());
+                                Toast.makeText(PlayListList.this, "playlist added", Toast.LENGTH_SHORT).show();
 
                             }
                         }).show();

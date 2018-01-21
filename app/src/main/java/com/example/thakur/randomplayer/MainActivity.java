@@ -36,6 +36,7 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -77,8 +78,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
 
 
-
-   // ContextMenuDialogFragment mMenuDialogFragment = new ContextMenuDialogFragment();
+    // ContextMenuDialogFragment mMenuDialogFragment = new ContextMenuDialogFragment();
     android.support.v4.app.FragmentManager fragmentManager;
     ArrayList<Song> list = new ArrayList<>();
     MusicService mService;
@@ -86,13 +86,16 @@ public class MainActivity extends AppCompatActivity
     ViewPagerAdapter adapter;
     ViewPager viewPager;
 
-    private boolean isSearchOpened=false;
+    private boolean isSearchOpened = false;
     private InputMethodManager imm;
     private EditText editSearch;
-    private  String searchQuery="";
-    private  MenuItem mSearchAction;
+    private String searchQuery = "";
+    private MenuItem mSearchAction;
 
     private SlidingUpPanelLayout slidingUpPanelLayout;
+
+    private ImageView dragViewImage;
+    private TextView dragViewTitle;
 
 
     public static boolean running = true;
@@ -103,16 +106,16 @@ public class MainActivity extends AppCompatActivity
     private Drawer result = null;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupWindowAnimations();
         connectToService();
 
-        slidingUpPanelLayout =(SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-        list = ListSongs.getSongList(getApplicationContext());
+
+
+        slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        list = ListSongs.getSongList(MainActivity.this);
 
         nav_album_art = (ImageView) findViewById(R.id.nav_album_art);
 
@@ -122,9 +125,9 @@ public class MainActivity extends AppCompatActivity
         running = true;
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.add(new SongFragment(),"SongList");
-        adapter.add(new AlbumListFragment(),"AlbumList");
-        adapter.add(new ArtistList(),"ArtistList");
+        adapter.add(new SongFragment(), "SongList");
+        adapter.add(new AlbumListFragment(), "AlbumList");
+        adapter.add(new ArtistList(), "ArtistList");
 
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -134,91 +137,83 @@ public class MainActivity extends AppCompatActivity
         viewpagertab.setViewPager(viewPager);
 
 
-
-
-
-
         fragmentManager = getSupportFragmentManager();
 
         //initMenuFragment();
 
 
-
-
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
+        try {
+            buildHeader(false, savedInstanceState);
 
 
-        buildHeader(false, savedInstanceState);
+            result = new DrawerBuilder()
+                    .withActivity(this)
+                    .withToolbar(toolbar)
+                    .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
+                    .addDrawerItems(
+                            new PrimaryDrawerItem().withName(R.string.drawer_library).withSelectedBackgroundAnimated(true).withIcon(R.drawable.library_music).withIdentifier(1),
+                            new PrimaryDrawerItem().withName(R.string.drawer_folders).withIcon(R.drawable.ic_menu_gallery).withIdentifier(2),
+                            new PrimaryDrawerItem().withName(R.string.drawer_playlist).withIcon(R.drawable.ic_playlist_play_black_24dp).withIdentifier(3),
+                            new PrimaryDrawerItem().withName(R.string.drawer_palaying_queue).withIcon(R.drawable.ic_queue_music_32dp).withIdentifier(4),
+                            new PrimaryDrawerItem().withName(R.string.drawer_nowplaying).withIcon(R.drawable.ic_play_circle_filled_32dp).withIdentifier(5),
 
+                            new DividerDrawerItem(),
+                            new SecondaryDrawerItem().withName("Setting").withIcon(R.drawable.ic_settings_black_24dp),
+                            new SecondaryDrawerItem().withName("About us").withIcon(R.drawable.ic_person_32dp)
+                    )
+                    //here we use a customPrimaryDrawerItem we defined in our sample
+                    .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                        @Override
+                        public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                            switch (position) {
+                                case 1:
+                                    break;
 
+                                case 2:
+                                    break;
 
-        result = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
-                .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.drawer_library).withSelectedBackgroundAnimated(true).withIcon(R.drawable.library_music).withIdentifier(1),
-                        new PrimaryDrawerItem().withName(R.string.drawer_folders).withIcon(R.drawable.ic_menu_gallery).withIdentifier(2),
-                        new PrimaryDrawerItem().withName(R.string.drawer_playlist).withIcon(R.drawable.ic_playlist_play_black_24dp).withIdentifier(3),
-                        new PrimaryDrawerItem().withName(R.string.drawer_palaying_queue).withIcon(R.drawable.ic_queue_music_32dp).withIdentifier(4),
-                        new PrimaryDrawerItem().withName(R.string.drawer_nowplaying).withIcon(R.drawable.ic_play_circle_filled_32dp).withIdentifier(5),
+                                case 3:
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            startActivity(new Intent(MainActivity.this, PlayListList.class));
+                                            (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                        }
+                                    }, 250);
 
-                        new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName("Setting").withIcon(R.drawable.ic_settings_black_24dp),
-                        new SecondaryDrawerItem().withName("About us").withIcon(R.drawable.ic_person_32dp)
-                )
-                        //here we use a customPrimaryDrawerItem we defined in our sample
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        switch(position){
-                            case 1:
-                                break;
+                                    break;
 
-                            case 2:
-                                break;
+                                case 4:
+                                    break;
 
-                            case 3:
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        startActivity(new Intent(MainActivity.this,PlayListList.class));
-                                        (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
-                                    }
-                                },250);
+                                case 5:
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Intent playerIntent = new Intent(MainActivity.this, PlayerActivity.class);
+                                            //playerIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                            startActivity(playerIntent);
+                                            //startActivity(new Intent(context, com.example.thakur.randomplayer.PlayList.class));
+                                            (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
-                                break;
+                                        }
+                                    }, 250);
 
-                            case 4:
-                                break;
-
-                            case 5:
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Intent playerIntent = new Intent(MainActivity.this,PlayerActivity.class);
-                                        //playerIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                                        startActivity(playerIntent);
-                                        //startActivity(new Intent(context, com.example.thakur.randomplayer.PlayList.class));
-                                        (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
-
-                                    }
-                                },250);
-
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                })
-                .withSavedInstance(savedInstanceState)
-                .build();
+                    })
+                    .withSavedInstance(savedInstanceState)
+                    .build();
 
-
-
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -228,11 +223,8 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
 
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
 
 
         //setSongFragment();
@@ -240,15 +232,18 @@ public class MainActivity extends AppCompatActivity
         IntentFilter filter = new IntentFilter();
         filter.addAction(MusicService.RECIEVE_SONG);
 
-        registerReceiver(mReciever,filter);
+        registerReceiver(mReciever, filter);
 
         //Toast.makeText(this, ""+mService.getTitle(), Toast.LENGTH_SHORT).show();
 
         imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
+
+
+
+
+
     }
-
-
 
 
     @Override
@@ -256,26 +251,18 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
+        } else if (viewPager.getCurrentItem() != adapter.getItemId(0)) {
+            viewPager.setCurrentItem(0, true);
+        } else if (isSearchOpened) {
 
-        else if(viewPager.getCurrentItem() != adapter.getItemId(0)){
-            viewPager.setCurrentItem(0,true);
-        }
-
-        else if(isSearchOpened){
-            
             getSupportActionBar().setDisplayShowCustomEnabled(false);
             clearSearch();
             isSearchOpened = false;
-        }
-        else if(slidingUpPanelLayout!=null &&
-                (slidingUpPanelLayout.getPanelState()== SlidingUpPanelLayout.PanelState.EXPANDED
-                || slidingUpPanelLayout.getPanelState()== SlidingUpPanelLayout.PanelState.ANCHORED)){
+        } else if (slidingUpPanelLayout != null &&
+                (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED
+                        || slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
             slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        }
-
-
-        else {
+        } else {
 
             Intent startMain = new Intent(Intent.ACTION_MAIN);
             startMain.addCategory(Intent.CATEGORY_HOME);
@@ -293,7 +280,6 @@ public class MainActivity extends AppCompatActivity
         //searchView.setOnQueryTextListener(this);
 
 
-
         return true;
     }
 
@@ -308,7 +294,7 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
 
             case R.id.action_search:
                 handleSearch();
@@ -329,7 +315,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_playlist) {
 
-            startActivity(new Intent(this,PlayListList.class));
+            startActivity(new Intent(this, PlayListList.class));
 
 
         } else if (id == R.id.nav_folder) {
@@ -352,18 +338,17 @@ public class MainActivity extends AppCompatActivity
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Intent playerIntent = new Intent(MainActivity.this,PlayerActivity.class);
+                    Intent playerIntent = new Intent(MainActivity.this, PlayerActivity.class);
                     playerIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(playerIntent);
                     //startActivity(new Intent(context, com.example.thakur.randomplayer.PlayList.class));
-                    (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+                    (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
                 }
-            },200);
+            }, 200);
 
 
-                    //setNowPlaying();
-
+            //setNowPlaying();
 
 
         } else if (id == R.id.nav_setting) {
@@ -408,20 +393,13 @@ public class MainActivity extends AppCompatActivity
     }*/
 
 
-
-
-
-
-
-
     BroadcastReceiver mReciever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            Toast.makeText(MainActivity.this, "songPos = "+intent.getIntExtra("position",0), Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "songPos = " + intent.getIntExtra("position", 0), Toast.LENGTH_SHORT).show();
         }
     };
-
 
 
     ServiceConnection mConnection1 = new ServiceConnection() {
@@ -452,12 +430,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onStop() {
-        try{
-            if(isBound){
+        try {
+            if (isBound) {
                 unbindService(mConnection1);
                 isBound = false;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         super.onStop();
@@ -468,15 +446,15 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
     }
 
-    private void connectToService(){
-        if(!MusicService.isServiceRunning) {
+    private void connectToService() {
+        if (!MusicService.isServiceRunning) {
             Intent serviceIntent = new Intent(MainActivity.this, MusicService.class);
             bindService(serviceIntent, mConnection1, BIND_AUTO_CREATE);
             startService(serviceIntent);
         }
     }
 
-    private void filterList(){
+    private void filterList() {
 
     }
 
@@ -495,7 +473,7 @@ public class MainActivity extends AppCompatActivity
 
     private void setupWindowAnimations() {
         // Re-enter transition is executed when returning to this activity
-        if(Build.VERSION.SDK_INT>=21) {
+        if (Build.VERSION.SDK_INT >= 21) {
             Slide slideTransition = new Slide();
             slideTransition.setSlideEdge(Gravity.LEFT);
             slideTransition.setDuration(1000);
@@ -505,21 +483,19 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
-
-    private void searchAdapters(String searchQuery){
-        if(adapter.getItem(viewPager.getCurrentItem()) instanceof SongFragment){
+    private void searchAdapters(String searchQuery) {
+        if (adapter.getItem(viewPager.getCurrentItem()) instanceof SongFragment) {
             ((SongFragment) adapter.getItem(viewPager.getCurrentItem()))
                     .filter(String.valueOf(searchQuery));
-        }else if(adapter.getItem(viewPager.getCurrentItem()) instanceof AlbumListFragment){
+        } else if (adapter.getItem(viewPager.getCurrentItem()) instanceof AlbumListFragment) {
             ((AlbumListFragment) adapter.getItem(viewPager.getCurrentItem()))
                     .filter(String.valueOf(searchQuery));
         }
     }
 
-    protected void handleSearch(){
-        if(isSearchOpened){ //test if the search is open
-            if (getSupportActionBar() != null){
+    protected void handleSearch() {
+        if (isSearchOpened) { //test if the search is open
+            if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayShowCustomEnabled(false);
                 getSupportActionBar().setDisplayShowTitleEnabled(true);
             }
@@ -532,16 +508,16 @@ public class MainActivity extends AppCompatActivity
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
             //add the search icon in the action bar
-            mSearchAction.setIcon(ContextCompat.getDrawable(this,R.drawable.ic_search_white_48dp));
+            mSearchAction.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_search_white_48dp));
             clearSearch();
-            searchQuery="";
+            searchQuery = "";
             //findViewById(R.id.mini_player).setVisibility(View.VISIBLE);
 
             isSearchOpened = false;
         } else { //open the search entry
             //findViewById(R.id.mini_player).setVisibility(View.GONE);
 
-            if (getSupportActionBar() != null){
+            if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayShowCustomEnabled(true); //enable it to display a custom view
                 getSupportActionBar().setCustomView(R.layout.search_bar_layout);//add the custom view
                 getSupportActionBar().setDisplayShowTitleEnabled(false); //hide the title
@@ -560,7 +536,7 @@ public class MainActivity extends AppCompatActivity
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    searchQuery=String.valueOf(s).toLowerCase();
+                    searchQuery = String.valueOf(s).toLowerCase();
                     searchAdapters(searchQuery);
                     //Toast.makeText(MainActivity.this, ""+searchQuery, Toast.LENGTH_SHORT).show();
                 }
@@ -585,11 +561,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void clearSearch() {
-        if(viewPager.getCurrentItem()==0) {
+        if (viewPager.getCurrentItem() == 0) {
             ((SongFragment) adapter.getItem(viewPager.getCurrentItem()))
                     .filter("");
-        }
-        else if(viewPager.getCurrentItem()==1){
+        } else if (viewPager.getCurrentItem() == 1) {
             ((AlbumListFragment) adapter.getItem(viewPager.getCurrentItem()))
                     .filter("");
         }
@@ -599,7 +574,8 @@ public class MainActivity extends AppCompatActivity
     private void buildHeader(final boolean compact, final Bundle savedInstanceState) {
         ArrayList<Song> list = new ArrayList<>();
         list.addAll(ListSongs.getSongList(MainActivity.this));
-        String path = ListSongs.getAlbumArt(this,list.get(0).getAlbumId());
+        String path = ListSongs.getAlbumArt(this, list.get(0).getAlbumId());
+
 
 
 
@@ -613,7 +589,6 @@ public class MainActivity extends AppCompatActivity
         // Create the AccountHeader
 
     }
-
 
 
 }

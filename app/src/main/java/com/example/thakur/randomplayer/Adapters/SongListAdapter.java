@@ -20,6 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.example.thakur.randomplayer.AlbumContentList;
 import com.example.thakur.randomplayer.ItemClickListener;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
@@ -117,6 +120,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
 
             if(view == itemView){
                 Intent playerActivity = new Intent(context,PlayerActivity.class);
+                playerActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 
                 try {
                     MyApp.getMyService().setSongList(filteredDataItems);
@@ -148,9 +152,27 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                                 break;
 
                             case R.id.bittu_menu_deleteTrack:
-                                long[] ids = {filteredDataItems.get(getAdapterPosition()).getSongId()};
-                                Utils.deleteTracks(context,ids);
-                                notifyDataSetChanged();
+                                new MaterialDialog.Builder(context).iconRes(R.mipmap.ic_launcher)
+                                        .theme(Theme.DARK)
+                                        .title("Delete song")
+                                        .content("Do you really want to delete : "+filteredDataItems.get(getAdapterPosition()).getName())
+                                        .positiveText("Yes")
+                                        .negativeText("No")
+                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                long[] ids = {filteredDataItems.get(getAdapterPosition()).getSongId()};
+                                                Utils.deleteTracks(context,ids);
+                                                refresh(ListSongs.getSongList(context));
+                                            }
+                                        })
+                                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                dialog.dismiss();
+                                            }
+                                        }).show();
+
                                 break;
 
                             case R.id.bittu_menu_setAsRintone:
@@ -253,6 +275,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
     public void refresh(ArrayList<Song> list){
         filteredDataItems.clear();
         filteredDataItems.addAll(list);
+        notifyDataSetChanged();
     }
 
 

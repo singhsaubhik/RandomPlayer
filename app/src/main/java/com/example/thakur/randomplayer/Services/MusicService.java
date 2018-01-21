@@ -169,7 +169,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         //audioManager.requestAudioFocus(this,AudioManager.STREAM_MUSIC,AudioManager.AUDIOFOCUS_GAIN);
         pref = new UserPreferenceHandler(getApplicationContext());
 
-        songPos = (int) pref.getLastPlayed();
+        //songPos = (int) pref.getLastPlayed();
         //mPlayer.getmPlayer().seekTo((int) pref.getLastPlayedDur());
 
         phoneStateListener = new PhoneStateListener() {
@@ -254,7 +254,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         //mPlayer.playSong(songPos);
         //stopSelf(startId);
 
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
 
@@ -300,8 +300,8 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         unregisterReceiver(playReceiver);
         setShakeListener(false);
 
-        pref.setLastPlayed(songPos);
-        pref.setLastplayedDur(mPlayer.getmPlayer().getCurrentPosition());
+        //pref.setLastPlayed(songPos);
+        //ref.setLastplayedDur(mPlayer.getmPlayer().getCurrentPosition());
 
         super.onDestroy();
     }

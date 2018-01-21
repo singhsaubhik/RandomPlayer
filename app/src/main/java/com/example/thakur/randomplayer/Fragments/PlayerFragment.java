@@ -1,13 +1,12 @@
 package com.example.thakur.randomplayer.Fragments;
 
-import android.app.Activity;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
+
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,9 +15,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,29 +24,33 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
 import com.eightbitlab.supportrenderscriptblur.SupportRenderScriptBlur;
 import com.example.thakur.randomplayer.Adapters.DiscreteViewAdapter;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.MyApp;
-import com.example.thakur.randomplayer.PlayerActivity;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Services.MusicService;
 import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
-import com.example.thakur.randomplayer.Utilities.UtilityFun;
+import com.example.thakur.randomplayer.Utilities.Utils;
 import com.example.thakur.randomplayer.items.Song;
 
+
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView;
+import com.yarolegovich.discretescrollview.DiscreteScrollView;
+import com.yarolegovich.discretescrollview.InfiniteScrollAdapter;
+import com.yarolegovich.discretescrollview.Orientation;
+import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import eightbitlab.com.blurview.BlurView;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
-
-import static android.os.Build.VERSION.SDK;
 
 /**
  * Created by Thakur on 05-10-2017.
@@ -67,7 +69,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener , C
     CircularSeekBar seekBar;
 
     //discrete recyclerview
-    RecyclerView discrete;
+    MultiSnapRecyclerView discrete;
 
     private final String REC =  "com.example.thakur.randomplayer.Services.playAllSongs";
     public static final String trackChange = "com.example.thakur.randomplayer.Services.trackchangelistener";
@@ -232,10 +234,19 @@ public class PlayerFragment extends Fragment implements View.OnClickListener , C
         height = displayMetrics.heightPixels;
         width = displayMetrics.widthPixels;
 
+        DiscreteViewAdapter adapter = new DiscreteViewAdapter(songList);
+
         discrete = view.findViewById(R.id.discrete_recycler);
         LinearLayoutManager manager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
         discrete.setLayoutManager(manager);
-        discrete.setAdapter(new DiscreteViewAdapter(songList));
+       // InfiniteScrollAdapter infiniteAdapter = InfiniteScrollAdapter.wrap(adapter);
+        discrete.setAdapter(adapter);
+
+
+
+
+
+
 
 
 
@@ -289,16 +300,18 @@ public class PlayerFragment extends Fragment implements View.OnClickListener , C
 
         String path = ListSongs.getAlbumArt(context, songList.get(pos).getAlbumId());
 
-        if(isPathValid(path)) {
+        if(Utils.isPathValid(path)) {
 
-            Picasso.with(context)
-                    .load(new File(path))
+            Glide.with(this).load(new File(path))
+                    .apply(new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888))
                     .into(image);
-
-
-            Picasso.with(context)
+           /*Picasso.with(context)
                     .load(new File(path))
-                    .fit()
+                    .into(image);*/
+
+
+            Glide.with(this).load(new File(path))
+                    .apply(new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888).centerCrop())
                     .into(imageView);
         }
 
@@ -308,12 +321,16 @@ public class PlayerFragment extends Fragment implements View.OnClickListener , C
             //Toast.makeText(context, "Null album art", Toast.LENGTH_SHORT).show();
 
 
-            Picasso.with(context).load(R.drawable.defualt_art2)
-                    .fit()
+            Glide.with(this).load(R.drawable.defualt_art2)
+                    .apply(new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888))
                     .into(image);
+           /*Picasso.with(context)
+                    .load(new File(path))
+                    .into(image);*/
 
-            Picasso.with(context).load(R.drawable.defualt_art2)
-                    .fit()
+
+            Glide.with(this).load(R.drawable.defualt_art2)
+                    .apply(new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888))
                     .into(imageView);
             //imageView.setBackgroundColor(getResources().getColor(R.color.color400));
 
@@ -322,7 +339,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener , C
         }
 
         try{
-            discrete.scrollToPosition(pos);
+            discrete.scrollToPosition(mService.getSongPos());
         }catch (Exception e){
             Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -399,6 +416,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener , C
                 if (MusicService.isPlaying) {
                     mService.playPause();
                     updateUI(mService.getSongPos());
+                    Log.v("TAG","Playing");
 
                 } else {
                     mService.playPause();
@@ -589,18 +607,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener , C
         }
     }
 
-    private boolean isPathValid(String path){
-        if(path!=null && isFileExist(path)){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
 
-    private boolean isFileExist(String path){
-        return new File(path).exists();
-    }
 
 
 }

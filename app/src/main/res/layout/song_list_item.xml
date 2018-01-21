@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -57,7 +58,7 @@
         android:layout_width="20dp"
         android:layout_height="70dp"
         android:background="?android:selectableItemBackground"
-        android:src="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
+        app:srcCompat="@drawable/ic_more_vert_black_24dp"
         />
 
 

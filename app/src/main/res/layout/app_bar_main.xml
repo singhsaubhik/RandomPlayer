@@ -8,18 +8,33 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <!--<android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingtoolbarlayout_main"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:persistentDrawingCache="none"
+            >-->
+
+
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/action_bar_size"
+                android:minHeight="@dimen/action_bar_size"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:layout_collapseMode="pin"
+                />
+       <!--</android.support.design.widget.CollapsingToolbarLayout>-->
 
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include layout="@layout/content_main"
+        />
 </android.support.design.widget.CoordinatorLayout>

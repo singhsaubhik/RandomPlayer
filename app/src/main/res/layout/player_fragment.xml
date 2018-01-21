@@ -223,14 +223,25 @@
 
 
 </eightbitlab.com.blurview.BlurView>
-          <com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView
+         <!-- <com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView
               android:id="@+id/discrete_recycler"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               app:msrv_gravity="start"
               app:msrv_snap_count="4"
               android:layout_below="@id/play_layout"
+              />-->
+
+          <com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView
+              android:id="@+id/discrete_recycler"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_below="@id/play_layout"
+              app:msrv_snap_count="3"
               />
+
+
+
 
       </RelativeLayout>
 
