@@ -39,7 +39,7 @@
         android:layout_margin="16dp"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_shuffle_white_36dp" />
+        app:srcCompat="@drawable/ic_shuffle_36dp" />
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="350dp"

@@ -1,5 +1,6 @@
 package com.example.thakur.randomplayer;
 
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -44,6 +45,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.thakur.randomplayer.Adapters.ViewPagerAdapter;
 import com.example.thakur.randomplayer.Fragments.*;
+import com.example.thakur.randomplayer.Fragments.NowPlayingScreen.PlayerScreen2;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.Services.MusicService;
 import com.example.thakur.randomplayer.Utilities.Utils;
@@ -75,7 +77,7 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener,SlidingUpPanelLayout.PanelSlideListener {
 
 
     // ContextMenuDialogFragment mMenuDialogFragment = new ContextMenuDialogFragment();
@@ -114,8 +116,8 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-        list = ListSongs.getSongList(MainActivity.this);
+        slidingUpPanelLayout =  findViewById(R.id.sliding_layout);
+        //list = ListSongs.getSongList(MainActivity.this);
 
         nav_album_art = (ImageView) findViewById(R.id.nav_album_art);
 
@@ -139,7 +141,25 @@ public class MainActivity extends AppCompatActivity
 
         fragmentManager = getSupportFragmentManager();
 
-        //initMenuFragment();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.container_miniplayer,new MiniPlayer());
+                ft.commit();
+            }
+        },800);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.container_nowPlaying,new PlayerScreen2());
+                ft.commit();
+            }
+        },800);
+
+
 
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
@@ -148,6 +168,7 @@ public class MainActivity extends AppCompatActivity
 
 
         try {
+
             buildHeader(false, savedInstanceState);
 
 
@@ -251,7 +272,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (viewPager.getCurrentItem() != adapter.getItemId(0)) {
+        }
+        else if(getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED){
+            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        }
+        else if (viewPager.getCurrentItem() != adapter.getItemId(0)) {
             viewPager.setCurrentItem(0, true);
         } else if (isSearchOpened) {
 
@@ -574,11 +599,7 @@ public class MainActivity extends AppCompatActivity
     private void buildHeader(final boolean compact, final Bundle savedInstanceState) {
         ArrayList<Song> list = new ArrayList<>();
         list.addAll(ListSongs.getSongList(MainActivity.this));
-        String path = ListSongs.getAlbumArt(this, list.get(0).getAlbumId());
-
-
-
-
+        String path = ListSongs.getAlbumArt(MainActivity.this, list.get(0).getAlbumId());
         headerResult = new AccountHeaderBuilder()
                 .withActivity(MainActivity.this)
                 .withHeaderBackground(new ImageHolder(path))
@@ -586,9 +607,57 @@ public class MainActivity extends AppCompatActivity
                 .withSavedInstance(savedInstanceState)
                 .build();
 
+
+
+
+
+
+
         // Create the AccountHeader
 
     }
 
+
+    @Override
+    public void onPanelSlide(View panel, float slideOffset) {
+
+    }
+
+    @Override
+    public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+
+        switch (newState) {
+            case COLLAPSED:
+                onPanelCollapsed(panel);
+                break;
+            case EXPANDED:
+                onPanelExpanded(panel);
+                break;
+            case ANCHORED:
+                collapsePanel(); // this fixes a bug where the panel would get stuck for some reason
+                break;
+        }
+    }
+
+    private void onPanelCollapsed(View panel) {
+    }
+
+    private void onPanelExpanded(View panel) {
+        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+    }
+
+    private void collapsePanel() {
+        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+    }
+
+    public SlidingUpPanelLayout.PanelState getPanelState() {
+        return slidingUpPanelLayout == null ? null : slidingUpPanelLayout.getPanelState();
+    }
+
+
+
+    public void expandPanel() {
+        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+    }
 
 }

@@ -56,17 +56,16 @@
         android:focusable="false"
         android:orientation="horizontal">
 
-        <fragment
-
-            android:id="@+id/fragment_mini_player"
+        <FrameLayout
+            android:id="@+id/container_miniplayer"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            class="com.example.thakur.randomplayer.MiniPlayer"
-            />
+            android:layout_height="60dp">
 
-        <ImageView
-            android:layout_below="@+id/fragment_mini_player"
-            android:src="@color/accent"
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/container_nowPlaying"
+            android:layout_below="@+id/container_miniplayer"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

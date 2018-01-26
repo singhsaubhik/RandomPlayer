@@ -3,12 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="#00c5f1"
     tools:context="com.example.thakur.randomplayer.MiniPlayer">
 
 
     <ImageView
-        android:src="@color/primary_dark"
+
         android:id="@+id/second_player_screen_image"
         android:layout_width="70dp"
         android:layout_height="match_parent" />
@@ -27,10 +26,12 @@
         android:layout_marginStart="70dp" />
 
     <ImageView
+        android:background="@color/primary"
+        android:layout_marginTop="9dp"
         android:layout_marginLeft="310dp"
-        android:src="@drawable/ic_play_arrow_white2_24dp"
+        app:srcCompat="@drawable/ic_play_arrow_white2_24dp"
         android:id="@+id/second_player_screen_playpause"
-        android:layout_width="60dp"
-        android:layout_height="60dp" />
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
 
 </FrameLayout>

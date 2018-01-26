@@ -636,6 +636,10 @@ that this copyright notice remain intact.</string>
     <string name="drawer_playlist">Playlist</string>
     <string name="drawer_palaying_queue">Playing Queue</string>
     <string name="drawer_nowplaying">Now Playing</string>
+    <string name="permission_details_title">We need permissions</string>
+    <string name="permission_details_content">This app needs permission to show all your favorite music.</string>
+    <string name="phone_stat_perm_required">Phone state permission required</string>
+    <string name="storage_perm_required">Storage permission required</string>
 
 
 </resources>

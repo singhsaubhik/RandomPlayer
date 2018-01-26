@@ -350,11 +350,11 @@ public class PlayerFragment extends Fragment implements View.OnClickListener , C
         //tv.setText("" + songList.get(pos).getDuration());
 
         if(mService.isReallyPlaying()){
-            playpause.setImageResource(R.drawable.ic_pause_white_36dp);
+            playpause.setImageResource(R.drawable.ic_pause_white_24dp);
             stopRepeating();
             updateSeekbar();
         }else{
-            playpause.setImageResource(R.drawable.ic_play_arrow_white_36dp);
+            playpause.setImageResource(R.drawable.ic_play_arrow_white2_24dp);
             stopRepeating();
         }
 
@@ -362,17 +362,17 @@ public class PlayerFragment extends Fragment implements View.OnClickListener , C
             shuffle.setImageResource(R.drawable.ic_shuffle_selected_36dp);
         }
         else{
-            shuffle.setImageResource(R.drawable.ic_shuffle_white_36dp);
+            shuffle.setImageResource(R.drawable.ic_shuffle_36dp);
         }
 
         if(pref.isRepeatOneEnabled()){
-            repeat.setImageResource(R.drawable.ic_repeat_one_selecred_36dp);
+            repeat.setImageResource(R.drawable.ic_repeat_one_24dp);
         }
         else if(pref.isRepeatAllEnabled()){
-            repeat.setImageResource(R.drawable.ic_repeat_all_36dp);
+            repeat.setImageResource(R.drawable.ic_repeat_selected_24dp);
         }
         else{
-            repeat.setImageResource(R.drawable.ic_repeat_black_36dp);
+            repeat.setImageResource(R.drawable.ic_repeat_24dp);
         }
 
 
@@ -510,21 +510,21 @@ public class PlayerFragment extends Fragment implements View.OnClickListener , C
         if(!pref.isRepeatEnabled())
         {
             pref.setRepeatAllEnable(true);
-            repeat.setImageResource(R.drawable.ic_repeat_all_36dp);
+            repeat.setImageResource(R.drawable.ic_repeat_24dp);
             pref.setShuffleEnabled(false);
             //updateUI(mService.getSongPos());
         }
         else if(pref.isRepeatAllEnabled()){
             pref.setRepeatOneEnable(true);
             pref.setRepeatAllEnable(false);
-            repeat.setImageResource(R.drawable.ic_repeat_one_selecred_36dp);
+            repeat.setImageResource(R.drawable.ic_repeat_selected_24dp);
             pref.setShuffleEnabled(false);
             //updateUI(mService.getSongPos());
         }
         else{
             pref.setRepeatAllEnable(false);
             pref.setRepeatOneEnable(false);
-            repeat.setImageResource(R.drawable.ic_repeat_black_36dp);
+            repeat.setImageResource(R.drawable.ic_repeat_24dp);
         }
     }
 
@@ -538,7 +538,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener , C
         }
         else{
             pref.setShuffleEnabled(false);
-            shuffle.setImageResource(R.drawable.ic_shuffle_white_36dp);
+            shuffle.setImageResource(R.drawable.ic_shuffle_36dp);
             //updateUI(mService.getSongPos());
         }
     }

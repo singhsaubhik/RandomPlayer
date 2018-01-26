@@ -369,6 +369,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         updateNotificationPlayer();
 
 
+
     }
 
     public void handlePrevious() {
@@ -588,13 +589,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         return mPlayer.getmPlayer().isPlaying();
     }
 
-    public String getSongTitle(){
-        return songList.get(songPos).getName();
-    }
 
-    public String getArtistName(){
-        return songList.get(songPos).getArtist();
-    }
 
 
     public void setShakeListener(boolean status){
