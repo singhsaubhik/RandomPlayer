@@ -640,6 +640,14 @@ that this copyright notice remain intact.</string>
     <string name="permission_details_content">This app needs permission to show all your favorite music.</string>
     <string name="phone_stat_perm_required">Phone state permission required</string>
     <string name="storage_perm_required">Storage permission required</string>
+    <string name="playlist_favorites">Favorite Playlist</string>
+    <string name="playlist_last_added">Last Added</string>
+    <string name="unplayable_file">File corrupted</string>
+    <string name="playlist_is_empty">Playlist empty</string>
+    <string name="audio_focus_denied">Audio focus denied</string>
+    <string name="added_title_to_playing_queue">Added Song to queue</string>
+    <string name="added_x_titles_to_playing_queue">added x to playing queue</string>
+    <string name="added_x_titles_to_playing_queu">added</string>
 
 
 </resources>

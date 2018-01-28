@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
+import com.example.thakur.randomplayer.MiniPlayer;
 import com.example.thakur.randomplayer.MyApp;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Services.MusicService;
@@ -37,21 +39,26 @@ import com.github.clans.fab.FloatingActionButton;
 
 import java.io.File;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PlayerScreen2 extends Fragment implements View.OnClickListener,SeekBar.OnSeekBarChangeListener{
+public class PlayerScreen2 extends Fragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
     private static final String trackChange = "com.example.thakur.randomplayer.Services.trackchangelistener";
+    private static final String PLAY_PAUSE = "com.example.thakur.randomplayer.Services.playpause";
 
     private Song song;
     private ImageView album_art, blur_album_art, prev, next;
     private MusicService service;
     private Activity activity;
     private RelativeLayout control_bg;
-    private FloatingActionButton playpause;
+    private android.support.design.widget.FloatingActionButton playpause;
     private SeekBar seekBar;
+    private Handler mHandler = new Handler();
+    private ArrayList<Song> songList = new ArrayList<>();
 
     public PlayerScreen2() {
         // Required empty public constructor
@@ -60,28 +67,27 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener,Seek
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (Build.VERSION.SDK_INT >= 21) {
-            try {
-                getActivity().getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
-            }catch (Exception e){
-                e.printStackTrace();
-            }
 
-        }
         return inflater.inflate(R.layout.fragment_player_screen2, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         try {
             service = MyApp.getMyService();
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+
         }
-
-
         activity = getActivity();
+        songList = ListSongs.getSongList(activity);
+
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(trackChange);
+        filter.addAction(PLAY_PAUSE);
+        activity.registerReceiver(mReciver, filter);
 
         //Images
         album_art = view.findViewById(R.id.album_art_screen2);
@@ -93,6 +99,8 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener,Seek
         next = view.findViewById(R.id.next_screen2);
         prev = view.findViewById(R.id.prev_screen2);
         seekBar = view.findViewById(R.id.seekbar_screen2);
+        seekBar.setProgress(0);
+        seekBar.setMax(100);
 
 
         //Controls Onclicks
@@ -101,16 +109,18 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener,Seek
         prev.setOnClickListener(this);
         seekBar.setOnSeekBarChangeListener(this);
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(trackChange);
-        activity.registerReceiver(mReciver, filter);
 
-        updateUI(service.getCurrentSong(), service.isReallyPlaying(),0);
+        if(service!=null) {
+            updateUI(service.getSongPos(), service.isReallyPlaying());
+        }else{
+            updateUI(service.getSongPos(), service.isReallyPlaying());
+        }
+
 
     }
 
-    private void updateUI(Song song, boolean isPlaying,long progress) {
-        String path = ListSongs.getAlbumArt(activity, song.getAlbumId());
+    private void updateUI(int pos, boolean isPaying) {
+        String path = ListSongs.getAlbumArt(activity, songList.get(pos).getAlbumId());
 
         if (Utils.isPathValid(path)) {
             Glide.with(this).asBitmap().load(new File(path))
@@ -128,7 +138,7 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener,Seek
                                     Palette.Swatch s = palette.getDarkVibrantSwatch();
                                     try {
                                         control_bg.setBackgroundColor(s.getRgb());
-                                    }catch (Exception e){
+                                    } catch (Exception e) {
                                         control_bg.setBackgroundColor(activity.getResources().getColor(R.color.primary_dark));
                                     }
                                 }
@@ -139,17 +149,33 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener,Seek
                     });
 
 
-
         } else {
             Glide.with(this).load(R.drawable.defualt_art2)
                     .into(album_art);
+        }
+
+        seekBar.setProgress(service.getCurrentPosition());
+        seekBar.setMax((int) songList.get(pos).getDurationLong());
+        //seekBar.setProgress(mService.getCurrentPosition());
+        updatePlayPause(isPaying);
+
+
+    }
+
+    private void updatePlayPause(boolean isPlaying) {
+        if (!isPlaying) {
+            playpause.setImageResource(R.drawable.ic_play_arrow_white2_24dp);
+            stopRepeating();
+        } else {
+            playpause.setImageResource(R.drawable.ic_pause_white_24dp);
+            updateSeekbar(isPlaying);
         }
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        updateUI(service.getCurrentSong(), service.isReallyPlaying(),0);
+        //updateUI(service.g, service.isReallyPlaying());
     }
 
     BroadcastReceiver mReciver = new BroadcastReceiver() {
@@ -157,7 +183,11 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener,Seek
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case trackChange:
-                    updateUI(service.getCurrentSong(), service.isReallyPlaying(),0);
+                    updateUI(service.getSongPos(), service.isReallyPlaying());
+                    break;
+
+                case PLAY_PAUSE:
+                    updatePlayPause(service.isReallyPlaying());
                     break;
             }
         }
@@ -165,7 +195,20 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener,Seek
 
     @Override
     public void onClick(View view) {
+        if (view == playpause) {
 
+            service.playPause();
+            updatePlayPause(service.isReallyPlaying());
+            activity.sendBroadcast(new Intent().setAction(MiniPlayer.miniplyerStatusChange));
+        } else if (view == next) {
+            service.handleNextSong();
+            updateUI(service.getSongPos(),service.isReallyPlaying());
+            activity.sendBroadcast(new Intent().setAction(MiniPlayer.miniPlayerTrackChange));
+        } else if (view == prev) {
+            service.handlePrevious();
+            updateUI(service.getSongPos(), service.isReallyPlaying());
+            activity.sendBroadcast(new Intent().setAction(MiniPlayer.miniPlayerTrackChange));
+        }
     }
 
     @Override
@@ -180,6 +223,43 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener,Seek
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
+        if (service != null) {
+            service.handleSeek(seekBar.getProgress());
+            //seekBar.setProgress(seekBar.getProgress());
+        }
+    }
 
+
+    public void updateSeekbar(final boolean isPlaying) {
+        //seekBar.postDelayed(runnable, 1000);
+        stopRepeating();
+        mHandler.postDelayed(runnable, 1000);
+
+    }
+
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            {
+                if (service.isReallyPlaying()) {
+                    seekBar.setProgress(seekBar.getProgress() + 1000);
+                    //tv.setText(songList.get(mService.getSongPos()).getFormatedTime((long)seekBar.getProgress()));
+                    //sec++;
+                    mHandler.postDelayed(this, 1000);
+                    //seekBar.postDelayed(this,1000);
+                }
+            }
+        }
+    };
+
+    private void stopRepeating() {
+        mHandler.removeCallbacks(runnable);
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        activity.unregisterReceiver(mReciver);
     }
 }

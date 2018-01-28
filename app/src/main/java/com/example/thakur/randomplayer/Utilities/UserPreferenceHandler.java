@@ -19,6 +19,8 @@ public class UserPreferenceHandler {
     private static final String lastplayed = "lastplayedsong";
     private static final String lastplayedDur = "lastplayedsongDuration";
 
+    private final boolean gapless = false;
+
     private static final String default_playlist_created = "defaultplaylistcreated";
 
     private final SharedPreferences shp;
@@ -121,5 +123,9 @@ public class UserPreferenceHandler {
 
     public boolean getDefaultPlaylistCreated(){
         return shp.getBoolean(default_playlist_created,false);
+    }
+
+    public boolean gaplessPlayback() {
+        return gapless;
     }
 }

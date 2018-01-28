@@ -88,4 +88,5 @@
     <dimen name="pa_button_margin">3dp</dimen>
 
     <dimen name="fl_stub_margin">5dp</dimen>
+    <dimen name="appBarTopMargin">0</dimen>
 </resources>

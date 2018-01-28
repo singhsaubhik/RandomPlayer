@@ -1,16 +1,12 @@
 package com.example.thakur.randomplayer;
 
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,8 +24,6 @@ import com.example.thakur.randomplayer.items.Song;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import static android.content.Context.BIND_AUTO_CREATE;
 
 
 /**
@@ -51,11 +45,8 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
     }
 
     public static final String miniPlayerTrackChange = "miniPlayerTrachChange";
+    public static final String miniplyerStatusChange = "miniplyerPlaypuaseStatusChange";
     private static final String trackchange = "com.example.thakur.randomplayer.Services.trackchangelistener";
-
-
-
-
 
 
     @Override
@@ -63,15 +54,20 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         IntentFilter filter = new IntentFilter();
         filter.addAction(trackchange);
+        filter.addAction(miniPlayerTrackChange);
+        filter.addAction(miniplyerStatusChange);
 
-
-        getActivity().registerReceiver(mReciever,filter);
+        try {
+            getActivity().registerReceiver(mReciever, filter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        list = ListSongs.getSongList(getActivity());
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
 
 
         View view = inflater.inflate(R.layout.fragment_mini_player, container, false);
@@ -82,17 +78,26 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         image = view.findViewById(R.id.second_player_screen_image);
         title = view.findViewById(R.id.second_player_screen_title);
         playpause = view.findViewById(R.id.second_player_screen_playpause);
-        //connectToService();
-        mService = MyApp.getMyService();
         playpause.setOnClickListener(this);
 
-        updateUI(mService.getCurrentSong(),mService.isReallyPlaying());
+        try {
+            mService = MyApp.getMyService();
+        } catch (Exception e) {
+
+        }
+
+       if(mService!=null) {
+           updateUI(mService.getSongPos(),mService.isReallyPlaying());
+       }else{
+           updateUI(0,false);
+       }
 
 
-        super.onViewCreated(view, savedInstanceState);
+
     }
 
 
@@ -105,9 +110,9 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    updateUI(mService.getCurrentSong(),mService.isReallyPlaying());
+                    updateUI(MyApp.getMyService().getSongPos(), MyApp.getMyService().isReallyPlaying());
                 }
-            },100);
+            }, 100);
 
 
         } catch (Exception e) {
@@ -116,13 +121,12 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
     }
 
 
-
-    private void updateUI(Song song , boolean isPalying){
-        String path = ListSongs.getAlbumArt(context, song.getAlbumId());
+    private void updateUI(int pos, boolean isPalying) {
+        String path = ListSongs.getAlbumArt(context, list.get(pos).getAlbumId());
         try {
             Glide.with(this).load(new File(path))
                     .into(image);
-            title.setText(""+song.getName());
+            title.setText("" + list.get(pos).getName());
         } catch (Exception e) {
             Toast.makeText(context, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -132,11 +136,11 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
 
     }
 
-    private void updatePlayPause(boolean isPlaying){
-        if(isPlaying){
+    private void updatePlayPause(boolean isPlaying) {
+        if (isPlaying) {
             playpause.setImageResource(R.drawable.ic_pause_white_24dp);
 
-        }else{
+        } else {
             playpause.setImageResource(R.drawable.ic_play_arrow_white2_24dp);
 
         }
@@ -159,10 +163,19 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
     BroadcastReceiver mReciever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            switch (intent.getAction()){
+            switch (intent.getAction()) {
                 case trackchange:
-                    updateUI(mService.getCurrentSong(),mService.isReallyPlaying());
+                    updateUI(MyApp.getMyService().getSongPos(), MyApp.getMyService().isReallyPlaying());
                     break;
+
+                case miniPlayerTrackChange:
+                    updateUI(MyApp.getMyService().getSongPos(), MyApp.getMyService().isReallyPlaying());
+                    break;
+
+                case miniplyerStatusChange:
+                    updatePlayPause(MyApp.getMyService().isReallyPlaying());
+                    break;
+
 
             }
         }

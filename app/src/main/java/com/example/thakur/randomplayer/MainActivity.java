@@ -111,12 +111,21 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= 21) {
+            try {
+
+                getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
         setupWindowAnimations();
         connectToService();
 
 
 
-        slidingUpPanelLayout =  findViewById(R.id.sliding_layout);
+
         //list = ListSongs.getSongList(MainActivity.this);
 
         nav_album_art = (ImageView) findViewById(R.id.nav_album_art);
@@ -131,34 +140,16 @@ public class MainActivity extends AppCompatActivity
         adapter.add(new AlbumListFragment(), "AlbumList");
         adapter.add(new ArtistList(), "ArtistList");
 
-
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         SmartTabLayout viewpagertab = (SmartTabLayout) findViewById(R.id.viewpagertab);
         viewPager.setAdapter(adapter);
-
         viewpagertab.setViewPager(viewPager);
 
 
-        fragmentManager = getSupportFragmentManager();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.container_miniplayer,new MiniPlayer());
-                ft.commit();
-            }
-        },800);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.container_nowPlaying,new PlayerScreen2());
-                ft.commit();
-            }
-        },800);
 
+        slidingUpPanelLayout =  findViewById(R.id.sliding_layout);
 
 
 
@@ -599,7 +590,12 @@ public class MainActivity extends AppCompatActivity
     private void buildHeader(final boolean compact, final Bundle savedInstanceState) {
         ArrayList<Song> list = new ArrayList<>();
         list.addAll(ListSongs.getSongList(MainActivity.this));
-        String path = ListSongs.getAlbumArt(MainActivity.this, list.get(0).getAlbumId());
+        String path = null;
+        try {
+            path = ListSongs.getAlbumArt(MainActivity.this, list.get(0).getAlbumId());
+        }catch (Exception e){
+            path = ListSongs.getAlbumArt(MainActivity.this,mService.getCurrentSong().getAlbumId());
+        }
         headerResult = new AccountHeaderBuilder()
                 .withActivity(MainActivity.this)
                 .withHeaderBackground(new ImageHolder(path))

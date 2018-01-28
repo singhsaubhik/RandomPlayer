@@ -5,21 +5,64 @@ package com.example.thakur.randomplayer.items;
  */
 public class Song {
 
+    public static final Song EMPTY_SONG = new Song(-1,-1,"","","","",-1);
+
     private long songId, albumId, dateAdded;
     private int artist_id;
     private String name;
     private String artist;
     private String path;
     private String albumName;
-   // private String durationString;
+    private int track_number;
+    private long date_modified;
+
+    public int getTrack_number() {
+        return track_number;
+    }
+
+    public long getDate_modified() {
+        return date_modified;
+    }
+
+    public Song(long songId, long albumId, long dateAdded, int artist_id, String name, String artist, String path, String albumName, int track_number, long date_modified, long duration) {
+
+        this.songId = songId;
+        this.albumId = albumId;
+        this.dateAdded = dateAdded;
+        this.artist_id = artist_id;
+        this.name = name;
+        this.artist = artist;
+        this.path = path;
+        this.albumName = albumName;
+        this.track_number = track_number;
+        this.date_modified = date_modified;
+        this.duration = duration;
+    }
+
+    public Song(long songId, long albumId, long dateAdded, int artist_id, String name, String artist, String path, String albumName, int track_number, long duration) {
+
+        this.songId = songId;
+        this.albumId = albumId;
+        this.dateAdded = dateAdded;
+        this.artist_id = artist_id;
+        this.name = name;
+        this.artist = artist;
+        this.path = path;
+        this.albumName = albumName;
+        this.track_number = track_number;
+        this.duration = duration;
+    }
+
+    // private String durationString;
     private long duration;
     private boolean fav;
+
 
     public Song() {
         super();
     }
 
-   /* public Song(long albumId, int artist_id, String name, String artist, String path, String albumName, long duration) {
+    public Song(long albumId, int artist_id, String name, String artist, String path, String albumName, long duration) {
         this.albumId = albumId;
         this.artist_id = artist_id;
         this.name = name;
@@ -39,7 +82,7 @@ public class Song {
         this.artist = artist;
         this.albumName = albumName;
         this.duration = duration;
-    }*/
+    }
 
     public Song(long songId, String name, String artist,
                 String path, boolean fav, long albumId,
