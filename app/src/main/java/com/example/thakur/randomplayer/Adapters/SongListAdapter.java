@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -24,12 +25,14 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.example.thakur.randomplayer.AlbumContentList;
+import com.example.thakur.randomplayer.Dialogs.AddPlaylistDialog;
 import com.example.thakur.randomplayer.ItemClickListener;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.MainActivity;
 import com.example.thakur.randomplayer.MyApp;
 import com.example.thakur.randomplayer.PlayerActivity;
 import com.example.thakur.randomplayer.R;
+import com.example.thakur.randomplayer.Services.MusicPlayerRemote;
 import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
 import com.example.thakur.randomplayer.Utilities.Utils;
 import com.example.thakur.randomplayer.items.Song;
@@ -48,26 +51,26 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- * Created by Thakur on 22-09-2017.
+ * Created by Thakur on 22-09-2017
  */
 
 public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyViewHolder> implements FastScrollRecyclerView.SectionedAdapter,PopupMenu.OnMenuItemClickListener{
 
 
 
-    private Context context;
+    private AppCompatActivity context;
     PlayerActivity mplayerActivity = new PlayerActivity();
 
-    ArrayList<Song> songList = new ArrayList<>();
-    ArrayList<Song> reference = new ArrayList<>();
-    ArrayList<Song> filteredDataItems = new ArrayList<>();
+    private ArrayList<Song> songList = new ArrayList<>();
+    private ArrayList<Song> reference = new ArrayList<>();
+    private ArrayList<Song> filteredDataItems = new ArrayList<>();
 
 
     UserPreferenceHandler pref;
 
     public SongListAdapter(Context context ,ArrayList<Song> arrayList)
     {
-        this.context=context;
+        this.context= (AppCompatActivity) context;
         this.songList = arrayList;
 
         filteredDataItems.addAll(songList);
@@ -125,8 +128,11 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                 try {
                     MyApp.getMyService().setSongList(filteredDataItems);
                     MyApp.getMyService().setSongPos(getAdapterPosition());
+                    //
                     MyApp.getMyService().playAll();
+                    //MusicPlayerRemote.openQueue(filteredDataItems,getAdapterPosition(),true);
                     //Toast.makeText(context, "Played by ! songlist", Toast.LENGTH_SHORT).show();
+                    //MyApp.getMyService().saveQueue(filteredDataItems,getAdapterPosition(),true);
 
 
                     //playerActivity.putExtra("pos",position);
@@ -188,6 +194,10 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
 
                             case R.id.bittu_menu_showInfo:
                                 Utils.showSongDetailDialog(context,filteredDataItems,getAdapterPosition());
+                                break;
+
+                            case R.id.bittu_menu_addtoplaylist:
+                                AddPlaylistDialog.newInstance(filteredDataItems.get(getAdapterPosition())).show(context.getSupportFragmentManager(), "ADD_PLAYLIST");
                                 break;
                         }
                         return true;

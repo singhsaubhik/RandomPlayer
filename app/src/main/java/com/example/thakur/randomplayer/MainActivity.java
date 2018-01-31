@@ -44,9 +44,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.thakur.randomplayer.Adapters.ViewPagerAdapter;
+import com.example.thakur.randomplayer.BaseActivity.BaseServiceActivity;
 import com.example.thakur.randomplayer.Fragments.*;
 import com.example.thakur.randomplayer.Fragments.NowPlayingScreen.PlayerScreen2;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
+import com.example.thakur.randomplayer.Loaders.TopAndRecentlyPlayedTracksLoader;
 import com.example.thakur.randomplayer.Services.MusicService;
 import com.example.thakur.randomplayer.Utilities.Utils;
 import com.example.thakur.randomplayer.items.Song;
@@ -74,12 +76,14 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseServiceActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener,SlidingUpPanelLayout.PanelSlideListener {
 
 
+    private static MainActivity sMainActivity;
     // ContextMenuDialogFragment mMenuDialogFragment = new ContextMenuDialogFragment();
     android.support.v4.app.FragmentManager fragmentManager;
     ArrayList<Song> list = new ArrayList<>();
@@ -133,6 +137,8 @@ public class MainActivity extends AppCompatActivity
         mService = MyApp.getMyService();
 
         setContentView(R.layout.activity_main);
+
+        sMainActivity = this;
         running = true;
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -255,6 +261,10 @@ public class MainActivity extends AppCompatActivity
 
 
 
+    }
+
+    public static MainActivity getInstance() {
+        return sMainActivity;
     }
 
 
@@ -589,13 +599,10 @@ public class MainActivity extends AppCompatActivity
 
     private void buildHeader(final boolean compact, final Bundle savedInstanceState) {
         ArrayList<Song> list = new ArrayList<>();
-        list.addAll(ListSongs.getSongList(MainActivity.this));
-        String path = null;
-        try {
-            path = ListSongs.getAlbumArt(MainActivity.this, list.get(0).getAlbumId());
-        }catch (Exception e){
-            path = ListSongs.getAlbumArt(MainActivity.this,mService.getCurrentSong().getAlbumId());
-        }
+        list = ListSongs.getSongList(MainActivity.this);
+        String path;
+        path = ListSongs.getAlbumArt(MainActivity.this,list.get(0).getAlbumId());
+
         headerResult = new AccountHeaderBuilder()
                 .withActivity(MainActivity.this)
                 .withHeaderBackground(new ImageHolder(path))

@@ -20,7 +20,18 @@ public class Song {
         return track_number;
     }
 
+    public Song(long songId, long albumId, int artist_id, String name,String albumName, String artist, long duration) {
+        this.songId = songId;
+        this.albumId = albumId;
+        this.artist_id = artist_id;
+        this.name = name;
+        this.artist = artist;
+        this.albumName = albumName;
+        this.duration = duration;
+    }
+
     public long getDate_modified() {
+
         return date_modified;
     }
 

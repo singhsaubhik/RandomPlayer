@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/welcom_cover"
+    >
 
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/colorAccent"
-        android:id="@+id/view" />
-
-    <ImageView
-        android:src="@drawable/defualt_art2"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_below="@+id/view"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="90dp" />
+    <TextView
+        android:layout_centerInParent="true"
+        android:textColor="#FFFFFFFF"
+        android:text="Random Player"
+        android:textSize="40sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

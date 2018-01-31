@@ -1,12 +1,15 @@
 /*
- * Copyright (C) 2012 Andrew Neal Licensed under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
- * or agreed to in writing, software distributed under the License is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
+ * Copyright (C) 2015 Naman Dwivedi
+ *
+ * Licensed under the GNU General Public License v3
+ *
+ * This is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  */
 
 package com.example.thakur.randomplayer.Loaders;
@@ -14,71 +17,46 @@ package com.example.thakur.randomplayer.Loaders;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.PlaylistsColumns;
 
 
-import com.example.thakur.randomplayer.R;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Playlist;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * return the playlists on a user's device.
- * 
- * @author Andrew Neal (andrewdneal@gmail.com)
- */
-public class PlaylistLoader extends WrappedAsyncTaskLoader<List<Playlist>> {
+public class PlaylistLoader {
 
-    /**
-     * The result
-     */
-    private final ArrayList<Playlist> mPlaylistList = new ArrayList<>();
+    static ArrayList<Playlist> mPlaylistList;
+    private static Cursor mCursor;
 
-    /**
-     * The {@link Cursor} used to run the query.
-     */
-    private Cursor mCursor;
+    public static List<Playlist> getPlaylists(Context context, boolean defaultIncluded) {
 
-    /**
-     * Constructor of <code>PlaylistLoader</code>
-     * 
-     * @param context The {@link Context} to use
-     */
-    public PlaylistLoader(final Context context) {
-        super(context);
-    }
+        mPlaylistList = new ArrayList<>();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Playlist> loadInBackground() {
-        // Add the deafult playlits to the adapter
-        makeDefaultPlaylists();
+        if (defaultIncluded)
+            makeDefaultPlaylists(context);
 
-        // Create the Cursor
-        mCursor = makePlaylistCursor(getContext());
-        // Gather the data
+        mCursor = makePlaylistCursor(context);
+
         if (mCursor != null && mCursor.moveToFirst()) {
             do {
-                // Copy the playlist id
+
                 final long id = mCursor.getLong(0);
 
-                // Copy the playlist name
                 final String name = mCursor.getString(1);
 
-                // Create a new playlist
-                final Playlist playlist = new Playlist((int) id,name,0);
+                //final int songCount = TimberUtils.getSongCountForPlaylist(context, id);
 
-                // Add everything up
+                final Playlist playlist = new Playlist((int) id, name, 0);
+
                 mPlaylistList.add(playlist);
             } while (mCursor.moveToNext());
         }
-        // Close the cursor
         if (mCursor != null) {
             mCursor.close();
             mCursor = null;
@@ -86,34 +64,40 @@ public class PlaylistLoader extends WrappedAsyncTaskLoader<List<Playlist>> {
         return mPlaylistList;
     }
 
-    /* Adds the favorites and last added playlists */
-    private void makeDefaultPlaylists() {
-        final Resources resources = getContext().getResources();
-
-        /* Favorites list */
-        final Playlist favorites = new Playlist(-1,
-                resources.getString(R.string.playlist_favorites),0);
-        mPlaylistList.add(favorites);
+    private static void makeDefaultPlaylists(Context context) {
+        final Resources resources = context.getResources();
 
         /* Last added list */
-        final Playlist lastAdded = new Playlist(-2,
-                resources.getString(R.string.playlist_last_added),0);
+        final Playlist lastAdded = new Playlist((int) RandomUtils.PlaylistType.LastAdded.mId,
+                resources.getString(RandomUtils.PlaylistType.LastAdded.mTitleId), -1);
         mPlaylistList.add(lastAdded);
+
+        /* Recently Played */
+        final Playlist recentlyPlayed = new Playlist((int) RandomUtils.PlaylistType.RecentlyPlayed.mId,
+                resources.getString(RandomUtils.PlaylistType.RecentlyPlayed.mTitleId), -1);
+        mPlaylistList.add(recentlyPlayed);
+
+        /* Top Tracks */
+        final Playlist topTracks = new Playlist((int) RandomUtils.PlaylistType.TopTracks.mId,
+                resources.getString(RandomUtils.PlaylistType.TopTracks.mTitleId), -1);
+        mPlaylistList.add(topTracks);
     }
 
-    /**
-     * Creates the {@link Cursor} used to run the query.
-     * 
-     * @param context The {@link Context} to use.
-     * @return The {@link Cursor} used to run the playlist query.
-     */
+
     public static final Cursor makePlaylistCursor(final Context context) {
         return context.getContentResolver().query(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
-                new String[] {
-                        /* 0 */
+                new String[]{
                         BaseColumns._ID,
-                        /* 1 */
                         PlaylistsColumns.NAME
                 }, null, null, MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER);
+    }
+
+    public static void deletePlaylists(Context context, long playlistId) {
+        Uri localUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
+        StringBuilder localStringBuilder = new StringBuilder();
+        localStringBuilder.append("_id IN (");
+        localStringBuilder.append((playlistId));
+        localStringBuilder.append(")");
+        context.getContentResolver().delete(localUri, localStringBuilder.toString(), null);
     }
 }

@@ -1,7 +1,7 @@
 package com.example.thakur.randomplayer;
 
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,16 +14,13 @@ import com.afollestad.materialdialogs.Theme;
 import com.example.thakur.randomplayer.Adapters.PlayListListAdapter;
 import com.example.thakur.randomplayer.DatabaseHelper.PlaylistDatabase;
 import com.example.thakur.randomplayer.Loaders.LastAddedLoader;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
+import com.example.thakur.randomplayer.Loaders.PlaylistLoader;
 import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
 import com.example.thakur.randomplayer.items.Playlist;
-import com.example.thakur.randomplayer.items.Song;
 import com.github.clans.fab.FloatingActionButton;
 import com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView;
 
 import java.util.ArrayList;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class PlayListList extends AppCompatActivity {
 
@@ -42,16 +39,18 @@ public class PlayListList extends AppCompatActivity {
         pref = new UserPreferenceHandler(this);
         fab_addplaylist = findViewById(R.id.add_playlist_fab);
 
-        createDefaultPlaylist();
+        //createDefaultPlaylist();
 
         db = new PlaylistDatabase(this);
+
 
 
         //LastAddedLoader.makeLastAddedCursor(getApplicationContext());
         recyclerView = findViewById(R.id.play_list_list_recycler);
         try{
-            list = db.getAllplaylist();
-            list.get(0).setCover_albumId(LastAddedLoader.getLastAddedSongs(this).get(0).getAlbumId());
+            list = (ArrayList<Playlist>) PlaylistLoader.getPlaylists(PlayListList.this,pref.getIsDefaultAdded());
+            //list.get(0).setCover_albumId(LastAddedLoader.getLastAddedSongs(this).get(0).getAlbumId());
+            pref.setIsDefaultAdded(true);
         }catch(Exception e){
             Log.v(getLocalClassName(),e.getMessage());
         }

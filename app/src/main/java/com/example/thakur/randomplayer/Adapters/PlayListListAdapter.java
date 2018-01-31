@@ -29,6 +29,7 @@ import com.example.thakur.randomplayer.DatabaseHelper.PlaylistDatabase;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.PlayList;
 import com.example.thakur.randomplayer.R;
+import com.example.thakur.randomplayer.Utilities.Constants;
 import com.example.thakur.randomplayer.Utilities.Utils;
 import com.example.thakur.randomplayer.items.Playlist;
 import com.example.thakur.randomplayer.items.Song;
@@ -129,10 +130,30 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
                 switch (getAdapterPosition()){
                     case 0:
                         Intent in = new Intent(context,PlayList.class);
-                        in.putExtra("playlistposition",getAdapterPosition());
+                        //in.putExtra("playlistposition",getAdapterPosition());
+                        in.setAction("RecentAdded");
                         context.startActivity(in);
                         break;
 
+                    case 1:
+                        Intent in2 = new Intent(context,PlayList.class);
+                        in2.setAction("RecentPlayed");
+                        context.startActivity(in2);
+                        break;
+
+                    case 2:
+                        Intent in3 = new Intent(context,PlayList.class);
+                        in3.setAction("MostPlayed");
+                        context.startActivity(in3);
+                        break;
+
+                    default:
+                        Intent i = new Intent(context,PlayList.class);
+                        i.putExtra(Constants.ARTIST_ID,list.get(getAdapterPosition()).getPlaylistId());
+                        i.setAction("UserPlaylist");
+                        context.startActivity(i);
+
+                        break;
 
 
                 }

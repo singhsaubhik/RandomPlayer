@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  */
 
-package com.example.thakur.randomplayer.Utilities;
+package com.example.thakur.randomplayer.items;
 
 public class Constants {
 

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 
 import com.example.thakur.randomplayer.MyApp;
+import com.example.thakur.randomplayer.Provider.RecentStore;
 import com.example.thakur.randomplayer.Services.MusicService;
 import com.example.thakur.randomplayer.items.Song;
 
@@ -98,6 +99,7 @@ public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener
         //player.prepareAsync();
 
 
+        RecentStore.getInstance(context).addSongId(songList.get(position).getSongId());
         mPlayer.start();
         //new SongDatabase(context).insertSong(String.valueOf(songList.get(position).getSongId()),songList.get(position).getName());
         MyApp.getMyService().setShakeListener(true);

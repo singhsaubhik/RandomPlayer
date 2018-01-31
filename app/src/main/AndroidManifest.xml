@@ -58,6 +58,7 @@
             android:name=".PlayList"
             android:theme="@style/Mytheme" />
         <activity android:name=".PlayListList" />
+        <activity android:name=".BaseActivity.BaseServiceActivity" />
 
     </application>
 

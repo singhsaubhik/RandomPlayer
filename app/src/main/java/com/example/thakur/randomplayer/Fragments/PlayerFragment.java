@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
@@ -18,6 +19,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
 
@@ -31,7 +33,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -56,45 +57,37 @@ import java.util.ArrayList;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 /**
- * Created by Thakur on 05-10-2017.
+ * Created by Thakur on 05-10-2017
  */
 
 public class PlayerFragment extends Fragment implements View.OnClickListener, CircularSeekBar.OnCircularSeekBarChangeListener {
 
-    MusicService mService;
-    TextView tv, songTitle, artist_name, totalTime;
-    ArrayList<Song> songList;
-    Context context;
-    ViewGroup root;
-    ImageView image, imageView, next, prev;
-    ImageView repeat, shuffle;
-    CircularSeekBar seekBar;
+    private MusicService mService;
+    private TextView tv, songTitle, artist_name, totalTime;
+    private ArrayList<Song> songList;
+    private Context context;
+    private ImageView image, imageView, next, prev;
+    private ImageView repeat, shuffle;
+    private CircularSeekBar seekBar;
 
-    private boolean loadImage = false;
+
 
     //discrete recyclerview
-    MultiSnapRecyclerView discrete;
+    private MultiSnapRecyclerView discrete;
 
-    private final String REC = "com.example.thakur.randomplayer.Services.playAllSongs";
     public static final String trackChange = "com.example.thakur.randomplayer.Services.trackchangelistener";
 
     public static final String PLAY_PAUSE = "com.example.thakur.randomplayer.Services.playpause";
     public static final String NEXT_TRACK = "com.example.thakur.randomplayer.Services.nexttrack";
     public static final String PREV_TRACK = "com.example.thakur.randomplayer.Services.prevtrack";
 
-    int time = 0;
-    Handler mHandler;
-    private String totalDurationString = " ";
+    private Handler mHandler;
 
-    int currentDur = 0;
-    int totalDur = 0;
-    Intent intent;
-    private int tick = 0;
-    FloatingActionButton playpause;
-    private int sec = 0;
+    private Intent intent;
+    private FloatingActionButton playpause;
+
 
     int height, width;
-    int statusBarColor;
     UserPreferenceHandler pref;
 
     BroadcastReceiver mReciever = new BroadcastReceiver() {
@@ -204,8 +197,6 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
 
         songList = MyApp.getMyService().getSongList();
 
-
-        root = view.findViewById(R.id.root);
         ///bottomBlur = view.findViewById(R.id.blurView);
         tv = view.findViewById(R.id.cuurentText);
         totalTime = view.findViewById(R.id.totalText);
@@ -272,6 +263,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
 
     private void updateUI(int pos,boolean loadImage) {
 
+
         totalTime.setText("" + songList.get(pos).getDuration());
         songTitle.setText("" + songList.get(pos).getName());
         artist_name.setText("" + songList.get(pos).getArtist());
@@ -285,6 +277,21 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                Palette.Builder p = Palette.from(resource);
+
+                                p.generate(new Palette.PaletteAsyncListener() {
+                                    @Override
+                                    public void onGenerated(@NonNull Palette palette) {
+                                        Palette.Swatch swatch = palette.getMutedSwatch();
+                                        try {
+                                            seekBar.setCircleProgressColor(swatch.getRgb());
+                                            seekBar.setPointerColor(swatch.getRgb());
+                                        }catch (Exception e){
+                                            seekBar.setCircleProgressColor(getResources().getColor(R.color.primary));
+                                        }
+
+                                    }
+                                });
                                 image.setImageBitmap(resource);
                                 doAlbumArtStuff(resource);
                             }
@@ -296,8 +303,22 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                Palette.Builder p = Palette.from(resource);
+
+                                p.generate(new Palette.PaletteAsyncListener() {
+                                    @Override
+                                    public void onGenerated(@NonNull Palette palette) {
+                                        Palette.Swatch swatch = palette.getDominantSwatch();
+                                        try {
+                                            seekBar.setCircleProgressColor(swatch.getRgb());
+                                        }catch (Exception e){
+                                            seekBar.setCircleProgressColor(getResources().getColor(R.color.primary));
+                                        }
+                                    }
+                                });
                                 image.setImageBitmap(resource);
                                 doAlbumArtStuff(resource);
+
                             }
                         });
 

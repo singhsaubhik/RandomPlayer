@@ -1,20 +1,28 @@
 /*
- * Copyright (C) 2012 Andrew Neal Licensed under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
- * or agreed to in writing, software distributed under the License is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
+ * Copyright (C) 2015 Naman Dwivedi
+ *
+ * Licensed under the GNU General Public License v3
+ *
+ * This is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  */
 
 package com.example.thakur.randomplayer.Loaders;
 
+import android.content.ContentProviderOperation;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.AudioColumns;
+import android.provider.MediaStore.Audio.Playlists;
 
 
 import com.example.thakur.randomplayer.items.Song;
@@ -22,77 +30,86 @@ import com.example.thakur.randomplayer.items.Song;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * return the songs for a particular playlist.
- * 
- * @author Andrew Neal (andrewdneal@gmail.com)
- */
-public class PlaylistSongLoader extends WrappedAsyncTaskLoader<List<Song>> {
+public class PlaylistSongLoader {
 
-    /**
-     * The result
-     */
-    private final ArrayList<Song> mSongList = new ArrayList<>();
+    private static Cursor mCursor;
 
-    /**
-     * The {@link Cursor} used to run the query.
-     */
-    private Cursor mCursor;
+    private static long mPlaylistID;
+    private static Context context;
 
-    /**
-     * The Id of the playlist the songs belong to.
-     */
-    private final Long mPlaylistID;
 
-    /**
-     * Constructor of <code>SongLoader</code>
-     * 
-     * @param context The {@link Context} to use
-     *
-     */
-    public PlaylistSongLoader(final Context context, final Long playlistId) {
-        super(context);
-        mPlaylistID = playlistId;
-    }
+    public static List<Song> getSongsInPlaylist(Context mContext, long playlistID) {
+        ArrayList<Song> mSongList = new ArrayList<>();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Song> loadInBackground() {
-        // Create the Cursor
-        mCursor = makePlaylistSongCursor(getContext(), mPlaylistID);
-        // Gather the data
+        context = mContext;
+        mPlaylistID = playlistID;
+
+        final int playlistCount = countPlaylist(context, mPlaylistID);
+
+        mCursor = makePlaylistSongCursor(context, mPlaylistID);
+
+        if (mCursor != null) {
+            boolean runCleanup = false;
+            if (mCursor.getCount() != playlistCount) {
+                runCleanup = true;
+            }
+
+            if (!runCleanup && mCursor.moveToFirst()) {
+                final int playOrderCol = mCursor.getColumnIndexOrThrow(Playlists.Members.PLAY_ORDER);
+
+                int lastPlayOrder = -1;
+                do {
+                    int playOrder = mCursor.getInt(playOrderCol);
+                    if (playOrder == lastPlayOrder) {
+                        runCleanup = true;
+                        break;
+                    }
+                    lastPlayOrder = playOrder;
+                } while (mCursor.moveToNext());
+            }
+
+            if (runCleanup) {
+
+                cleanupPlaylist(context, mPlaylistID, mCursor);
+
+                mCursor.close();
+                mCursor = makePlaylistSongCursor(context, mPlaylistID);
+                if (mCursor != null) {
+                }
+            }
+        }
+
         if (mCursor != null && mCursor.moveToFirst()) {
             do {
-                // Copy the song Id
-                final long id = mCursor.getLong(mCursor
-                        .getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.AUDIO_ID));
 
-                // Copy the song name
+                final long id = mCursor.getLong(mCursor
+                        .getColumnIndexOrThrow(Playlists.Members.AUDIO_ID));
+
                 final String songName = mCursor.getString(mCursor
                         .getColumnIndexOrThrow(AudioColumns.TITLE));
 
-                // Copy the artist name
                 final String artist = mCursor.getString(mCursor
                         .getColumnIndexOrThrow(AudioColumns.ARTIST));
 
-                // Copy the album name
+                final long albumId = mCursor.getLong(mCursor
+                        .getColumnIndexOrThrow(AudioColumns.ALBUM_ID));
+
+                final long artistId = mCursor.getLong(mCursor
+                        .getColumnIndexOrThrow(AudioColumns.ARTIST_ID));
+
                 final String album = mCursor.getString(mCursor
                         .getColumnIndexOrThrow(AudioColumns.ALBUM));
 
-                // Copy the duration
                 final long duration = mCursor.getLong(mCursor
                         .getColumnIndexOrThrow(AudioColumns.DURATION));
 
-                // Convert the duration into seconds
+                final int durationInSecs = (int) duration / 1000;
 
+                final int tracknumber = mCursor.getInt(mCursor
+                        .getColumnIndexOrThrow(AudioColumns.TRACK));
 
-                // Create a new song
-                final Song song = new Song(id,songName,artist,null,false,0,album,0,duration);
+                final Song song = new Song(id,albumId,artistId,songName,artist,album,duration);
 
-                // Add everything up
                 mSongList.add(song);
             } while (mCursor.moveToNext());
         }
@@ -104,33 +121,81 @@ public class PlaylistSongLoader extends WrappedAsyncTaskLoader<List<Song>> {
         return mSongList;
     }
 
-    /**
-     * Creates the {@link Cursor} used to run the query.
-     * 
-     * @param context The {@link Context} to use.
-     * @param playlistID The playlist the songs belong to.
-     * @return The {@link Cursor} used to run the song query.
-     */
+    private static void cleanupPlaylist(final Context context, final long playlistId,
+                                        final Cursor cursor) {
+        final int idCol = cursor.getColumnIndexOrThrow(Playlists.Members.AUDIO_ID);
+        final Uri uri = Playlists.Members.getContentUri("external", playlistId);
+
+        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+
+        ops.add(ContentProviderOperation.newDelete(uri).build());
+
+        final int YIELD_FREQUENCY = 100;
+
+        if (cursor.moveToFirst() && cursor.getCount() > 0) {
+            do {
+                final ContentProviderOperation.Builder builder =
+                        ContentProviderOperation.newInsert(uri)
+                                .withValue(Playlists.Members.PLAY_ORDER, cursor.getPosition())
+                                .withValue(Playlists.Members.AUDIO_ID, cursor.getLong(idCol));
+
+                if ((cursor.getPosition() + 1) % YIELD_FREQUENCY == 0) {
+                    builder.withYieldAllowed(true);
+                }
+                ops.add(builder.build());
+            } while (cursor.moveToNext());
+        }
+
+        try {
+            context.getContentResolver().applyBatch(MediaStore.AUTHORITY, ops);
+        } catch (RemoteException e) {
+        } catch (OperationApplicationException e) {
+        }
+    }
+
+
+    private static int countPlaylist(final Context context, final long playlistId) {
+        Cursor c = null;
+        try {
+            c = context.getContentResolver().query(
+                    Playlists.Members.getContentUri("external", playlistId),
+                    new String[]{
+                            Playlists.Members.AUDIO_ID,
+                    }, null, null,
+                    Playlists.Members.DEFAULT_SORT_ORDER);
+
+            if (c != null) {
+                return c.getCount();
+            }
+        } finally {
+            if (c != null) {
+                c.close();
+                c = null;
+            }
+        }
+
+        return 0;
+    }
+
+
     public static final Cursor makePlaylistSongCursor(final Context context, final Long playlistID) {
         final StringBuilder mSelection = new StringBuilder();
         mSelection.append(AudioColumns.IS_MUSIC + "=1");
-        mSelection.append(" AND " + AudioColumns.TITLE + " != ''"); //$NON-NLS-2$
+        mSelection.append(" AND " + AudioColumns.TITLE + " != ''");
         return context.getContentResolver().query(
-                MediaStore.Audio.Playlists.Members.getContentUri("external", playlistID),
-                new String[] {
-                        /* 0 */
-                        MediaStore.Audio.Playlists.Members._ID,
-                        /* 1 */
-                        MediaStore.Audio.Playlists.Members.AUDIO_ID,
-                        /* 2 */
+                Playlists.Members.getContentUri("external", playlistID),
+                new String[]{
+                        Playlists.Members._ID,
+                        Playlists.Members.AUDIO_ID,
                         AudioColumns.TITLE,
-                        /* 3 */
                         AudioColumns.ARTIST,
-                        /* 4 */
+                        AudioColumns.ALBUM_ID,
+                        AudioColumns.ARTIST_ID,
                         AudioColumns.ALBUM,
-                        /* 5 */
-                        AudioColumns.DURATION
+                        AudioColumns.DURATION,
+                        AudioColumns.TRACK,
+                        Playlists.Members.PLAY_ORDER,
                 }, mSelection.toString(), null,
-                MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER);
+                Playlists.Members.DEFAULT_SORT_ORDER);
     }
 }

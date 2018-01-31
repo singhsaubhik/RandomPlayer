@@ -1513,4 +1513,13 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         return null ; //ListSongs.getSongFileUri(song.getSongId()).toString();
     }
 
+    public void saveQueue(ArrayList<Song> list,int startPosition,boolean startPlaying){
+        MusicPlaybackQueueStore.getInstance(this).saveQueues(list,list);
+        if(startPlaying){
+            mPlayer.clearList();
+            mPlayer.setPlayerList(list);
+            mPlayer.playSong(startPosition);
+        }
+    }
+
 }
