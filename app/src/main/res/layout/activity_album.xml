@@ -15,6 +15,7 @@
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsingtoolbarlayout_album"
+            app:contentScrim="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:elevation="10dp"
@@ -33,22 +34,8 @@
                 <ImageView
                     android:id="@+id/activity_album_art"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp"
-
-                    android:layout_weight="1"
-                    android:scaleType="centerCrop"
-                    android:transitionName="transition:imgholder"
+                    android:layout_height="300dp"
                     app:layout_collapseMode="parallax" />
-
-                <LinearLayout
-                    android:id="@+id/album_song_name_holder"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/album_title_height"
-                    android:layout_gravity="bottom"
-                    android:layout_weight="0"
-                    android:background="@color/colorAccent"
-                    android:orientation="horizontal"
-                    android:transitionName="transition:nameholder" />
             </LinearLayout>
 
 

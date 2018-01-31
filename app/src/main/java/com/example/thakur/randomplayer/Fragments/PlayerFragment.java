@@ -31,6 +31,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.afollestad.appthemeengine.ATE;
+import com.afollestad.appthemeengine.ATEActivity;
+import com.afollestad.appthemeengine.Config;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
@@ -39,8 +42,10 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.thakur.randomplayer.Adapters.DiscreteViewAdapter;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.MyApp;
+import com.example.thakur.randomplayer.PlayerActivity;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Services.MusicService;
+import com.example.thakur.randomplayer.Utilities.ATEUtils;
 import com.example.thakur.randomplayer.Utilities.ImageUtils;
 import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
 import com.example.thakur.randomplayer.Utilities.Utils;
@@ -69,6 +74,8 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
     private ImageView image, imageView, next, prev;
     private ImageView repeat, shuffle;
     private CircularSeekBar seekBar;
+
+    private int accentColor;
 
 
 
@@ -143,11 +150,6 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            getActivity().getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
-
-        }
         View view = inflater.inflate(R.layout.player_fragment, container, false);
 
 
@@ -162,6 +164,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
         super.onViewCreated(view, savedInstanceState);
         //Toast.makeText(view.getContext(), "View created and sngPos="+songPos, Toast.LENGTH_SHORT).show();
         mService = MyApp.getMyService();
+
 
         /*android.support.v7.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
         if (toolbar != null) {

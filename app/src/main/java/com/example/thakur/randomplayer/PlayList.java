@@ -231,6 +231,7 @@ public class PlayList extends AppCompatActivity {
             try {
                 path = ListSongs.getAlbumArt(PlayList.this, playlistsongs.get(0).getAlbumId());
             }catch (Exception e){
+                path = "";
                 //Toast.makeText(PlayList.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
             return "Executed";

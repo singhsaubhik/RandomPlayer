@@ -10,13 +10,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.ServiceRemote.ServiceRemote;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 /**
- * Created by Thakur on 24-01-2018.
+ * Created by Thakur on 24-01-2018
  */
 
 public class BaseServiceActivity extends AppCompatActivity implements SlidingUpPanelLayout.PanelSlideListener {
@@ -31,7 +32,7 @@ public class BaseServiceActivity extends AppCompatActivity implements SlidingUpP
         serviceToken = ServiceRemote.bindToService(this, new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-
+                Toast.makeText(BaseServiceActivity.this, "Getting token", Toast.LENGTH_SHORT).show();
             }
 
             @Override

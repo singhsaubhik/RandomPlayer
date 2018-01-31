@@ -40,11 +40,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.appthemeengine.Config;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.thakur.randomplayer.Adapters.ViewPagerAdapter;
 import com.example.thakur.randomplayer.BaseActivity.BaseServiceActivity;
+import com.example.thakur.randomplayer.BaseActivity.BaseThemedActivity;
+import com.example.thakur.randomplayer.BaseActivity.SettingsActivity;
 import com.example.thakur.randomplayer.Fragments.*;
 import com.example.thakur.randomplayer.Fragments.NowPlayingScreen.PlayerScreen2;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
@@ -79,7 +82,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends BaseServiceActivity
+public class MainActivity extends BaseThemedActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener,SlidingUpPanelLayout.PanelSlideListener {
 
 
@@ -111,6 +114,8 @@ public class MainActivity extends BaseServiceActivity
     private AccountHeader headerResult = null;
     private Drawer result = null;
 
+    int primaryColor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +143,8 @@ public class MainActivity extends BaseServiceActivity
 
         setContentView(R.layout.activity_main);
 
+        primaryColor = Config.primaryColor(this,getATEKey());
+
         sMainActivity = this;
         running = true;
 
@@ -147,7 +154,10 @@ public class MainActivity extends BaseServiceActivity
         adapter.add(new ArtistList(), "ArtistList");
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
+
         SmartTabLayout viewpagertab = (SmartTabLayout) findViewById(R.id.viewpagertab);
+        viewpagertab.setBackgroundColor(primaryColor);
+
         viewPager.setAdapter(adapter);
         viewpagertab.setViewPager(viewPager);
 
@@ -177,11 +187,10 @@ public class MainActivity extends BaseServiceActivity
                             new PrimaryDrawerItem().withName(R.string.drawer_library).withSelectedBackgroundAnimated(true).withIcon(R.drawable.library_music).withIdentifier(1),
                             new PrimaryDrawerItem().withName(R.string.drawer_folders).withIcon(R.drawable.ic_menu_gallery).withIdentifier(2),
                             new PrimaryDrawerItem().withName(R.string.drawer_playlist).withIcon(R.drawable.ic_playlist_play_black_24dp).withIdentifier(3),
-                            new PrimaryDrawerItem().withName(R.string.drawer_palaying_queue).withIcon(R.drawable.ic_queue_music_32dp).withIdentifier(4),
                             new PrimaryDrawerItem().withName(R.string.drawer_nowplaying).withIcon(R.drawable.ic_play_circle_filled_32dp).withIdentifier(5),
 
                             new DividerDrawerItem(),
-                            new SecondaryDrawerItem().withName("Setting").withIcon(R.drawable.ic_settings_black_24dp),
+                            new SecondaryDrawerItem().withName("Setting").withIcon(R.drawable.ic_settings_black_24dp).withIdentifier(6),
                             new SecondaryDrawerItem().withName("About us").withIcon(R.drawable.ic_person_32dp)
                     )
                     //here we use a customPrimaryDrawerItem we defined in our sample
@@ -221,12 +230,17 @@ public class MainActivity extends BaseServiceActivity
 
                                         }
                                     }, 250);
+                                    break;
 
+                                case 6:
+                                    gotoSettings();
+                                    break;
                             }
                             return false;
                         }
                     })
                     .withSavedInstance(savedInstanceState)
+                    .withToolbar(toolbar)
                     .build();
 
         } catch (Exception e) {
@@ -661,6 +675,13 @@ public class MainActivity extends BaseServiceActivity
 
     public void expandPanel() {
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+    }
+
+    private void gotoSettings(){
+        Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(i);
+        (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+
     }
 
 }

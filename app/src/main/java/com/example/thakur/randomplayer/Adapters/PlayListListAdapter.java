@@ -39,7 +39,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- * Created by Thakur on 15-11-2017.
+ * Created by Thakur on 15-11-2017
  */
 
 public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapter.PlayListListViewHolder> {
@@ -211,8 +211,8 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
                                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                                             @Override
                                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                new PlaylistDatabase(context).deletePlaylist(list.get(getAdapterPosition()).getPlaylistId());
-                                                refresh(new PlaylistDatabase(context).getAllplaylist());
+                                                //new PlaylistDatabase(context).deletePlaylist(list.get(getAdapterPosition()).getPlaylistId());
+                                                //refresh(new PlaylistDatabase(context).getAllplaylist());
                                             }
                                         })
 
@@ -229,8 +229,8 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
                                         .input("Enter name", null, false, new MaterialDialog.InputCallback() {
                                             @Override
                                             public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                                                new PlaylistDatabase(context).renamePlaylist(list.get(getAdapterPosition()).getPlaylistId(),input.toString());
-                                                refresh(new PlaylistDatabase(context).getAllplaylist());
+                                                //new PlaylistDatabase(context).renamePlaylist(list.get(getAdapterPosition()).getPlaylistId(),input.toString());
+                                                ///refresh(new PlaylistDatabase(context).getAllplaylist());
                                             }
                                         }).positiveText("Change")
                                         .negativeText("Cancel")

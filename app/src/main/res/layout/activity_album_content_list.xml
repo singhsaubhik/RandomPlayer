@@ -27,24 +27,25 @@
                 android:id="@+id/header_album_art"
                 />
 
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                app:fabSize="normal"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                app:layout_anchor="@id/app_bar"
+                app:layout_anchorGravity="bottom|end"
+                app:srcCompat="@drawable/ic_shuffle_36dp" />
+
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        app:fabSize="normal"
-        android:layout_width="70dp"
-        android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_shuffle_36dp" />
+
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="match_parent"
         app:layout_anchorGravity="bottom|end"
-
         android:id="@+id/album_recyclerview"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >

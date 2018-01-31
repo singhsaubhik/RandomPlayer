@@ -1,35 +1,29 @@
 package com.example.thakur.randomplayer;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.thakur.randomplayer.Adapters.AlbumContentAdapter;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
-import com.example.thakur.randomplayer.items.Album;
 import com.example.thakur.randomplayer.items.Song;
-import com.squareup.picasso.Picasso;
+
 
 import java.io.File;
 import java.util.ArrayList;
 
 public class AlbumContentList extends AppCompatActivity {
 
-    ListView lv;
+
     ArrayList<Song> album = new ArrayList<>();
-    ArrayList<String> arr = new ArrayList<>();
     long albumId;
     RecyclerView recyclerView;
     AlbumContentAdapter adapter;
@@ -45,7 +39,7 @@ public class AlbumContentList extends AppCompatActivity {
         setSupportActionBar(toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.rv_album_activity);
         album_art = (ImageView) findViewById(R.id.activity_album_art);
-        layout = (LinearLayout) findViewById(R.id.album_song_name_holder);
+        ///layout = (LinearLayout) findViewById(R.id.album_song_name_holder);
 
 
 
@@ -55,19 +49,30 @@ public class AlbumContentList extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setAdapter(adapter);
 
-        getSupportActionBar().setTitle(ListSongs.getAlbumFromId(getApplicationContext(),albumId).getAlbumTitle());
+        setupToolbar();
+
         String path = ListSongs.getAlbumArt(getApplicationContext(),albumId);
 
         try{
-            Picasso.with(getApplicationContext())
+            Glide.with(this)
                     .load(new File(path))
-                    .fit()
+                    .apply(new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888))
                     .into(album_art);
         }catch (Exception e){
-
+            Glide.with(this)
+                    .load(R.drawable.defualt_art2)
+                    .into(album_art);
         }
 
 
 
+    }
+
+    private void setupToolbar(){
+        try{
+            getSupportActionBar().setTitle(ListSongs.getAlbumFromId(getApplicationContext(),albumId).getAlbumTitle());
+        }catch (Exception e){
+
+        }
     }
 }

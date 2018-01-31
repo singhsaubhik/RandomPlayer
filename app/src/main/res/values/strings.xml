@@ -562,6 +562,9 @@ that this copyright notice remain intact.</string>
     <string name="added_x_titles_to_playing_queu">added</string>
     <string name="playlist_recently_played">Recently Played</string>
     <string name="playlist_top_tracks">TopTracks</string>
+    <string name="primary_color">primary_color</string>
+    <string name="accent_color">Accent</string>
+    <string name="now_playing">Now Playing Screen</string>
 
 
 </resources>

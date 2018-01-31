@@ -3,6 +3,7 @@ package com.example.thakur.randomplayer;
 
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,19 +11,27 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.afollestad.appthemeengine.ATEActivity;
 import com.example.thakur.randomplayer.Fragments.PlayerFragment;
 import com.example.thakur.randomplayer.Services.MusicService;
+import com.example.thakur.randomplayer.Utilities.Helper;
 
 
 import java.net.Inet4Address;
 
-public class PlayerActivity extends AppCompatActivity {
+public class PlayerActivity extends ATEActivity {
 
 
     public boolean isBind = false;
     public static boolean isRunning;
     int screenWidth, screenHeight;
 
+
+    @Nullable
+    @Override
+    protected String getATEKey() {
+        return Helper.getATEKey(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

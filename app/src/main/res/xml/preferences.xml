@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+    <com.example.thakur.randomplayer.widgets.ThemedPreferenceCategory android:title="Personalization">
+
+        <com.afollestad.appthemeengine.prefs.ATECheckBoxPreference
+            android:defaultValue="true"
+            android:key="toggle_animations"
+            android:summary="This will toggle the animation"
+            android:title="Animations"
+            app:ateKey_pref_checkBox="ate_key" />
+
+
+
+        <!--<SwitchPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="toggle_artist_grid"-->
+        <!--android:summary="@string/toggle_artists_grid"-->
+        <!--android:title="@string/artist_in_grid"/>-->
+
+        <!--<ListPreference-->
+        <!--android:defaultValue="light"-->
+        <!--android:entries="@array/pref_theme_entries"-->
+        <!--android:entryValues="@array/pref_theme_values"-->
+        <!--android:key="theme_preference"-->
+        <!--android:summary="@string/choose_theme_throughout"-->
+        <!--android:title="@string/select_theme" />-->
+
+        <com.afollestad.appthemeengine.prefs.ATECheckBoxPreference
+            android:defaultValue="false"
+            android:key="dark_theme"
+            android:persistent="true"
+            android:summary="This selects dark theme"
+            android:title="Dark Theme"
+            android:widgetLayout="@layout/ate_preference_checkbox"
+            app:ateKey_pref_checkBox="ate_key" />
+
+        <com.afollestad.appthemeengine.prefs.ATEColorPreference
+            android:key="primary_color"
+            android:persistent="false"
+            android:summary="This will select your primary color"
+            android:title="@string/primary_color"
+            app:ateKey_pref_color="ate_key" />
+
+        <com.afollestad.appthemeengine.prefs.ATEColorPreference
+            android:key="accent_color"
+            android:persistent="false"
+            android:summary="Select accent color"
+            android:title="@string/accent_color"
+            app:ateKey_pref_color="ate_key" />
+
+        <com.afollestad.appthemeengine.prefs.ATECheckBoxPreference
+            android:defaultValue="true"
+            android:key="colored_status_bar"
+            android:persistent="false"
+            android:summary="Colored status bar"
+            android:title="Colored status"
+            app:ateKey_pref_checkBox="ate_key" />
+
+        <com.afollestad.appthemeengine.prefs.ATECheckBoxPreference
+            android:defaultValue="true"
+            android:key="colored_nav_bar"
+            android:persistent="false"
+            android:summary="Colored navigation bar"
+            android:title="Navigation Color"
+            app:ateKey_pref_checkBox="ate_key" />
+
+    </com.example.thakur.randomplayer.widgets.ThemedPreferenceCategory>
+
+    <com.example.thakur.randomplayer.widgets.ThemedPreferenceCategory android:title="Other">
+
+
+
+        <com.afollestad.appthemeengine.prefs.ATECheckBoxPreference
+            android:defaultValue="true"
+            android:key="gestures"
+            android:summary="Switch the songs using gesture"
+            android:title="Gesture"
+            app:ateKey_pref_checkBox="ate_key" />
+
+        <com.afollestad.appthemeengine.prefs.ATECheckBoxPreference
+            android:defaultValue="true"
+            android:key="toggle_headphone_pause"
+            android:summary="Pause the song when earphones plugged out"
+            android:title="Earphones unplugged"
+            app:ateKey_pref_checkBox="ate_key" />
+
+        <com.afollestad.appthemeengine.prefs.ATECheckBoxPreference
+            android:defaultValue="true"
+            android:key="show_albumart_lockscreen"
+            android:summary="Album art on lock screen"
+            android:title="Album art "
+            app:ateKey_pref_checkBox="ate_key" />
+
+    </com.example.thakur.randomplayer.widgets.ThemedPreferenceCategory>
+
+
+
+
+    <com.example.thakur.randomplayer.widgets.ThemedPreferenceCategory android:title="Support">
+
+        <Preference
+            android:key="support_development"
+            android:summary="Support the development of Timber and unlock all now playing styles"
+            android:title="Support development" />
+
+        <Preference
+            android:key="restore_purchases"
+            android:summary="Restore previous purchases"
+            android:title="Restore purchases" />
+
+    </com.example.thakur.randomplayer.widgets.ThemedPreferenceCategory>
+
+
+</PreferenceScreen>
