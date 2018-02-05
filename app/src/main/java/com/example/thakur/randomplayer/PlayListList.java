@@ -50,7 +50,7 @@ public class PlayListList extends AppCompatActivity {
         try{
             list = (ArrayList<Playlist>) PlaylistLoader.getPlaylists(PlayListList.this,pref.getIsDefaultAdded());
             //list.get(0).setCover_albumId(LastAddedLoader.getLastAddedSongs(this).get(0).getAlbumId());
-            pref.setIsDefaultAdded(true);
+            pref.setIsDefaultAdded(false);
         }catch(Exception e){
             Log.v(getLocalClassName(),e.getMessage());
         }
@@ -76,9 +76,9 @@ public class PlayListList extends AppCompatActivity {
                         .input("Enter name", null, false, new MaterialDialog.InputCallback() {
                             @Override
                             public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                                new PlaylistDatabase(PlayListList.this).addPlaylist(input.toString());
-                                adapter.refresh(new PlaylistDatabase(PlayListList.this).getAllplaylist());
-                                Toast.makeText(PlayListList.this, "playlist added", Toast.LENGTH_SHORT).show();
+
+                                //adapter.refresh(new PlaylistDatabase(PlayListList.this).getAllplaylist());
+                                //Toast.makeText(PlayListList.this, "playlist added", Toast.LENGTH_SHORT).show();
 
                             }
                         }).show();

@@ -14,6 +14,7 @@
         app:fastScrollPopupBgColor="@color/colorAccent"
         app:fastScrollPopupTextColor="@android:color/primary_text_dark"
         android:layout_alignParentRight="true"
-        app:fastScrollThumbColor="@color/colorAccent" />
+        app:fastScrollThumbColor="@color/primary_dark"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

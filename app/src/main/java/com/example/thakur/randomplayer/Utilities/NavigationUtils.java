@@ -6,6 +6,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.v4.util.Pair;
 
+import com.example.thakur.randomplayer.AlbumContentList;
 import com.example.thakur.randomplayer.MainActivity;
 import com.example.thakur.randomplayer.PlayList;
 
@@ -33,4 +34,13 @@ public class NavigationUtils {
             context.startActivityForResult(intent, Constants.ACTION_DELETE_PLAYLIST);
 
     }
+
+    public static void gotoAlbum(Activity context,long albumId){
+        Intent intent = new Intent(context, AlbumContentList.class);
+        intent.putExtra("albumId",albumId);
+        context.startActivity(intent);
+        (context).overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+
+    }
+
 }

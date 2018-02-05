@@ -565,6 +565,8 @@ that this copyright notice remain intact.</string>
     <string name="primary_color">primary_color</string>
     <string name="accent_color">Accent</string>
     <string name="now_playing">Now Playing Screen</string>
+    <string name="nothing_found">Nothing Found</string>
+    <string name="search_library">Search Library</string>
 
 
 </resources>

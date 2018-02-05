@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import com.example.thakur.randomplayer.items.Song;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -97,7 +98,7 @@ public class SongLoader {
 
     @Nullable
     public static Cursor makeSongCursor(@NonNull final Context context, @Nullable final String selection, final String[] selectionValues) {
-        return makeSongCursor(context, selection, selectionValues, null);
+        return makeSongCursor(context, selection, selectionValues, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
     }
 
     @Nullable
@@ -157,5 +158,13 @@ public class SongLoader {
         if (cursor != null)
             cursor.close();
         return arrayList;
+    }
+
+    public static List<Song> searchSongs(Context context, String searchString, int limit) {
+        ArrayList<Song> result = getSongsForCursor(makeSongCursor(context, "title LIKE ?", new String[]{searchString + "%"}));
+        if (result.size() < limit) {
+            result.addAll(getSongsForCursor(makeSongCursor(context, "title LIKE ?", new String[]{"%_" + searchString + "%"})));
+        }
+        return result.size() < limit ? result : result.subList(0, limit);
     }
 }

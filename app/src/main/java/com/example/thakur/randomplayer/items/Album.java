@@ -9,9 +9,30 @@ public class Album {
     private String albumTitle, albumArtist, albumArtPath;
     private boolean fav;
     private int songNumber;
+    private long artistId;
+    private int minyear;
 
     public Album() {
         super();
+    }
+
+    public Album(long albumId, String albumTitle, String albumArtist, long artistId, int songNumber, int minyear, String albumArtPath) {
+        this.albumId = albumId;
+        this.albumTitle = albumTitle;
+        this.albumArtist = albumArtist;
+        this.albumArtPath = albumArtPath;
+        this.songNumber = songNumber;
+        this.artistId = artistId;
+        this.minyear = minyear;
+    }
+
+    public Album(long albumId, String albumTitle, String albumArtist, long artistId, int songNumber , int minyear) {
+        this.albumId = albumId;
+        this.albumTitle = albumTitle;
+        this.albumArtist = albumArtist;
+        this.songNumber = songNumber;
+        this.artistId = artistId;
+        this.minyear = minyear;
     }
 
     public Album(long albumId, String albumTitle, String albumArtist, boolean fav, String albumArtPath, int songNumber) {

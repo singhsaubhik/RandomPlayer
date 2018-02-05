@@ -3,9 +3,6 @@ package com.example.thakur.randomplayer.Utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/**
- * Created by architjn on 11/12/15.
- */
 public class UserPreferenceHandler {
 
     private static final String PREF_NAME = "com.thakur";
@@ -132,7 +129,7 @@ public class UserPreferenceHandler {
     }
 
     public boolean getIsDefaultAdded(){
-        return shp.getBoolean(isDefaultAdded,false);
+        return shp.getBoolean(isDefaultAdded,true);
     }
 
     public boolean gaplessPlayback() {

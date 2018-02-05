@@ -13,14 +13,16 @@ import android.widget.Toast;
 import com.example.thakur.randomplayer.MyApp;
 import com.example.thakur.randomplayer.Provider.RecentStore;
 import com.example.thakur.randomplayer.Services.MusicService;
+import com.example.thakur.randomplayer.Utilities.PreferencesUtility;
 import com.example.thakur.randomplayer.items.Song;
+import com.squareup.seismic.ShakeDetector;
 
 import java.util.ArrayList;
 
 import static android.content.Context.AUDIO_SERVICE;
 
 /**
- * Created by Thakur on 04-09-2017.
+ * Created by Thakur on 04-09-2017
  */
 
 public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener
@@ -102,7 +104,7 @@ public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener
         RecentStore.getInstance(context).addSongId(songList.get(position).getSongId());
         mPlayer.start();
         //new SongDatabase(context).insertSong(String.valueOf(songList.get(position).getSongId()),songList.get(position).getName());
-        MyApp.getMyService().setShakeListener(true);
+
 
     }
 
@@ -120,11 +122,10 @@ public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener
         //get title
 
         //get id
-        long currSong = songId;
         //set uri
         Uri trackUri = ContentUris.withAppendedId(
                 android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                currSong);
+                songId);
         //set the data source
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 

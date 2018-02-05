@@ -27,6 +27,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.thakur.randomplayer.DatabaseHelper.PlaylistDatabase;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
+import com.example.thakur.randomplayer.Loaders.PlaylistLoader;
 import com.example.thakur.randomplayer.PlayList;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Utilities.Constants;
@@ -180,42 +181,27 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
                                 new MaterialDialog.Builder(context)
 
                                         .title("Delete Playlist : "+list.get(getAdapterPosition()).getPlaylistName())
-
                                         .content("Are you sure want to delete ?")
-
                                         .positiveText(R.string.delete_playlist1)
-
                                         .negativeText(R.string.cancel)
-
                                         .positiveColorRes(R.color.material_red_400)
-
                                         .negativeColorRes(R.color.material_red_400)
-
                                         .titleGravity(GravityEnum.CENTER)
-
                                         .titleColorRes(R.color.material_red_400)
-
                                         .contentColorRes(android.R.color.white)
-
                                         .backgroundColorRes(R.color.material_blue_grey_800)
-
                                         .dividerColorRes(R.color.accent)
-
                                         .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
-
                                         .positiveColor(Color.WHITE)
-
                                         .negativeColorAttr(android.R.attr.textColorSecondaryInverse)
-
                                         .theme(Theme.DARK)
                                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                                             @Override
                                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                //new PlaylistDatabase(context).deletePlaylist(list.get(getAdapterPosition()).getPlaylistId());
-                                                //refresh(new PlaylistDatabase(context).getAllplaylist());
+                                                PlaylistLoader.deletePlaylists(context,list.get(getAdapterPosition()).getPlaylistId());
+                                                refresh((ArrayList<Playlist>) PlaylistLoader.getPlaylists(context,false));
                                             }
                                         })
-
                                         .show();
 
                                 break;

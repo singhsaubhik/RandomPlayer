@@ -28,6 +28,7 @@ import android.preference.PreferenceManager;
 
 public final class PreferencesUtility {
 
+    public static final String SHAKE_DETECTOR_STATE = "shake_detector_state";
     public static final String ARTIST_SORT_ORDER = "artist_sort_order";
     public static final String ARTIST_SONG_SORT_ORDER = "artist_song_sort_order";
     public static final String ARTIST_ALBUM_SORT_ORDER = "artist_album_sort_order";
@@ -263,6 +264,15 @@ public final class PreferencesUtility {
 
     public boolean getSetAlbumartLockscreen() {
         return mPreferences.getBoolean(SHOW_LOCKSCREEN_ALBUMART, true);
+    }
+
+    public void setShakeDetectorState(boolean value){
+        SharedPreferences.Editor editor =mPreferences.edit();
+        editor.putBoolean(SHAKE_DETECTOR_STATE,value).apply();
+    }
+
+    public boolean getShakeDetectorState(){
+        return mPreferences.getBoolean(SHAKE_DETECTOR_STATE,false);
     }
 
     /*public void updateService(Bundle extras) {

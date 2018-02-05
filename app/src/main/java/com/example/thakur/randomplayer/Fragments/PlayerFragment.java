@@ -46,6 +46,7 @@ import com.example.thakur.randomplayer.PlayerActivity;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Services.MusicService;
 import com.example.thakur.randomplayer.Utilities.ATEUtils;
+import com.example.thakur.randomplayer.Utilities.Helper;
 import com.example.thakur.randomplayer.Utilities.ImageUtils;
 import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
 import com.example.thakur.randomplayer.Utilities.Utils;
@@ -75,6 +76,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
     private ImageView repeat, shuffle;
     private CircularSeekBar seekBar;
 
+    private String ateKey;
     private int accentColor;
 
 
@@ -165,7 +167,8 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
         //Toast.makeText(view.getContext(), "View created and sngPos="+songPos, Toast.LENGTH_SHORT).show();
         mService = MyApp.getMyService();
 
-
+        ateKey = Helper.getATEKey(getActivity());
+        accentColor = Config.accentColor(getActivity(),ateKey);
         /*android.support.v7.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);

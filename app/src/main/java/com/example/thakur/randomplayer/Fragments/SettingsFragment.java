@@ -18,6 +18,7 @@ import com.afollestad.appthemeengine.prefs.ATECheckBoxPreference;
 import com.afollestad.appthemeengine.prefs.ATEColorPreference;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.example.thakur.randomplayer.BaseActivity.SettingsActivity;
+import com.example.thakur.randomplayer.MyApp;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Utilities.PreferencesUtility;
 
@@ -30,6 +31,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private static final String LOCKSCREEN = "show_albumart_lockscreen";
     private static final String XPOSED = "toggle_xposed_trackselector";
 
+    private static final String SHAKE_DETECTOR = "shake_listener";
     private static final String KEY_ABOUT = "preference_about";
     private static final String KEY_SOURCE = "preference_source";
     private static final String KEY_THEME = "theme_preference";
@@ -150,6 +152,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         final ATECheckBoxPreference statusBarPref = (ATECheckBoxPreference) findPreference("colored_status_bar");
         final ATECheckBoxPreference navBarPref = (ATECheckBoxPreference) findPreference("colored_nav_bar");
+        final ATECheckBoxPreference shakedetector = (ATECheckBoxPreference) findPreference("shake_listener");
 
         statusBarPref.setChecked(Config.coloredStatusBar(getActivity(), mAteKey));
         statusBarPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -170,6 +173,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 ATE.config(getActivity(), mAteKey)
                         .coloredNavigationBar((Boolean) newValue)
                         .apply(getActivity());
+                return true;
+            }
+        });
+
+        shakedetector.setChecked(PreferencesUtility.getInstance(getActivity()).getShakeDetectorState());
+        shakedetector.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                PreferencesUtility.getInstance(getActivity()).setShakeDetectorState((Boolean) o);
+                MyApp.getMyService().setShakeListener(PreferencesUtility.getInstance(getActivity()).getShakeDetectorState());
                 return true;
             }
         });

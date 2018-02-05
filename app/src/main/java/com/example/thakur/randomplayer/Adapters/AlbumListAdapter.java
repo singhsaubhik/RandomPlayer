@@ -3,6 +3,7 @@ package com.example.thakur.randomplayer.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.graphics.Palette;
@@ -26,6 +27,7 @@ import com.example.thakur.randomplayer.ItemClickListener;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.MainActivity;
 import com.example.thakur.randomplayer.R;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.Utilities.Utils;
 import com.example.thakur.randomplayer.items.Album;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
@@ -40,15 +42,13 @@ import java.util.ArrayList;
 public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.AlbumViewHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
     private ArrayList<Album> albumList = new ArrayList<>();
-    private ArrayList<Album> filteredDataItems = new ArrayList<>();
-    private ArrayList<Album> reference = new ArrayList<>();
     private Context context;
 
     public AlbumListAdapter(Context context, ArrayList<Album> arrayList)
     {
         this.context = context;
         albumList = arrayList;
-        filteredDataItems.addAll(albumList);
+
     }
 
 
@@ -99,17 +99,38 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
 
     @Override
     public void onBindViewHolder(final AlbumViewHolder holder, int position) {
-        reference = filteredDataItems;
-        holder.albumListName.setText(reference.get(position).getAlbumTitle());
-        holder.artist.setText(reference.get(position).getAlbumArtist());
+        holder.albumListName.setText(albumList.get(position).getAlbumTitle());
+        holder.artist.setText(albumList.get(position).getAlbumArtist());
         //setImage(holder,position);
         int size = dpToPx(300);
 
-        String path = reference.get(position).getAlbumArtPath();
+        //
+         String path = albumList.get(position).getAlbumArtPath();
+        //String path = RandomUtils.getAlbumArt(context,albumList.get(position).getAlbumId());
 
 
         if(Utils.isPathValid(path)) {
             Glide.with(context).asBitmap().load(new File(path)).apply(new RequestOptions().override(size))
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            holder.albumArt.setImageBitmap(resource);
+
+                            Palette.Builder b = Palette.from(resource);
+                            b.generate(new Palette.PaletteAsyncListener() {
+                                @Override
+                                public void onGenerated(@NonNull Palette palette) {
+                                    int[] colors = Utils.getAvailableColor(context,palette);
+                                    holder.layout.setBackgroundColor(colors[0]);
+                                    holder.albumListName.setTextColor(colors[1]);
+                                    holder.artist.setTextColor(colors[2]);
+                                }
+                            });
+                        }
+                    });
+        }
+        else{
+            Glide.with(context).asBitmap().load(R.drawable.defualt_art2).apply(new RequestOptions().override(size))
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -133,7 +154,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
 
     @Override
     public int getItemCount() {
-        return filteredDataItems.size();
+        return albumList.size();
     }
 
 
@@ -147,7 +168,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
     {
         Log.v("AlbumListAdapter","You clicked");
         Intent in = new Intent(context, AlbumContentList.class);
-        in.putExtra("albumId",filteredDataItems.get(position).getAlbumId());
+        in.putExtra("albumId",albumList.get(position).getAlbumId());
         context.startActivity(in);
         ((MainActivity)context).overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
 
@@ -157,23 +178,10 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
 
 
 
-    public void filter(String searchQuery){
-        if(!searchQuery.equals("")){
-            filteredDataItems.clear();
-            for(Album d:albumList){
-                if(d.getAlbumTitle().toLowerCase().contains(searchQuery)){
-                    filteredDataItems.add(d);
-                }
-            }
-        }else {
-            filteredDataItems.clear();
-            filteredDataItems.addAll(albumList);
-        }
-        notifyDataSetChanged();
-    }
+
 
     private String getSong(int pos){
-        return filteredDataItems.get(pos).getAlbumTitle();
+        return albumList.get(pos).getAlbumTitle();
     }
 
     private boolean fileExist(String albumArtPath) {

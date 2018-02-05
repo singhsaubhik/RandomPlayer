@@ -47,6 +47,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.thakur.randomplayer.Adapters.ViewPagerAdapter;
 import com.example.thakur.randomplayer.BaseActivity.BaseServiceActivity;
 import com.example.thakur.randomplayer.BaseActivity.BaseThemedActivity;
+import com.example.thakur.randomplayer.BaseActivity.SearchActivity;
 import com.example.thakur.randomplayer.BaseActivity.SettingsActivity;
 import com.example.thakur.randomplayer.Fragments.*;
 import com.example.thakur.randomplayer.Fragments.NowPlayingScreen.PlayerScreen2;
@@ -197,7 +198,7 @@ public class MainActivity extends BaseThemedActivity
                     .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                         @Override
                         public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                            switch (position) {
+                            switch ((int) drawerItem.getIdentifier()) {
                                 case 1:
                                     break;
 
@@ -223,9 +224,9 @@ public class MainActivity extends BaseThemedActivity
                                         @Override
                                         public void run() {
                                             Intent playerIntent = new Intent(MainActivity.this, PlayerActivity.class);
-                                            //playerIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                            playerIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                                             startActivity(playerIntent);
-                                            //startActivity(new Intent(context, com.example.thakur.randomplayer.PlayList.class));
+                                            //startActivity(new Intent(MainActivity.this, PlayerActivity.class));
                                             (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
                                         }
@@ -233,7 +234,13 @@ public class MainActivity extends BaseThemedActivity
                                     break;
 
                                 case 6:
-                                    gotoSettings();
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            gotoSettings();
+                                        }
+                                    },250);
+
                                     break;
                             }
                             return false;
@@ -337,7 +344,13 @@ public class MainActivity extends BaseThemedActivity
         switch (item.getItemId()) {
 
             case R.id.action_search:
-                handleSearch();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(MainActivity.this, SearchActivity.class));
+                    }
+                },100);
+                //handleSearch();
                 break;
         }
 
@@ -528,8 +541,7 @@ public class MainActivity extends BaseThemedActivity
             ((SongFragment) adapter.getItem(viewPager.getCurrentItem()))
                     .filter(String.valueOf(searchQuery));
         } else if (adapter.getItem(viewPager.getCurrentItem()) instanceof AlbumListFragment) {
-            ((AlbumListFragment) adapter.getItem(viewPager.getCurrentItem()))
-                    .filter(String.valueOf(searchQuery));
+
         }
     }
 
@@ -605,8 +617,7 @@ public class MainActivity extends BaseThemedActivity
             ((SongFragment) adapter.getItem(viewPager.getCurrentItem()))
                     .filter("");
         } else if (viewPager.getCurrentItem() == 1) {
-            ((AlbumListFragment) adapter.getItem(viewPager.getCurrentItem()))
-                    .filter("");
+
         }
     }
 

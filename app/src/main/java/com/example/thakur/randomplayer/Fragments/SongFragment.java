@@ -10,25 +10,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.appthemeengine.Config;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
+import com.example.thakur.randomplayer.Loaders.SongLoader;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Adapters.SongListAdapter;
+import com.example.thakur.randomplayer.Utilities.Helper;
 import com.example.thakur.randomplayer.items.Song;
-
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 
 import java.util.ArrayList;
 
 /**
- * Created by Thakur on 01-10-2017.
+ * Created by Thakur on 01-10-2017
  */
 
 public class SongFragment extends android.support.v4.app.Fragment {
 
     private ArrayList<Song> songList = new ArrayList<>();
     private SongListAdapter songListAdapter;
-    private RecyclerView mRecycler;
+    private FastScrollRecyclerView mRecycler;
     private Context context;
+
+    private int accentColor;
+    private String ateKey;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -42,9 +50,15 @@ public class SongFragment extends android.support.v4.app.Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
-        songList = ListSongs.getSongList(context);
+        songList = SongLoader.getAllSongs(getActivity());
         songListAdapter = new SongListAdapter(context, songList);
-        mRecycler = (RecyclerView) view.findViewById(R.id.song_recyclerview);
+        mRecycler = view.findViewById(R.id.song_recyclerview);
+
+        ateKey = Helper.getATEKey(getActivity());
+        accentColor = Config.accentColor(getActivity(),ateKey);
+
+        mRecycler.setThumbColor(accentColor);
+        mRecycler.setPopupBgColor(accentColor);
 
 
 

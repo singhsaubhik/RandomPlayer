@@ -1,6 +1,5 @@
 package com.example.thakur.randomplayer.Utilities;
 
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,7 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Created by Thakur on 27-10-2017.
+ * Created by Thakur on 27-10-2017
  */
 
 public class Utils {
@@ -201,15 +200,7 @@ public class Utils {
         alertDialog.show();
     }
 
-    public static void deleteTrack(Context context,ArrayList<Song> items,int position){
 
-        File songFile = new File(items.get(position).getPath());
-        if (songFile.delete()) {
-            Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show();
-        }
-        context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                MediaStore.MediaColumns._ID + "='" + items.get(position).getSongId() + "'", null);
-    }
 
     public static void deleteTracks(final Context context, final long[] list) {
         final String[] projection = new String[]{
@@ -275,19 +266,29 @@ public class Utils {
 
     public static int[] getAvailableColor(Context context,Palette palette) {
         int[] temp = new int[3];
-        if (palette.getVibrantSwatch() != null) {
-            temp[0] = palette.getVibrantSwatch().getRgb();
-            temp[1] = palette.getVibrantSwatch().getBodyTextColor();
-            temp[2] = palette.getVibrantSwatch().getTitleTextColor();
-        } else if (palette.getDarkVibrantSwatch() != null) {
-            temp[0] = palette.getDarkVibrantSwatch().getRgb();
-            temp[1] = palette.getDarkVibrantSwatch().getBodyTextColor();
-            temp[2] = palette.getDarkVibrantSwatch().getTitleTextColor();
-        } else if (palette.getDarkMutedSwatch() != null) {
-            temp[0] = palette.getDarkMutedSwatch().getRgb();
-            temp[1] = palette.getDarkMutedSwatch().getBodyTextColor();
-            temp[2] = palette.getDarkMutedSwatch().getTitleTextColor();
-        } else {
+        try {
+            //int[] temp = new int[3];
+            if (palette.getVibrantSwatch() != null) {
+                temp[0] = palette.getVibrantSwatch().getRgb();
+                temp[1] = palette.getVibrantSwatch().getBodyTextColor();
+                temp[2] = palette.getVibrantSwatch().getTitleTextColor();
+
+
+            } else if (palette.getDarkVibrantSwatch() != null) {
+                temp[0] = palette.getDarkVibrantSwatch().getRgb();
+                temp[1] = palette.getDarkVibrantSwatch().getBodyTextColor();
+                temp[2] = palette.getDarkVibrantSwatch().getTitleTextColor();
+
+            } else if (palette.getDarkMutedSwatch() != null) {
+                temp[0] = palette.getDarkMutedSwatch().getRgb();
+                temp[1] = palette.getDarkMutedSwatch().getBodyTextColor();
+                temp[2] = palette.getDarkMutedSwatch().getTitleTextColor();
+            } else {
+                temp[0] = ContextCompat.getColor(context, R.color.colorPrimary);
+                temp[1] = ContextCompat.getColor(context, android.R.color.white);
+                temp[2] = 0xffe5e5e5;
+            }
+        }catch (Exception e){
             temp[0] = ContextCompat.getColor(context, R.color.colorPrimary);
             temp[1] = ContextCompat.getColor(context, android.R.color.white);
             temp[2] = 0xffe5e5e5;

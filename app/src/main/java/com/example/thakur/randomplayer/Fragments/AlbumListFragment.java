@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.thakur.randomplayer.Adapters.AlbumListAdapter;
+import com.example.thakur.randomplayer.Loaders.AlbumLoader;
 import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.items.Album;
@@ -22,7 +23,7 @@ import com.example.thakur.randomplayer.items.Album;
 import java.util.ArrayList;
 
 /**
- * Created by Thakur on 01-10-2017.
+ * Created by Thakur on 01-10-2017
  */
 
 public class AlbumListFragment extends android.support.v4.app.Fragment{
@@ -45,7 +46,7 @@ public class AlbumListFragment extends android.support.v4.app.Fragment{
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        albumList = ListSongs.getAlbumList(context);
+        albumList = ListSongs.getAlbumList(getActivity());
         albumListAdapter = new AlbumListAdapter(context,albumList);
         mRecycler = view.findViewById(R.id.albumsListContainer);
         //fastScroller = view.findViewById(R.id.album_scroller);
@@ -85,10 +86,6 @@ public class AlbumListFragment extends android.support.v4.app.Fragment{
         }
     }
 
-    public void filter(String s){
-        if(albumListAdapter !=null) {
-            albumListAdapter.filter(s);
-        }
-    }
+
 
 }
