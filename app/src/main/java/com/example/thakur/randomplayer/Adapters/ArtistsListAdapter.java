@@ -2,9 +2,7 @@ package com.example.thakur.randomplayer.Adapters;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -26,9 +24,8 @@ import com.example.thakur.randomplayer.Decorators.ArtistSubListSpacesItemDecorat
 import com.example.thakur.randomplayer.Fragments.ArtistList;
 import com.example.thakur.randomplayer.MainActivity;
 import com.example.thakur.randomplayer.R;
-import com.example.thakur.randomplayer.Utilities.Utils;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Artist;
-import com.example.thakur.randomplayer.items.Song;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -66,9 +63,9 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
     @Override
     public void onBindViewHolder(final SimpleItemViewHolder holder,
                                  final int position) {
-        Utils utils = new Utils(context);
-        holder.img.setImageBitmap(utils.getBitmapOfVector(R.drawable.default_artist_art,
-                utils.dpToPx(50), utils.dpToPx(50)));
+
+        holder.img.setImageBitmap(RandomUtils.getBitmapOfVector(context , R.drawable.default_artist_art,
+                RandomUtils.dpToPx(context ,50), RandomUtils.dpToPx(context , 50)));
         holder.name.setText(items.get(position).getArtistName());
         getArtistImg(holder, position);
         holder.songCount.setText(context.getResources().getString(R.string.songs)

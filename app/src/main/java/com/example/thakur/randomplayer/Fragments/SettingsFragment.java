@@ -21,6 +21,7 @@ import com.example.thakur.randomplayer.BaseActivity.SettingsActivity;
 import com.example.thakur.randomplayer.MyApp;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Utilities.PreferencesUtility;
+import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
 
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -46,10 +47,12 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     ListPreference themePreference, startPagePreference;
     PreferencesUtility mPreferences;
     private String mAteKey;
+    private UserPreferenceHandler pref;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        pref = new UserPreferenceHandler(getActivity());
 
         addPreferencesFromResource(R.xml.preferences);
 
@@ -177,12 +180,12 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             }
         });
 
-        shakedetector.setChecked(PreferencesUtility.getInstance(getActivity()).getShakeDetectorState());
+        shakedetector.setChecked(pref.getHearShake());
         shakedetector.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
-                PreferencesUtility.getInstance(getActivity()).setShakeDetectorState((Boolean) o);
-                MyApp.getMyService().setShakeListener(PreferencesUtility.getInstance(getActivity()).getShakeDetectorState());
+                pref.setHearShake((Boolean) o);
+                MyApp.getMyService().setShakeListener(pref.getHearShake());
                 return true;
             }
         });

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.afollestad.appthemeengine.Config;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.Loaders.SongLoader;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Adapters.SongListAdapter;

@@ -2,8 +2,6 @@ package com.example.thakur.randomplayer.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -15,13 +13,12 @@ import android.widget.TextView;
 
 
 import com.example.thakur.randomplayer.AlbumContentList;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
+import com.example.thakur.randomplayer.Loaders.AlbumLoader;
 import com.example.thakur.randomplayer.MainActivity;
 import com.example.thakur.randomplayer.R;
-import com.example.thakur.randomplayer.Utilities.Utils;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Album;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,7 +33,7 @@ public class ArtistSubListAdapter extends RecyclerView.Adapter<ArtistSubListAdap
 
     public ArtistSubListAdapter(Context context, long artistId) {
         this.context = context;
-        this.items = ListSongs.getAlbumListOfArtist(context, artistId);
+        this.items = AlbumLoader.getAlbumListOfArtist(context, artistId);
     }
 
     @Override
@@ -59,15 +56,15 @@ public class ArtistSubListAdapter extends RecyclerView.Adapter<ArtistSubListAdap
     }
 
     private void setAlbumArt(final int position, final SimpleItemViewHolder holder) {
-        String path = ListSongs.getAlbumArt(context,
+        String path = RandomUtils.getAlbumArt(context,
                 items.get(position).getAlbumId());
-        Utils utils = new Utils(context);
-        int size = (utils.getWindowWidth() - (2 * utils.dpToPx(1))) / 2;
+
+        int size = (RandomUtils.getWindowWidth(context) - (2 * RandomUtils.dpToPx(context , 1))) / 2;
         if (path != null)
             Picasso.with(context).load(new File(path)).resize(size,
                     size).centerCrop().into(holder.img);
         else {
-            holder.img.setImageBitmap(utils.getBitmapOfVector(R.drawable.default_art, size, size));
+            holder.img.setImageBitmap(RandomUtils.getBitmapOfVector(context , R.drawable.default_art, size, size));
             holder.nameHolder.setBackgroundColor(ContextCompat.getColor(context, R.color.accent));
         }
     }

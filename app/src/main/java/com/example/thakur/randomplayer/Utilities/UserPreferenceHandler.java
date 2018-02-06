@@ -17,6 +17,7 @@ public class UserPreferenceHandler {
     private static final String lastplayedDur = "lastplayedsongDuration";
 
     private static final String isDefaultAdded = "isDefaultPlaylistAdded";
+    private static final String hearShake = "hearshake";
 
     private final boolean gapless = false;
 
@@ -134,5 +135,12 @@ public class UserPreferenceHandler {
 
     public boolean gaplessPlayback() {
         return gapless;
+    }
+
+    public boolean getHearShake(){
+        return shp.getBoolean(hearShake,false);
+    }
+    public void setHearShake(boolean val){
+        shp.edit().putBoolean(hearShake,val).apply();
     }
 }

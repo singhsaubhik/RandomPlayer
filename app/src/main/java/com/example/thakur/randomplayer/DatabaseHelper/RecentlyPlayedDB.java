@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.thakur.randomplayer.Loaders.ListSongs;
+import com.example.thakur.randomplayer.Loaders.SongLoader;
 import com.example.thakur.randomplayer.items.Song;
 
 import java.text.SimpleDateFormat;
@@ -82,7 +82,7 @@ public class RecentlyPlayedDB extends SQLiteOpenHelper {
 
         ids = getId();
 
-        list = ListSongs.getSongList(context);
+        list = SongLoader.getSongList(context);
 
         for(int i=0;i<ids.size();i++){
             for(int j=0;j<list.size();i++){

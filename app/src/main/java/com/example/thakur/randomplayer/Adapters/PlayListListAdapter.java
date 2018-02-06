@@ -25,16 +25,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.example.thakur.randomplayer.DatabaseHelper.PlaylistDatabase;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.Loaders.PlaylistLoader;
 import com.example.thakur.randomplayer.PlayList;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Utilities.Constants;
-import com.example.thakur.randomplayer.Utilities.Utils;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Playlist;
-import com.example.thakur.randomplayer.items.Song;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,8 +59,8 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
 
         holder.title.setText(list.get(position).getPlaylistName());
 
-        final String path = ListSongs.getAlbumArt(context,list.get(position).getCover_albumId());
-        if(Utils.isPathValid(path)) {
+        final String path = RandomUtils.getAlbumArt(context,list.get(position).getCover_albumId());
+        if(RandomUtils.isPathValid(path)) {
             Glide.with(context).asBitmap().load(new File(path)).apply(new RequestOptions().fitCenter())
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
@@ -74,7 +70,7 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
                             b.generate(new Palette.PaletteAsyncListener() {
                                 @Override
                                 public void onGenerated(@NonNull Palette palette) {
-                                    int[] i = Utils.getAvailableColor(context,palette);
+                                    int[] i = RandomUtils.getAvailableColor(context,palette);
                                     holder.layout.setBackgroundColor(i[0]);
                                     holder.title.setTextColor(i[1]);
                                 }
@@ -92,7 +88,7 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
                             b.generate(new Palette.PaletteAsyncListener() {
                                 @Override
                                 public void onGenerated(@NonNull Palette palette) {
-                                    int[] i = Utils.getAvailableColor(context,palette);
+                                    int[] i = RandomUtils.getAvailableColor(context,palette);
                                     holder.layout.setBackgroundColor(i[0]);
                                     holder.title.setTextColor(i[1]);
                                 }

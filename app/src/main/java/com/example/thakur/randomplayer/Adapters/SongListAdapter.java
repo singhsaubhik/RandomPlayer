@@ -1,18 +1,13 @@
 package com.example.thakur.randomplayer.Adapters;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,22 +22,14 @@ import com.afollestad.materialdialogs.Theme;
 import com.example.thakur.randomplayer.AlbumContentList;
 import com.example.thakur.randomplayer.Dialogs.AddPlaylistDialog;
 import com.example.thakur.randomplayer.ItemClickListener;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
+import com.example.thakur.randomplayer.Loaders.SongLoader;
 import com.example.thakur.randomplayer.MainActivity;
 import com.example.thakur.randomplayer.MyApp;
 import com.example.thakur.randomplayer.PlayerActivity;
 import com.example.thakur.randomplayer.R;
-import com.example.thakur.randomplayer.Services.MusicPlayerRemote;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
-import com.example.thakur.randomplayer.Utilities.Utils;
 import com.example.thakur.randomplayer.items.Song;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.DexterBuilder;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.squareup.picasso.Picasso;
 
@@ -168,8 +155,8 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                                             @Override
                                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                                 long[] ids = {filteredDataItems.get(getAdapterPosition()).getSongId()};
-                                                Utils.deleteTracks(context,ids);
-                                                refresh(ListSongs.getSongList(context));
+                                                RandomUtils.deleteTracks(context,ids);
+                                                refresh(SongLoader.getSongList(context));
                                             }
                                         })
                                         .onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -182,10 +169,11 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                                 break;
 
                             case R.id.bittu_menu_setAsRintone:
+                                RandomUtils.setAsRingtone(context,songList.get(getAdapterPosition()).getPath());
                                 break;
 
                             case R.id.bittu_menu_shareTrack:
-                                Utils.shareSongFile(context,filteredDataItems,getAdapterPosition());
+                                RandomUtils.shareSongFile(context,filteredDataItems,getAdapterPosition());
                                 break;
 
                             case R.id.bittu_menu_showAlbum:
@@ -193,7 +181,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                                 break;
 
                             case R.id.bittu_menu_showInfo:
-                                Utils.showSongDetailDialog(context,filteredDataItems,getAdapterPosition());
+                                RandomUtils.showSongDetailDialog(context,filteredDataItems,getAdapterPosition());
                                 break;
 
                             case R.id.bittu_menu_addtoplaylist:
@@ -234,7 +222,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
         //setAlbumArt(position,holder);
         //setOnClicks(holder,position);
 
-        String path = ListSongs.getAlbumArt(context,
+        String path = RandomUtils.getAlbumArt(context,
                 reference.get(position).getAlbumId());
 
         int size = dpToPx(70);

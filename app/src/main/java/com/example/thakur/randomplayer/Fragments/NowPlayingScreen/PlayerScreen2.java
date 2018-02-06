@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -20,27 +19,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.Transformation;
-import com.bumptech.glide.load.engine.Resource;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
+
+import com.example.thakur.randomplayer.Loaders.SongLoader;
 import com.example.thakur.randomplayer.MiniPlayer;
 import com.example.thakur.randomplayer.MyApp;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Services.MusicService;
-import com.example.thakur.randomplayer.Utilities.Utils;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Song;
-import com.github.clans.fab.FloatingActionButton;
 
 import java.io.File;
-import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,7 +74,7 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener, See
 
         }
         activity = getActivity();
-        songList = ListSongs.getSongList(activity);
+        songList = SongLoader.getSongList(activity);
 
 
         IntentFilter filter = new IntentFilter();
@@ -120,9 +113,9 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener, See
     }
 
     private void updateUI(int pos, boolean isPaying) {
-        String path = ListSongs.getAlbumArt(activity, songList.get(pos).getAlbumId());
+        String path = RandomUtils.getAlbumArt(activity, songList.get(pos).getAlbumId());
 
-        if (Utils.isPathValid(path)) {
+        if (RandomUtils.isPathValid(path)) {
             Glide.with(this).asBitmap().load(new File(path))
                     .into(new SimpleTarget<Bitmap>() {
                         @Override

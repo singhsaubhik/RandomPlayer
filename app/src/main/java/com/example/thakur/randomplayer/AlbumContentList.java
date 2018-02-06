@@ -1,6 +1,5 @@
 package com.example.thakur.randomplayer;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,16 +7,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.afollestad.appthemeengine.Config;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.thakur.randomplayer.Adapters.AlbumContentAdapter;
-import com.example.thakur.randomplayer.BaseActivity.BaseThemedActivity;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
+import com.example.thakur.randomplayer.Loaders.AlbumLoader;
 import com.example.thakur.randomplayer.Utilities.Helper;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Song;
 
 
@@ -51,7 +49,7 @@ public class AlbumContentList extends AppCompatActivity{
 
 
         albumId = getIntent().getLongExtra("albumId",0);
-        album = ListSongs.getAlbumSongList(getApplicationContext(),albumId);
+        album = AlbumLoader.getAlbumSongList(getApplicationContext(),albumId);
         adapter = new AlbumContentAdapter(getApplicationContext(),album);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setAdapter(adapter);
@@ -60,7 +58,7 @@ public class AlbumContentList extends AppCompatActivity{
 
         setupToolbar();
 
-        String path = ListSongs.getAlbumArt(getApplicationContext(),albumId);
+        String path = RandomUtils.getAlbumArt(getApplicationContext(),albumId);
 
         try{
             Glide.with(this)
@@ -81,7 +79,7 @@ public class AlbumContentList extends AppCompatActivity{
     private void setupToolbar(){
         try{
 
-            getSupportActionBar().setTitle(ListSongs.getAlbumFromId(getApplicationContext(),albumId).getAlbumTitle());
+            getSupportActionBar().setTitle(AlbumLoader.getAlbumFromId(getApplicationContext(),albumId).getAlbumTitle());
         }catch (Exception e){
             e.printStackTrace();
         }

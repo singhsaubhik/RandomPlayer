@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 import com.example.thakur.randomplayer.Adapters.AlbumListAdapter;
 import com.example.thakur.randomplayer.Loaders.AlbumLoader;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.items.Album;
 
@@ -46,7 +45,7 @@ public class AlbumListFragment extends android.support.v4.app.Fragment{
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        albumList = ListSongs.getAlbumList(getActivity());
+        albumList = AlbumLoader.getAlbumList(getActivity());
         albumListAdapter = new AlbumListAdapter(context,albumList);
         mRecycler = view.findViewById(R.id.albumsListContainer);
         //fastScroller = view.findViewById(R.id.album_scroller);

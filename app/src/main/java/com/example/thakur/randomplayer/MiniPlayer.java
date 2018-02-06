@@ -18,8 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
+import com.example.thakur.randomplayer.Loaders.SongLoader;
 import com.example.thakur.randomplayer.Services.MusicService;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Song;
 
 import java.io.File;
@@ -62,7 +63,7 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        list = ListSongs.getSongList(getActivity());
+        list = SongLoader.getSongList(getActivity());
 
     }
 
@@ -122,7 +123,7 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
 
 
     private void updateUI(int pos, boolean isPalying) {
-        String path = ListSongs.getAlbumArt(context, list.get(pos).getAlbumId());
+        String path = RandomUtils.getAlbumArt(context, list.get(pos).getAlbumId());
         try {
             Glide.with(this).load(new File(path))
                     .into(image);

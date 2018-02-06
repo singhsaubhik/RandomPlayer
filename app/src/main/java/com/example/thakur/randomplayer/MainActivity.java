@@ -1,25 +1,17 @@
 package com.example.thakur.randomplayer;
 
-import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,7 +22,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,46 +32,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.appthemeengine.Config;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.example.thakur.randomplayer.Adapters.ViewPagerAdapter;
-import com.example.thakur.randomplayer.BaseActivity.BaseServiceActivity;
 import com.example.thakur.randomplayer.BaseActivity.BaseThemedActivity;
 import com.example.thakur.randomplayer.BaseActivity.SearchActivity;
 import com.example.thakur.randomplayer.BaseActivity.SettingsActivity;
 import com.example.thakur.randomplayer.Fragments.*;
-import com.example.thakur.randomplayer.Fragments.NowPlayingScreen.PlayerScreen2;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
-import com.example.thakur.randomplayer.Loaders.TopAndRecentlyPlayedTracksLoader;
+import com.example.thakur.randomplayer.Loaders.SongLoader;
 import com.example.thakur.randomplayer.Services.MusicService;
-import com.example.thakur.randomplayer.Utilities.Utils;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Song;
-import com.mikepenz.iconics.Iconics;
-import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.MiniDrawer;
-import com.mikepenz.materialdrawer.holder.BadgeStyle;
 import com.mikepenz.materialdrawer.holder.ImageHolder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainActivity extends BaseThemedActivity
@@ -624,9 +598,9 @@ public class MainActivity extends BaseThemedActivity
 
     private void buildHeader(final boolean compact, final Bundle savedInstanceState) {
         ArrayList<Song> list = new ArrayList<>();
-        list = ListSongs.getSongList(MainActivity.this);
+        list = SongLoader.getSongList(MainActivity.this);
         String path;
-        path = ListSongs.getAlbumArt(MainActivity.this,list.get(0).getAlbumId());
+        path = RandomUtils.getAlbumArt(MainActivity.this,list.get(0).getAlbumId());
 
         headerResult = new AccountHeaderBuilder()
                 .withActivity(MainActivity.this)

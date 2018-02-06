@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.thakur.randomplayer.Adapters.ArtistsListAdapter;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
+import com.example.thakur.randomplayer.Loaders.ArtistLoader;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.items.Artist;
 
@@ -45,7 +45,7 @@ public class ArtistList extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         recyclerView = view.findViewById(R.id.artist_recycler);
-        list = ListSongs.getArtistList(context);
+        list = ArtistLoader.getArtistList(context);
         ArtistsListAdapter adapter = new ArtistsListAdapter(context,list,this);
 
         recyclerView.setAdapter(adapter);

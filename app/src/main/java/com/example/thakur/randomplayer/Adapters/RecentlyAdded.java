@@ -9,16 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.MyApp;
-import com.example.thakur.randomplayer.PlayList;
 import com.example.thakur.randomplayer.R;
-import com.example.thakur.randomplayer.Utilities.Utils;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Song;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -44,9 +41,9 @@ public class RecentlyAdded extends RecyclerView.Adapter<RecentlyAdded.RecentlyAd
     public void onBindViewHolder(RecentlyAddedViewHolder holder, int position) {
         holder.song_name.setText(list.get(position).getName());
         holder.artist_name.setText(list.get(position).getArtist());
-        String path = ListSongs.getAlbumArt(context,list.get(position).getAlbumId());
+        String path = RandomUtils.getAlbumArt(context,list.get(position).getAlbumId());
 
-        if(Utils.isPathValid(path)){
+        if(RandomUtils.isPathValid(path)){
             Picasso.with(context).load(new File(path))
                     .placeholder(R.drawable.default_art)
                     .into(holder.album_art);

@@ -160,11 +160,97 @@ public class SongLoader {
         return arrayList;
     }
 
+
+
+
+
     public static List<Song> searchSongs(Context context, String searchString, int limit) {
         ArrayList<Song> result = getSongsForCursor(makeSongCursor(context, "title LIKE ?", new String[]{searchString + "%"}));
         if (result.size() < limit) {
             result.addAll(getSongsForCursor(makeSongCursor(context, "title LIKE ?", new String[]{"%_" + searchString + "%"})));
         }
         return result.size() < limit ? result : result.subList(0, limit);
+    }
+
+
+
+
+    public static Song getSongById(Context context, long songId) {
+        System.gc();
+        final String where = MediaStore.Audio.Media.IS_MUSIC + "=1 AND "
+                + MediaStore.Audio.Media._ID + "='" + songId + "'";
+        Cursor musicCursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                null, where, null, null);
+        if (musicCursor != null && musicCursor.moveToFirst()) {
+            int titleColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.TITLE);
+            int idColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media._ID);
+            int artistColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.ARTIST);
+            int pathColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.DATA);
+            int albumIdColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.ALBUM_ID);
+            int albumColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.ALBUM);
+            int addedDateColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.DATE_ADDED);
+            int songDurationColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.DATE_ADDED);
+            return new Song(musicCursor.getLong(idColumn),
+                    musicCursor.getString(titleColumn),
+                    musicCursor.getString(artistColumn),
+                    musicCursor.getString(pathColumn), false,
+                    musicCursor.getLong(albumIdColumn),
+                    musicCursor.getString(albumColumn),
+                    musicCursor.getLong(addedDateColumn),
+                    musicCursor.getLong(songDurationColumn));
+        }
+        return null;
+    }
+
+
+
+
+
+    public static ArrayList<Song> getSongList(Context context) {
+
+        System.gc();
+        ArrayList<Song> songList = new ArrayList<>();
+        final String where = MediaStore.Audio.Media.IS_MUSIC + "=1";
+        final String orderBy = MediaStore.Audio.Media.TITLE;
+        Cursor musicCursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                null, where, null, orderBy);
+        if (musicCursor != null && musicCursor.moveToFirst()) {
+            int titleColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.TITLE);
+            int idColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media._ID);
+            int artistColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.ARTIST);
+            int pathColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.DATA);
+            int albumIdColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.ALBUM_ID);
+            int albumColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.ALBUM);
+            int addedDateColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.DATE_ADDED);
+            int songDurationColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.DURATION);
+            do {
+                songList.add(new Song(musicCursor.getLong(idColumn),
+                        musicCursor.getString(titleColumn),
+                        musicCursor.getString(artistColumn),
+                        musicCursor.getString(pathColumn), false,
+                        musicCursor.getLong(albumIdColumn),
+                        musicCursor.getString(albumColumn),
+                        musicCursor.getLong(addedDateColumn),
+                        musicCursor.getLong(songDurationColumn)));
+            }
+            while (musicCursor.moveToNext());
+        }
+        return songList;
     }
 }

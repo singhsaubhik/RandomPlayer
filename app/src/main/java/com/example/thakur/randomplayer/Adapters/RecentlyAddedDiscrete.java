@@ -8,14 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.thakur.randomplayer.AlbumContentList;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
-import com.example.thakur.randomplayer.MainActivity;
-import com.example.thakur.randomplayer.PlayList;
 import com.example.thakur.randomplayer.R;
-import com.example.thakur.randomplayer.Utilities.Utils;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Song;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,31 +34,23 @@ public class RecentlyAddedDiscrete extends RecyclerView.Adapter<RecentlyAddedDis
 
     @Override
     public RecentlyAddedDiscreteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.discreteview_layout_playlist,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.discreteview_layout_playlist, parent, false);
         context = view.getContext();
         return new RecentlyAddedDiscreteViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecentlyAddedDiscreteViewHolder holder, int position) {
-        if(Utils.isPathValid(ListSongs.getAlbumArt(context,list.get(position).getAlbumId()))){
-            Picasso.with(context)
-                    .load(new File(ListSongs.getAlbumArt(context,list.get(position).getAlbumId())))
-                    .placeholder(R.drawable.discrete_default70dp)
+        if (RandomUtils.isPathValid(RandomUtils.getAlbumArt(context, list.get(position).getAlbumId()))) {
+            Glide.with(context).load(new File(RandomUtils.getAlbumArt(context, list.get(position).getAlbumId())))
+                    .apply(new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888))
                     .into(holder.discrete_img);
-        }else{
-            Picasso.with(context)
-                    .load(R.drawable.discrete_default70dp)
+        } else {
+            Glide.with(context).load(R.drawable.discrete_default70dp)
+                    .apply(new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888))
                     .into(holder.discrete_img);
         }
-        try{
-            Picasso.with(context)
-                    .load(new File(ListSongs.getAlbumArt(context,list.get(position).getAlbumId())))
-                    .placeholder(R.drawable.discrete_default70dp)
-                    .into(holder.discrete_img);
-        }catch (Exception e){
 
-        }
 
     }
 
@@ -68,8 +59,9 @@ public class RecentlyAddedDiscrete extends RecyclerView.Adapter<RecentlyAddedDis
         return list.size();
     }
 
-    public class RecentlyAddedDiscreteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class RecentlyAddedDiscreteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView discrete_img;
+
         public RecentlyAddedDiscreteViewHolder(View itemView) {
             super(itemView);
 
@@ -80,7 +72,7 @@ public class RecentlyAddedDiscrete extends RecyclerView.Adapter<RecentlyAddedDis
         @Override
         public void onClick(View v) {
             Intent i = new Intent(context, AlbumContentList.class);
-            i.putExtra("albumId",list.get(getAdapterPosition()).getAlbumId());
+            i.putExtra("albumId", list.get(getAdapterPosition()).getAlbumId());
             context.startActivity(i);
 
 

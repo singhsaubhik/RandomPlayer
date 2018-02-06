@@ -7,11 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -31,8 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.afollestad.appthemeengine.ATE;
-import com.afollestad.appthemeengine.ATEActivity;
 import com.afollestad.appthemeengine.Config;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
@@ -40,16 +36,13 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.thakur.randomplayer.Adapters.DiscreteViewAdapter;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.MyApp;
-import com.example.thakur.randomplayer.PlayerActivity;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Services.MusicService;
-import com.example.thakur.randomplayer.Utilities.ATEUtils;
 import com.example.thakur.randomplayer.Utilities.Helper;
 import com.example.thakur.randomplayer.Utilities.ImageUtils;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
-import com.example.thakur.randomplayer.Utilities.Utils;
 import com.example.thakur.randomplayer.items.Song;
 
 import com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView;
@@ -274,10 +267,10 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
         songTitle.setText("" + songList.get(pos).getName());
         artist_name.setText("" + songList.get(pos).getArtist());
 
-        String path = ListSongs.getAlbumArt(context, songList.get(pos).getAlbumId());
+        String path = RandomUtils.getAlbumArt(context, songList.get(pos).getAlbumId());
 
         if (loadImage) {
-            if (Utils.isPathValid(path)) {
+            if (RandomUtils.isPathValid(path)) {
                 Glide.with(this).asBitmap().load(new File(path))
                         .apply(new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888))
                         .into(new SimpleTarget<Bitmap>() {

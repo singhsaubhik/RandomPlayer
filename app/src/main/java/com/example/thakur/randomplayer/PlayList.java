@@ -1,7 +1,5 @@
 package com.example.thakur.randomplayer;
 
-import android.app.ProgressDialog;
-
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -11,18 +9,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.thakur.randomplayer.Adapters.RecentlyAdded;
 import com.example.thakur.randomplayer.Adapters.RecentlyAddedDiscrete;
 import com.example.thakur.randomplayer.Loaders.LastAddedLoader;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.Loaders.PlaylistSongLoader;
 import com.example.thakur.randomplayer.Loaders.SongLoader;
 import com.example.thakur.randomplayer.Loaders.TopTracksLoader;
-import com.example.thakur.randomplayer.Provider.RecentStore;
 
-import com.example.thakur.randomplayer.Utilities.Utils;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Constants;
 import com.example.thakur.randomplayer.items.Song;
 import com.squareup.picasso.Picasso;
@@ -128,7 +123,7 @@ public class PlayList extends AppCompatActivity {
 
     private void setHeaderImage(){
 
-        if(Utils.isPathValid(path)){
+        if(RandomUtils.isPathValid(path)){
             Picasso.with(getApplicationContext())
                     .load(new File(path))
                     .placeholder(R.drawable.default_art)
@@ -154,7 +149,7 @@ public class PlayList extends AppCompatActivity {
             List<Song> recentsongs = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
             recentlyAdded = new RecentlyAdded((ArrayList<Song>) recentsongs);
             discrete_adapter = new RecentlyAddedDiscrete((ArrayList<Song>) recentsongs);
-            path = ListSongs.getAlbumArt(PlayList.this,recentsongs.get(0).getAlbumId());
+            path = RandomUtils.getAlbumArt(PlayList.this,recentsongs.get(0).getAlbumId());
             //mAdapter = new SongsListAdapter(mContext, recentsongs, true, animate);
             //mAdapter.setPlaylistId(playlistID);
             return "Executed";
@@ -181,7 +176,7 @@ public class PlayList extends AppCompatActivity {
             List<Song> lastadded = LastAddedLoader.getLastAddedSongs(PlayList.this);
             recentlyAdded = new RecentlyAdded((ArrayList<Song>) lastadded);
             discrete_adapter = new RecentlyAddedDiscrete((ArrayList<Song>) lastadded);
-            path = ListSongs.getAlbumArt(PlayList.this,lastadded.get(0).getAlbumId());
+            path = RandomUtils.getAlbumArt(PlayList.this,lastadded.get(0).getAlbumId());
             return "Executed";
         }
 
@@ -205,7 +200,7 @@ public class PlayList extends AppCompatActivity {
             List<Song> toptracks = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
             recentlyAdded = new RecentlyAdded((ArrayList<Song>) toptracks);
             discrete_adapter = new RecentlyAddedDiscrete((ArrayList<Song>) toptracks);
-            path = ListSongs.getAlbumArt(PlayList.this,toptracks.get(0).getAlbumId());
+            path = RandomUtils.getAlbumArt(PlayList.this,toptracks.get(0).getAlbumId());
             return "Executed";
         }
 
@@ -229,7 +224,7 @@ public class PlayList extends AppCompatActivity {
             recentlyAdded = new RecentlyAdded((ArrayList<Song>) playlistsongs);
             discrete_adapter = new RecentlyAddedDiscrete((ArrayList<Song>) playlistsongs);
             try {
-                path = ListSongs.getAlbumArt(PlayList.this, playlistsongs.get(0).getAlbumId());
+                path = RandomUtils.getAlbumArt(PlayList.this, playlistsongs.get(0).getAlbumId());
             }catch (Exception e){
                 path = "";
                 //Toast.makeText(PlayList.this, e.getMessage(), Toast.LENGTH_SHORT).show();

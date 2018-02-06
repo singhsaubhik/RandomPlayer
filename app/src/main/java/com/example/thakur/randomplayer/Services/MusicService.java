@@ -1,50 +1,50 @@
 package com.example.thakur.randomplayer.Services;
 
+import android.annotation.TargetApi;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
+import android.graphics.Bitmap;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.audiofx.AudioEffect;
+import android.media.RemoteControlClient;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
 import android.os.PowerManager;
-import android.os.Process;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.Toast;
 
-import com.example.thakur.randomplayer.DatabaseHelper.HistoryStore;
 import com.example.thakur.randomplayer.Fragments.PlayerFragment;
+import com.example.thakur.randomplayer.Handler.MediaButtonIntentReceiver;
 import com.example.thakur.randomplayer.Handler.NotificationHandler;
 import com.example.thakur.randomplayer.Handler.PlayerHandler;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
-import com.example.thakur.randomplayer.Loaders.MusicPlaybackQueueStore;
+import com.example.thakur.randomplayer.Loaders.AlbumLoader;
+import com.example.thakur.randomplayer.Loaders.SongLoader;
 import com.example.thakur.randomplayer.MainActivity;
-import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Utilities.PreferencesUtility;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
 import com.example.thakur.randomplayer.items.Song;
 import com.squareup.seismic.ShakeDetector;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-public class MusicService extends Service implements MediaPlayer.OnCompletionListener , ShakeDetector.Listener {
+public class MusicService extends Service implements MediaPlayer.OnCompletionListener, ShakeDetector.Listener {
 
     public static final String TAG = MusicService.class.getSimpleName();
 
@@ -64,6 +64,20 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     public static final String ACTION_PAUSE_SONG = "com.example.thakur.randomplayer.Services.ACTION_PAUSE_SONG";
     public static final String PLAYING_STATUS_CHANGED = "com.example.thakur.randomplayer.Services.PLAYING_STATUS_CHANGED";
     public static final String DISCRETE_VIEW_CLICK = "com.example.thakur.randomplayer.Services.DISCRETE_VIEW_CLICK";
+    public static final String SERVICECMD = MusicService.class.getSimpleName() + ".musicservicecommand";
+    public static final String CMDNAME = "command";
+    public static final String CMDNEXT = "next";
+    public static final String NEXT_ACTION = MusicService.class.getSimpleName() + ".next";
+    public static final String PREVIOUS_ACTION = MusicService.class.getSimpleName() + ".previous";
+    public static final String PAUSE_ACTION = MusicService.class.getSimpleName() + ".pause";
+    public static final String TOGGLEPAUSE_ACTION = MusicService.class.getSimpleName() + ".togglepause";
+
+    public static final String CMDSTOP = "stop";
+    public static final String CMDPAUSE = "pause";
+    public static final String CMDPLAY = "play";
+    public static final String CMDPREVIOUS = "previous";
+    public static final String CMDTOGGLEPAUSE = "togglepause";
+    public static final String FROM_MEDIA_BUTTON = "frommediabutton";
 
 
     public static int time = 0;
@@ -71,6 +85,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     public static boolean isPlaying = true;
     public static boolean isServiceRunning;
     public static boolean musicPausedBecauseOfCall;
+    private static boolean mPausedByTransientLossOfFocus = false;
     private AudioManager audioManager;
 
     private boolean notHandledMetaChangedForCurrentTrack;
@@ -80,15 +95,27 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     private static ShakeDetector shakeDetector;
 
 
-
-
     private PowerManager.WakeLock wakeLock;
-
-
-
+    public RemoteControlClient mRemoteControlClient;
+    private ComponentName mMediaButtonReceiverComponent;
+    private AudioManager mAudioManager;
 
 
     private boolean becomingNoisyReceiverRegistered;
+
+
+    private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            final String command = intent.getStringExtra(CMDNAME);
+
+
+            handleCommandIntent(intent);
+
+        }
+    };
+
 
     private IntentFilter becomingNoisyReceiverIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
     private final BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
@@ -119,13 +146,12 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     NotificationHandler notificationHandler;
 
     PhoneStateListener phoneStateListener;
+    MediaSessionCompat mSession;
 
 
     BroadcastReceiver mReciever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
-
             switch (intent.getAction()) {
                 case PLAY_SINGLE:
                     //Toast.makeText(MusicService.this, "Play Clickn"+songPos, Toast.LENGTH_SHORT).show();
@@ -185,7 +211,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     BroadcastReceiver headPhones = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(isReallyPlaying()) {
+            if (isReallyPlaying()) {
                 mPlayer.pause();
             }
         }
@@ -217,8 +243,8 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
         wakeLock.setReferenceCounted(false);
 
-        registerReceiver(headPhones, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
-        registerReceiver(becomingNoisyReceiver,becomingNoisyReceiverIntentFilter);
+        //registerReceiver(headPhones, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
+        registerReceiver(becomingNoisyReceiver, becomingNoisyReceiverIntentFilter);
 
 
         pref = new UserPreferenceHandler(getApplicationContext());
@@ -227,9 +253,13 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         shakeDetector = new ShakeDetector(this);
 
-        initilizeShakeDetector();
 
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mMediaButtonReceiverComponent = new ComponentName(getPackageName(),
+                MediaButtonIntentReceiver.class.getName());
+        mAudioManager.registerMediaButtonEventReceiver(mMediaButtonReceiverComponent);
 
+        //initilizeShakeDetector();
 
 
         super.onCreate();
@@ -264,7 +294,22 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         playFilter.addAction(PLAY_SONG_BY_ID);
         registerReceiver(playReceiver, playFilter);
 
-        songList = ListSongs.getSongList(getApplicationContext());
+
+        // Initialize the intent filter and each action
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(SERVICECMD);
+        filter.addAction(TOGGLEPAUSE_ACTION);
+        filter.addAction(PAUSE_ACTION);
+        filter.addAction(NEXT_ACTION);
+        filter.addAction(PREVIOUS_ACTION);
+
+        // Attach the broadcast listener
+        registerReceiver(mIntentReceiver, filter);
+
+        setUpRemoteControlClient();
+
+
+        songList = SongLoader.getSongList(getApplicationContext());
         mPlayer = new PlayerHandler(getApplicationContext());
         mPlayer.init(songList);
         mPlayer.getmPlayer().setOnCompletionListener(this);
@@ -294,7 +339,6 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
         return mBinder;
     }
 
@@ -420,8 +464,8 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     }
 
     public void playSongById(long songId) {
-        Song s = ListSongs.getSong(getApplicationContext(), songId);
-        ArrayList<Song> list = ListSongs.getSongList(MusicService.this);
+        Song s = SongLoader.getSong(getApplicationContext(), (int) songId);
+        ArrayList<Song> list = SongLoader.getSongList(MusicService.this);
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getSongId() == s.getSongId()) {
                 songPos = i;
@@ -460,7 +504,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     public void playAlbum() {
         try {
             //mPlayer.init(songList);
-            setSongList(ListSongs.getAlbumSongList(getApplicationContext(), album_id));
+            setSongList(AlbumLoader.getAlbumSongList(getApplicationContext(), album_id));
             mPlayer.playSong(songPos);
             isPlaying = true;
             updateNotificationPlayer();
@@ -614,6 +658,8 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
         } catch (Exception e) {
 
+
+
         }
     }
 
@@ -623,7 +669,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     }
 
     public void playFolder() {
-        long id = ListSongs.getIdFromTitle(getApplicationContext(), folderSongTitle);
+        long id = RandomUtils.getIdFromTitle(getApplicationContext(), folderSongTitle);
         song_id = id;
 
         playSongById();
@@ -643,7 +689,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         return songList.get(songPos);
     }
 
-    private void phoneStateListener(){
+    private void phoneStateListener() {
         phoneStateListener = new PhoneStateListener() {
             @Override
             public void onCallStateChanged(int state, String incomingNumber) {
@@ -653,6 +699,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                     if (isReallyPlaying()) {
                         mPlayer.pause();
                         musicPausedBecauseOfCall = true;
+
                     }
                 } else if (state == TelephonyManager.CALL_STATE_IDLE) {
                     //Not in call: Play music
@@ -660,6 +707,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                     if (musicPausedBecauseOfCall) {
                         mPlayer.start();
                         musicPausedBecauseOfCall = false;
+
                     }
                 } else if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                     //A call is dialing, active or on hold
@@ -667,6 +715,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                     if (isReallyPlaying()) {
                         mPlayer.pause();
                         musicPausedBecauseOfCall = true;
+
                     }
                 }
                 super.onCallStateChanged(state, incomingNumber);
@@ -678,11 +727,109 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         }
     }
 
-    private void initilizeShakeDetector(){
-        if (PreferencesUtility.getInstance(MusicService.this).getShakeDetectorState()) {
+    private void initilizeShakeDetector() {
+        if (pref.getHearShake()) {
             setShakeListener(true);
         } else {
             setShakeListener(false);
+        }
+    }
+
+
+    private void setUpMediaSession() {
+        mSession = new MediaSessionCompat(this, "Random");
+        mSession.setCallback(new MediaSessionCompat.Callback() {
+            @Override
+            public void onPause() {
+                mPlayer.pause();
+                mPausedByTransientLossOfFocus = false;
+            }
+
+            @Override
+            public void onPlay() {
+                if (mPlayer != null) {
+                    mPlayer.start();
+                }
+            }
+
+            @Override
+            public void onSeekTo(long pos) {
+                //seek(pos);
+            }
+
+            @Override
+            public void onSkipToNext() {
+                handleNotificationNext();
+            }
+
+            @Override
+            public void onSkipToPrevious() {
+                handleNotificationPrev();
+            }
+
+            @Override
+            public void onStop() {
+                mPlayer.pause();
+                mPausedByTransientLossOfFocus = false;
+                handleSeek(0);
+                //releaseServiceUiAndStop();
+            }
+        });
+        mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+    }
+
+
+    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private void setUpRemoteControlClient() {
+        //Legacy for ICS
+        if (mRemoteControlClient == null) {
+            Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+            mediaButtonIntent.setComponent(mMediaButtonReceiverComponent);
+            PendingIntent mediaPendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, 0);
+
+            // create and register the remote control client
+            mRemoteControlClient = new RemoteControlClient(mediaPendingIntent);
+            mAudioManager.registerRemoteControlClient(mRemoteControlClient);
+        }
+
+        mRemoteControlClient.setTransportControlFlags(
+                RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
+                        RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
+                        RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
+                        RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
+                        RemoteControlClient.FLAG_KEY_MEDIA_STOP);
+    }
+
+
+    private void handleCommandIntent(Intent intent) {
+        final String action = intent.getAction();
+        final String command = SERVICECMD.equals(action) ? intent.getStringExtra(CMDNAME) : null;
+
+        //if (D) Log.d(TAG, "handleCommandIntent: action = " + action + ", command = " + command);
+
+        /*if (NotificationHelper.checkIntent(intent)) {
+            goToPosition(mPlayPos + NotificationHelper.getPosition(intent));
+            return;
+        }*/
+
+        if (CMDNEXT.equals(command) || NEXT_ACTION.equals(action)) {
+            handleNotificationNext();
+        } else if (CMDPREVIOUS.equals(command) || PREVIOUS_ACTION.equals(action)) {
+            //prev(PREVIOUS_FORCE_ACTION.equals(action));
+            handleNotificationPrev();
+        } else if (CMDTOGGLEPAUSE.equals(command) || TOGGLEPAUSE_ACTION.equals(action)) {
+            if (isReallyPlaying()) {
+                mPlayer.pause();
+                mPausedByTransientLossOfFocus = false;
+            } else {
+                mPlayer.start();
+            }
+        } else if (CMDPAUSE.equals(command) || PAUSE_ACTION.equals(action)) {
+            mPlayer.pause();
+            mPausedByTransientLossOfFocus = false;
+        } else if (CMDPLAY.equals(command)) {
+            mPlayer.start();
         }
     }
 

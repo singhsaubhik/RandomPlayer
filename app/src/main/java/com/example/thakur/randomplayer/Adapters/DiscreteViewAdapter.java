@@ -8,11 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.thakur.randomplayer.Fragments.PlayerFragment;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Services.MusicService;
-import com.example.thakur.randomplayer.Utilities.Utils;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Song;
 import com.squareup.picasso.Picasso;
 
@@ -27,7 +25,6 @@ public class DiscreteViewAdapter extends RecyclerView.Adapter<DiscreteViewAdapte
 
     private Context context;
     private ArrayList<Song> list = new ArrayList<>();
-    private Utils utils;
 
     public DiscreteViewAdapter(ArrayList<Song> list) {
         this.list = list;
@@ -42,8 +39,8 @@ public class DiscreteViewAdapter extends RecyclerView.Adapter<DiscreteViewAdapte
 
     @Override
     public void onBindViewHolder(DiscreteViewHolder holder, int position) {
-        String path = ListSongs.getAlbumArt(context,list.get(position).getAlbumId());
-        if(Utils.isPathValid(path)){
+        String path = RandomUtils.getAlbumArt(context,list.get(position).getAlbumId());
+        if(RandomUtils.isPathValid(path)){
             Picasso.with(context).load(new File(path))
                     .into(holder.imageView);
         }

@@ -1,9 +1,7 @@
 package com.example.thakur.randomplayer.Adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,12 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Services.MusicService;
-import com.example.thakur.randomplayer.Utilities.Utils;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Song;
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -63,15 +59,14 @@ public class ArtistSongListAdapter extends RecyclerView.Adapter<ArtistSongListAd
     }
 
     private void setAlbumArt(int position, SimpleItemViewHolder holder) {
-        String path = ListSongs.getAlbumArt(context,
+        String path = RandomUtils.getAlbumArt(context,
                 items.get(position).getAlbumId());
-        Utils utils = new Utils(context);
-        int size = utils.dpToPx(50);
+        int size = RandomUtils.dpToPx(context , 50);
         if (path != null)
             Picasso.with(context).load(new File(path)).resize(size,
                     size).centerCrop().into(holder.img);
         else {
-            holder.img.setImageBitmap(utils.getBitmapOfVector(R.drawable.default_art, size, size));
+            holder.img.setImageBitmap(RandomUtils.getBitmapOfVector(context , R.drawable.default_art, size, size));
         }
     }
 

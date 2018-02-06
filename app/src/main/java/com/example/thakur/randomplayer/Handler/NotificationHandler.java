@@ -12,11 +12,10 @@ import android.os.Build;
 import android.widget.RemoteViews;
 
 
-import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.PlayerActivity;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Services.MusicService;
-import com.example.thakur.randomplayer.Utilities.Utils;
+import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Song;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -114,7 +113,7 @@ public class NotificationHandler {
             notificationCompat.contentView.setOnClickPendingIntent(R.id.noti_next_button, nextClickIntent);
             setPlayPause(playing);
 
-            String path = ListSongs.getAlbumArt(context, song.getAlbumId());
+            String path = RandomUtils.getAlbumArt(context, song.getAlbumId());
 
             try {
                 File f = null;
@@ -159,13 +158,13 @@ public class NotificationHandler {
     }
 
     private void setDefaultImageView() {
-        Utils utils = new Utils(context);
+
         notificationCompat.bigContentView.setImageViewBitmap(R.id.noti_album_art,
-                utils.getBitmapOfVector(R.drawable.default_art,
-                        utils.dpToPx(100), utils.dpToPx(100)));
+                RandomUtils.getBitmapOfVector(context , R.drawable.default_art,
+                        RandomUtils.dpToPx(context , 100), RandomUtils.dpToPx(context , 100)));
         notificationCompat.contentView.setImageViewBitmap(R.id.noti_album_art,
-                utils.getBitmapOfVector(R.drawable.default_art,
-                        utils.dpToPx(50), utils.dpToPx(50)));
+                RandomUtils.getBitmapOfVector(context , R.drawable.default_art,
+                        RandomUtils.dpToPx(context , 50), RandomUtils.dpToPx(context , 50)));
         //notificationManager.notify(NOTIFICATION_ID, notificationCompat);
     }
 

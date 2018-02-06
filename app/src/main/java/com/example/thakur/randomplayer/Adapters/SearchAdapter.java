@@ -15,22 +15,17 @@
 package com.example.thakur.randomplayer.Adapters;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.MyApp;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Utilities.NavigationUtils;
@@ -40,7 +35,6 @@ import com.example.thakur.randomplayer.items.Artist;
 import com.example.thakur.randomplayer.items.Song;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -88,7 +82,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemHolder
                 itemHolder.titleSong.setText(song.getName());
                 itemHolder.songartist.setText(song.getArtist());
                 try {
-                    Glide.with(mContext).load(new File(ListSongs.getAlbumArt(mContext, song.getAlbumId())))
+                    Glide.with(mContext).load(new File(RandomUtils.getAlbumArt(mContext, song.getAlbumId())))
                             .apply(new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888))
                             .into(itemHolder.albumArtSong);
                 } catch (Exception e) {
@@ -104,7 +98,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemHolder
                 itemHolder.albumartist.setText(album.getAlbumArtist());
 
                 try {
-                    Glide.with(mContext).load(new File(ListSongs.getAlbumArt(mContext, album.getAlbumId())))
+                    Glide.with(mContext).load(new File(RandomUtils.getAlbumArt(mContext, album.getAlbumId())))
                             .apply(new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888))
                             .into(itemHolder.albumArtAlbum);
                 } catch (Exception e) {

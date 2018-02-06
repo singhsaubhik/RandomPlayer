@@ -14,6 +14,7 @@ import com.example.thakur.randomplayer.MyApp;
 import com.example.thakur.randomplayer.Provider.RecentStore;
 import com.example.thakur.randomplayer.Services.MusicService;
 import com.example.thakur.randomplayer.Utilities.PreferencesUtility;
+import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
 import com.example.thakur.randomplayer.items.Song;
 import com.squareup.seismic.ShakeDetector;
 
@@ -158,7 +159,7 @@ public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener
             mPlayer.start();
             //service.updateNotificationPlayer();
             context.sendBroadcast(new Intent(MusicService.PLAYING_STATUS_CHANGED));
-            MyApp.getMyService().setShakeListener(true);
+            MyApp.getMyService().setShakeListener(new UserPreferenceHandler(context).getHearShake());
         }catch (Exception e){
             Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -221,6 +222,25 @@ public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener
                 if(mPlayer.isPlaying()){
                     mPlayer.pause();
                     context.sendBroadcast(new Intent(MusicService.PLAYING_STATUS_CHANGED));
+                }
+                break;
+
+            case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT:
+                if(mPlayer.isPlaying()){
+                    mPlayer.pause();
+                    context.sendBroadcast(new Intent(MusicService.PLAYING_STATUS_CHANGED));
+                }
+                break;
+
+            case AudioManager.AUDIOFOCUS_GAIN:
+                if(mPlayer.isPlaying()){
+                    mPlayer.setVolume(1.0f,1.0f);
+                }
+                break;
+
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                if(mPlayer.isPlaying()){
+                    mPlayer.setVolume(0.3f,0.3f);
                 }
                 break;
 

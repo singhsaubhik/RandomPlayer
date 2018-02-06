@@ -3,7 +3,6 @@ package com.example.thakur.randomplayer.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.graphics.Palette;
@@ -24,11 +23,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.thakur.randomplayer.AlbumContentList;
 import com.example.thakur.randomplayer.ItemClickListener;
-import com.example.thakur.randomplayer.Loaders.ListSongs;
 import com.example.thakur.randomplayer.MainActivity;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Utilities.RandomUtils;
-import com.example.thakur.randomplayer.Utilities.Utils;
 import com.example.thakur.randomplayer.items.Album;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
@@ -109,7 +106,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
         //String path = RandomUtils.getAlbumArt(context,albumList.get(position).getAlbumId());
 
 
-        if(Utils.isPathValid(path)) {
+        if(RandomUtils.isPathValid(path)) {
             Glide.with(context).asBitmap().load(new File(path)).apply(new RequestOptions().override(size))
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
@@ -120,7 +117,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
                             b.generate(new Palette.PaletteAsyncListener() {
                                 @Override
                                 public void onGenerated(@NonNull Palette palette) {
-                                    int[] colors = Utils.getAvailableColor(context,palette);
+                                    int[] colors = RandomUtils.getAvailableColor(context,palette);
                                     holder.layout.setBackgroundColor(colors[0]);
                                     holder.albumListName.setTextColor(colors[1]);
                                     holder.artist.setTextColor(colors[2]);
@@ -140,7 +137,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
                             b.generate(new Palette.PaletteAsyncListener() {
                                 @Override
                                 public void onGenerated(@NonNull Palette palette) {
-                                    int[] colors = Utils.getAvailableColor(context,palette);
+                                    int[] colors = RandomUtils.getAvailableColor(context,palette);
                                     holder.layout.setBackgroundColor(colors[0]);
                                     holder.albumListName.setTextColor(colors[1]);
                                     holder.artist.setTextColor(colors[2]);
@@ -192,10 +189,10 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
 
 
 
-    public void refresh(){
+    /*public void refresh(){
         this.albumList.clear();
         this.albumList.addAll(ListSongs.getAlbumList(context));
-    }
+    }*/
 
 }
 
