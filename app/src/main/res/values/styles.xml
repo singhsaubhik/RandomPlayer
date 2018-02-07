@@ -83,10 +83,10 @@
     <style name="ThemeBaseDark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/colorPrimaryDarkTheme</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkDarkTheme</item>
-        <item name="colorAccent">@color/colorAccentDarkTheme</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/window_background_dark</item>
         <item name="cardStyle">@style/CardViewStyle.Dark</item>
-        <item name="accentColor">@color/colorAccentDarkTheme</item>
+        <item name="accentColor">@color/colorAccent</item>
         <item name="iconColor">@android:color/white</item>
         <item name="windowBackground">@color/window_background_dark</item>
 

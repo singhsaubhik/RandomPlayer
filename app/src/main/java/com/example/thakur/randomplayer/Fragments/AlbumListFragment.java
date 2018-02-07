@@ -58,7 +58,7 @@ public class AlbumListFragment extends android.support.v4.app.Fragment{
         mRecycler.setHasFixedSize(true);
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         //mRecycler.addItemDecoration(new ItemDecorationAlbumColumns(10,10));
-        mRecycler.addItemDecoration(new SpacesItemDecoration(5));
+        mRecycler.addItemDecoration(new SpacesItemDecoration(8));
         //fastScroller.setRecyclerView(mRecycler);
         //fastScroller.setBubbleColor(getResources().getColor(R.color.accent));
 

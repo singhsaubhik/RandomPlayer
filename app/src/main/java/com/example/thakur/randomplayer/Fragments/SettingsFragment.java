@@ -156,6 +156,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         final ATECheckBoxPreference statusBarPref = (ATECheckBoxPreference) findPreference("colored_status_bar");
         final ATECheckBoxPreference navBarPref = (ATECheckBoxPreference) findPreference("colored_nav_bar");
         final ATECheckBoxPreference shakedetector = (ATECheckBoxPreference) findPreference("shake_listener");
+        final ATECheckBoxPreference colored_control = (ATECheckBoxPreference) findPreference("palette_control");
 
         statusBarPref.setChecked(Config.coloredStatusBar(getActivity(), mAteKey));
         statusBarPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -186,6 +187,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             public boolean onPreferenceChange(Preference preference, Object o) {
                 pref.setHearShake((Boolean) o);
                 MyApp.getMyService().setShakeListener(pref.getHearShake());
+                return true;
+            }
+        });
+
+
+        colored_control.setChecked(PreferencesUtility.getInstance(getActivity()).isColoredPlayingControl());
+        colored_control.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                PreferencesUtility.getInstance(getActivity()).setColoredPlayingControl((Boolean) o);
                 return true;
             }
         });

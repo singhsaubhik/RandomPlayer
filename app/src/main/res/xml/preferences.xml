@@ -76,6 +76,14 @@
             android:title="Shake Detector"
             app:ateKey_pref_checkBox="?ate_key" />
 
+        <com.afollestad.appthemeengine.prefs.ATECheckBoxPreference
+            android:defaultValue="false"
+            android:key="palette_control"
+            android:persistent="false"
+            android:summary="Palette Control toggle"
+            android:title="Colored palette control in screen"
+            app:ateKey_pref_checkBox="?ate_key" />
+
     </com.example.thakur.randomplayer.widgets.ThemedPreferenceCategory>
 
     <com.example.thakur.randomplayer.widgets.ThemedPreferenceCategory android:title="Other">

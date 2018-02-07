@@ -59,6 +59,8 @@ public final class PreferencesUtility {
     private static final String ARTIST_IMAGE = "artist_image";
     private static final String ARTIST_IMAGE_MOBILE = "artist_image_mobile";
 
+    private static final String COLORED_PLAYING_CONTROL = "colored_playing_control";
+
     private static PreferencesUtility sInstance;
 
     private static SharedPreferences mPreferences;
@@ -273,6 +275,14 @@ public final class PreferencesUtility {
 
     public boolean getShakeDetectorState(){
         return mPreferences.getBoolean(SHAKE_DETECTOR_STATE,false);
+    }
+
+    public boolean isColoredPlayingControl(){
+        return mPreferences.getBoolean(COLORED_PLAYING_CONTROL,false);
+    }
+
+    public void setColoredPlayingControl(boolean val){
+        mPreferences.edit().putBoolean(COLORED_PLAYING_CONTROL,val).apply();
     }
 
     /*public void updateService(Bundle extras) {

@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
@@ -32,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.appthemeengine.Config;
+import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.example.thakur.randomplayer.Adapters.ViewPagerAdapter;
 import com.example.thakur.randomplayer.BaseActivity.BaseThemedActivity;
 import com.example.thakur.randomplayer.BaseActivity.SearchActivity;
@@ -90,29 +92,18 @@ public class MainActivity extends BaseThemedActivity
     private Drawer result = null;
 
     int primaryColor;
+    boolean isDarkTheme;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= 21) {
-            try {
-
-                getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-
-        }
         setupWindowAnimations();
         connectToService();
 
-
-
-
-        //list = ListSongs.getSongList(MainActivity.this);
-
         nav_album_art = (ImageView) findViewById(R.id.nav_album_art);
+
+        isDarkTheme = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false);
 
         mService = MyApp.getMyService();
 
@@ -136,17 +127,11 @@ public class MainActivity extends BaseThemedActivity
         viewPager.setAdapter(adapter);
         viewpagertab.setViewPager(viewPager);
 
-
-
-
-
         slidingUpPanelLayout =  findViewById(R.id.sliding_layout);
-
-
-
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
 
 
         try {
@@ -221,7 +206,6 @@ public class MainActivity extends BaseThemedActivity
                         }
                     })
                     .withSavedInstance(savedInstanceState)
-                    .withToolbar(toolbar)
                     .build();
 
         } catch (Exception e) {
@@ -274,11 +258,6 @@ public class MainActivity extends BaseThemedActivity
         }
         else if (viewPager.getCurrentItem() != adapter.getItemId(0)) {
             viewPager.setCurrentItem(0, true);
-        } else if (isSearchOpened) {
-
-            getSupportActionBar().setDisplayShowCustomEnabled(false);
-            clearSearch();
-            isSearchOpened = false;
         } else if (slidingUpPanelLayout != null &&
                 (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED
                         || slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
@@ -346,19 +325,6 @@ public class MainActivity extends BaseThemedActivity
 
 
         } else if (id == R.id.nav_folder) {
-
-           /* Handler mHandler1 = new Handler();
-
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    setAlbumList();
-                }
-            };
-
-            mHandler1.postDelayed(runnable,500);
-            */
-
 
         } else if (id == R.id.nav_nowplaying) {
 
@@ -510,90 +476,12 @@ public class MainActivity extends BaseThemedActivity
     }
 
 
-    private void searchAdapters(String searchQuery) {
-        if (adapter.getItem(viewPager.getCurrentItem()) instanceof SongFragment) {
-            ((SongFragment) adapter.getItem(viewPager.getCurrentItem()))
-                    .filter(String.valueOf(searchQuery));
-        } else if (adapter.getItem(viewPager.getCurrentItem()) instanceof AlbumListFragment) {
 
-        }
-    }
 
-    protected void handleSearch() {
-        if (isSearchOpened) { //test if the search is open
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayShowCustomEnabled(false);
-                getSupportActionBar().setDisplayShowTitleEnabled(true);
-            }
 
-            //hides the keyboard
-            View view = getCurrentFocus();
-            if (view == null) {
-                view = new View(this);
-            }
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-            //add the search icon in the action bar
-            mSearchAction.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_search_white_48dp));
-            clearSearch();
-            searchQuery = "";
-            //findViewById(R.id.mini_player).setVisibility(View.VISIBLE);
 
-            isSearchOpened = false;
-        } else { //open the search entry
-            //findViewById(R.id.mini_player).setVisibility(View.GONE);
 
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayShowCustomEnabled(true); //enable it to display a custom view
-                getSupportActionBar().setCustomView(R.layout.search_bar_layout);//add the custom view
-                getSupportActionBar().setDisplayShowTitleEnabled(false); //hide the title
-            }
-            editSearch = getSupportActionBar().getCustomView().findViewById(R.id.edtSearch); //the text editor
-            editSearch.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void afterTextChanged(Editable s) {
-                    // TODO Auto-generated method stub
-                }
-
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    // TODO Auto-generated method stub
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    searchQuery = String.valueOf(s).toLowerCase();
-                    searchAdapters(searchQuery);
-                    //Toast.makeText(MainActivity.this, ""+searchQuery, Toast.LENGTH_SHORT).show();
-                }
-            });
-            editSearch.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    imm.showSoftInput(editSearch, InputMethodManager.SHOW_IMPLICIT);
-                }
-            });
-
-            editSearch.requestFocus();
-
-            //open the keyboard focused in the edtSearch
-            imm.showSoftInput(editSearch, InputMethodManager.SHOW_IMPLICIT);
-
-            //mSearchAction.setIcon(ContextCompat.getDrawable(this,R.drawable.ic_close_white_24dp));
-            //add the close icon
-            //mSearchAction.setIcon(getResources().getDrawable(R.drawable.cancel));
-            isSearchOpened = true;
-        }
-    }
-
-    private void clearSearch() {
-        if (viewPager.getCurrentItem() == 0) {
-            ((SongFragment) adapter.getItem(viewPager.getCurrentItem()))
-                    .filter("");
-        } else if (viewPager.getCurrentItem() == 1) {
-
-        }
-    }
 
 
     private void buildHeader(final boolean compact, final Bundle savedInstanceState) {
@@ -668,5 +556,7 @@ public class MainActivity extends BaseThemedActivity
         (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
     }
+
+
 
 }

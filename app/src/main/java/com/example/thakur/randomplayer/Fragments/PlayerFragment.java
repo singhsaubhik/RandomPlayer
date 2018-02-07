@@ -41,6 +41,7 @@ import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Services.MusicService;
 import com.example.thakur.randomplayer.Utilities.Helper;
 import com.example.thakur.randomplayer.Utilities.ImageUtils;
+import com.example.thakur.randomplayer.Utilities.PreferencesUtility;
 import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
 import com.example.thakur.randomplayer.items.Song;
@@ -281,12 +282,8 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
                                 p.generate(new Palette.PaletteAsyncListener() {
                                     @Override
                                     public void onGenerated(@NonNull Palette palette) {
-                                        Palette.Swatch swatch = palette.getMutedSwatch();
-                                        try {
-                                            seekBar.setCircleProgressColor(swatch.getRgb());
-                                            seekBar.setPointerColor(swatch.getRgb());
-                                        }catch (Exception e){
-                                            seekBar.setCircleProgressColor(getResources().getColor(R.color.primary));
+                                        if(PreferencesUtility.getInstance(getActivity()).isColoredPlayingControl()){
+                                            setColoredControl(palette);
                                         }
 
                                     }
@@ -302,19 +299,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                Palette.Builder p = Palette.from(resource);
 
-                                p.generate(new Palette.PaletteAsyncListener() {
-                                    @Override
-                                    public void onGenerated(@NonNull Palette palette) {
-                                        Palette.Swatch swatch = palette.getDominantSwatch();
-                                        try {
-                                            seekBar.setCircleProgressColor(swatch.getRgb());
-                                        }catch (Exception e){
-                                            seekBar.setCircleProgressColor(getResources().getColor(R.color.primary));
-                                        }
-                                    }
-                                });
                                 image.setImageBitmap(resource);
                                 doAlbumArtStuff(resource);
 
@@ -589,6 +574,17 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
     public void doAlbumArtStuff(Bitmap loadedImage) {
         setBlurredAlbumArt blurredAlbumArt = new setBlurredAlbumArt();
         blurredAlbumArt.execute(loadedImage);
+    }
+
+    private void setColoredControl(Palette palette){
+        Palette.Swatch swatch = palette.getMutedSwatch();
+        try {
+            seekBar.setCircleProgressColor(swatch.getRgb());
+            seekBar.setPointerColor(swatch.getRgb());
+        }catch (Exception e){
+            seekBar.setCircleProgressColor(getResources().getColor(R.color.primary));
+            seekBar.setPointerColor(getResources().getColor(R.color.primary));
+        }
     }
 
 
