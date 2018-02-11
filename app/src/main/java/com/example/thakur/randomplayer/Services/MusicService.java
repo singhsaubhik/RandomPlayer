@@ -207,7 +207,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
         }
     };
-
+//headphones listeners
     BroadcastReceiver headPhones = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
