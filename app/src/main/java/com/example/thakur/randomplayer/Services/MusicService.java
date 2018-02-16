@@ -207,7 +207,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
         }
     };
-
+//headphones listeners
     BroadcastReceiver headPhones = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -243,8 +243,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
         wakeLock.setReferenceCounted(false);
 
-        //registerReceiver(headPhones, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
-        registerReceiver(becomingNoisyReceiver, becomingNoisyReceiverIntentFilter);
+
 
 
         pref = new UserPreferenceHandler(getApplicationContext());
@@ -260,6 +259,8 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         mAudioManager.registerMediaButtonEventReceiver(mMediaButtonReceiverComponent);
 
         //initilizeShakeDetector();
+        //registerReceiver(headPhones, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
+        registerReceiver(becomingNoisyReceiver, becomingNoisyReceiverIntentFilter);
 
 
         super.onCreate();
