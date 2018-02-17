@@ -60,6 +60,7 @@ public final class PreferencesUtility {
     private static final String ARTIST_IMAGE_MOBILE = "artist_image_mobile";
 
     private static final String COLORED_PLAYING_CONTROL = "colored_playing_control";
+    private static final String DARK_THEME = "isdarktheme";
 
     private static PreferencesUtility sInstance;
 
@@ -283,6 +284,14 @@ public final class PreferencesUtility {
 
     public void setColoredPlayingControl(boolean val){
         mPreferences.edit().putBoolean(COLORED_PLAYING_CONTROL,val).apply();
+    }
+
+    public void setIsDarkTheme(boolean val){
+        mPreferences.edit().putBoolean(DARK_THEME,val).apply();
+    }
+
+    public boolean isDarkTheme(){
+        return mPreferences.getBoolean(DARK_THEME,false);
     }
 
     /*public void updateService(Bundle extras) {

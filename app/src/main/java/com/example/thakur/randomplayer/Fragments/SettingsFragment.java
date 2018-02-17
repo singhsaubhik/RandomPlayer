@@ -146,6 +146,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 // Marks both theme configs as changed so MainActivity restarts itself on return
                 Config.markChanged(getActivity(), "light_theme");
                 Config.markChanged(getActivity(), "dark_theme");
+                //PreferencesUtility.getInstance(getActivity()).setIsDarkTheme((Boolean) newValue);
                 // The dark_theme preference value gets saved by Android in the default PreferenceManager.
                 // It's used in getATEKey() of both the Activities.
                 getActivity().recreate();

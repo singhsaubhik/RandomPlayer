@@ -48,9 +48,9 @@ public class PlayListList extends AppCompatActivity {
         //LastAddedLoader.makeLastAddedCursor(getApplicationContext());
         recyclerView = findViewById(R.id.play_list_list_recycler);
         try{
-            list = (ArrayList<Playlist>) PlaylistLoader.getPlaylists(PlayListList.this,pref.getIsDefaultAdded());
+            list = (ArrayList<Playlist>) PlaylistLoader.getPlaylists(PlayListList.this,true);
             //list.get(0).setCover_albumId(LastAddedLoader.getLastAddedSongs(this).get(0).getAlbumId());
-            pref.setIsDefaultAdded(false);
+            //pref.setIsDefaultAdded(false);
         }catch(Exception e){
             Log.v(getLocalClassName(),e.getMessage());
         }

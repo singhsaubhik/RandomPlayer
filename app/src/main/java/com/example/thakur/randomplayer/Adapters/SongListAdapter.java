@@ -19,6 +19,9 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.thakur.randomplayer.AlbumContentList;
 import com.example.thakur.randomplayer.Dialogs.AddPlaylistDialog;
 import com.example.thakur.randomplayer.ItemClickListener;
@@ -27,6 +30,7 @@ import com.example.thakur.randomplayer.MainActivity;
 import com.example.thakur.randomplayer.MyApp;
 import com.example.thakur.randomplayer.PlayerActivity;
 import com.example.thakur.randomplayer.R;
+import com.example.thakur.randomplayer.Utilities.PreferencesUtility;
 import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
 import com.example.thakur.randomplayer.items.Song;
@@ -100,6 +104,8 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
             popUp = itemView.findViewById(R.id.song_item_menu);
             itemView.setOnClickListener(this);
             popUp.setOnClickListener(this);
+
+
             //itemView.setOnLongClickListener(this);
         }
 
@@ -211,11 +217,15 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.songs_list_item,parent,false);
+
         return new MyViewHolder(view);
     }
 
+
+
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+
         reference = filteredDataItems;
         holder.title.setText(reference.get(position).getName());
         holder.artist.setText(reference.get(position).getArtist());
@@ -226,12 +236,17 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                 reference.get(position).getAlbumId());
 
         int size = dpToPx(70);
-        if (path != null)
-            Picasso.with(context).load(new File(path)).resize(size,
-                    size).centerCrop().into(holder.img);
-        else {
-            Picasso.with(context).load(R.drawable.dispacito_64).resize(size,size).centerCrop().into(holder.img);
+
+        if(RandomUtils.isPathValid(path)) {
+            Glide.with(context).load(new File(path))
+                    .apply(new RequestOptions().override(size).format(DecodeFormat.PREFER_ARGB_8888))
+                    .into(holder.img);
+        }else{
+            Glide.with(context).load(R.drawable.dispacito_64)
+                    .apply(new RequestOptions().override(size))
+                    .into(holder.img);
         }
+
 
 
     }
@@ -253,21 +268,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
         return filteredDataItems.get(pos).getName();
     }
 
-    public void filter(String searchQuery){
-        if(!searchQuery.equals("")){
-            filteredDataItems.clear();
-            for(Song d:songList){
-                if(d.getName().toLowerCase().contains(searchQuery)){
-                    filteredDataItems.add(d);
-                }
-            }
-        }else {
-            filteredDataItems.clear();
-            filteredDataItems.addAll(songList);
 
-        }
-        notifyDataSetChanged();
-    }
 
 
     public void refresh(ArrayList<Song> list){

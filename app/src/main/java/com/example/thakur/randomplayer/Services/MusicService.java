@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
-import android.graphics.Bitmap;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -17,15 +16,13 @@ import android.media.RemoteControlClient;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
-import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.thakur.randomplayer.Fragments.PlayerFragment;
@@ -35,7 +32,6 @@ import com.example.thakur.randomplayer.Handler.PlayerHandler;
 import com.example.thakur.randomplayer.Loaders.AlbumLoader;
 import com.example.thakur.randomplayer.Loaders.SongLoader;
 import com.example.thakur.randomplayer.MainActivity;
-import com.example.thakur.randomplayer.Utilities.PreferencesUtility;
 import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
 import com.example.thakur.randomplayer.items.Song;
@@ -45,6 +41,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MusicService extends Service implements MediaPlayer.OnCompletionListener, ShakeDetector.Listener {
+
+
+    //testing
+
 
     public static final String TAG = MusicService.class.getSimpleName();
 
@@ -80,15 +80,11 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     public static final String FROM_MEDIA_BUTTON = "frommediabutton";
 
 
-    public static int time = 0;
-
     public static boolean isPlaying = true;
     public static boolean isServiceRunning;
     public static boolean musicPausedBecauseOfCall;
     private static boolean mPausedByTransientLossOfFocus = false;
-    private AudioManager audioManager;
 
-    private boolean notHandledMetaChangedForCurrentTrack;
 
     //Shake Detector
     private static SensorManager sensorManager;
@@ -101,32 +97,10 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     private AudioManager mAudioManager;
 
 
-    private boolean becomingNoisyReceiverRegistered;
 
 
-    private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            final String command = intent.getStringExtra(CMDNAME);
 
 
-            handleCommandIntent(intent);
-
-        }
-    };
-
-
-    private IntentFilter becomingNoisyReceiverIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-    private final BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, @NonNull Intent intent) {
-            if (intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-                //pause();
-                mPlayer.pause();
-            }
-        }
-    };
 
     private ContentObserver mediaStoreObserver;
 
@@ -148,92 +122,9 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     PhoneStateListener phoneStateListener;
     MediaSessionCompat mSession;
 
+    //BroadCastRecievers
+    BroadcastReceiver mReciever, headPhones, playReceiver;
 
-    BroadcastReceiver mReciever = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            switch (intent.getAction()) {
-                case PLAY_SINGLE:
-                    //Toast.makeText(MusicService.this, "Play Clickn"+songPos, Toast.LENGTH_SHORT).show();
-                    mPlayer.playSong(songPos);
-                    isPlaying = true;
-                    break;
-
-                case ACTION_NOTI_CLICK:
-                    final Intent i = new Intent();
-                    if (MainActivity.running) {
-
-                    } else {
-                        i.setClass(context, MainActivity.class);
-                        i.putExtra("openPanel", true);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
-                    }
-                    break;
-
-                case ACTION_NOTI_REMOVE:
-                    notificationHandler.setNotificationActive(false);
-                    break;
-
-                case ACTION_PAUSE_SONG:
-                    handleNotificationPlayPause();
-
-                    break;
-
-                case ACTION_NEXT_SONG:
-                    handleNotificationNext();
-                    break;
-
-                case ACTION_PREV_SONG:
-                    handleNotificationPrev();
-                    break;
-
-
-                case PLAYING_STATUS_CHANGED:
-                    updateNotificationPlayer();
-                    break;
-
-                case DISCRETE_VIEW_CLICK:
-                    try {
-                        songPos = intent.getIntExtra("discreteView.pos", 0);
-                        mPlayer.playSong(songPos);
-                        sendBroadcast(new Intent(PlayerFragment.trackChange));
-                    } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), "" + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-
-
-            }
-
-        }
-    };
-//headphones listeners
-    BroadcastReceiver headPhones = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (isReallyPlaying()) {
-                mPlayer.pause();
-            }
-        }
-    };
-
-    BroadcastReceiver playReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            switch (intent.getAction()) {
-                case PLAY_SINGLE:
-                    songPos = intent.getIntExtra("player.position", 0);
-                    mPlayer.playSong(songPos);
-                    //sendBroadcast(new Intent(PlayerFragment.trackChange));
-                    break;
-
-                case PLAY_SONG_BY_ID:
-                    playSongById(intent.getLongExtra("songId", 0));
-                    break;
-
-            }
-        }
-    };
 
     @Override
     public void onCreate() {
@@ -243,7 +134,9 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
         wakeLock.setReferenceCounted(false);
 
-
+        final HandlerThread thread = new HandlerThread("MusicPlayerHandler",
+                android.os.Process.THREAD_PRIORITY_BACKGROUND);
+        thread.start();
 
 
         pref = new UserPreferenceHandler(getApplicationContext());
@@ -259,8 +152,8 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         mAudioManager.registerMediaButtonEventReceiver(mMediaButtonReceiverComponent);
 
         //initilizeShakeDetector();
-        //registerReceiver(headPhones, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
-        registerReceiver(becomingNoisyReceiver, becomingNoisyReceiverIntentFilter);
+
+
 
 
         super.onCreate();
@@ -297,17 +190,9 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
 
         // Initialize the intent filter and each action
-        final IntentFilter filter = new IntentFilter();
-        filter.addAction(SERVICECMD);
-        filter.addAction(TOGGLEPAUSE_ACTION);
-        filter.addAction(PAUSE_ACTION);
-        filter.addAction(NEXT_ACTION);
-        filter.addAction(PREVIOUS_ACTION);
 
-        // Attach the broadcast listener
-        registerReceiver(mIntentReceiver, filter);
 
-        setUpRemoteControlClient();
+        //setUpRemoteControlClient();
 
 
         songList = SongLoader.getSongList(getApplicationContext());
@@ -316,6 +201,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         mPlayer.getmPlayer().setOnCompletionListener(this);
 
         registerReceiver(mReciever, intentFilter);
+        //registerReceiver(headPhones, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
         //mPlayer.playSong(songPos);
         //stopSelf(startId);
 
@@ -380,6 +266,95 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     public void hearShake() {
         handleNotificationNext();
 
+    }
+
+    private void initializeReciever() {
+        mReciever = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getAction()) {
+                    case PLAY_SINGLE:
+                        //Toast.makeText(MusicService.this, "Play Clickn"+songPos, Toast.LENGTH_SHORT).show();
+                        mPlayer.playSong(songPos);
+                        isPlaying = true;
+                        break;
+
+                    case ACTION_NOTI_CLICK:
+                        final Intent i = new Intent();
+                        if (MainActivity.running) {
+
+                        } else {
+                            i.setClass(context, MainActivity.class);
+                            i.putExtra("openPanel", true);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(i);
+                        }
+                        break;
+
+                    case ACTION_NOTI_REMOVE:
+                        notificationHandler.setNotificationActive(false);
+                        break;
+
+                    case ACTION_PAUSE_SONG:
+                        handleNotificationPlayPause();
+
+                        break;
+
+                    case ACTION_NEXT_SONG:
+                        handleNotificationNext();
+                        break;
+
+                    case ACTION_PREV_SONG:
+                        handleNotificationPrev();
+                        break;
+
+
+                    case PLAYING_STATUS_CHANGED:
+                        updateNotificationPlayer();
+                        break;
+
+                    case DISCRETE_VIEW_CLICK:
+                        try {
+                            songPos = intent.getIntExtra("discreteView.pos", 0);
+                            mPlayer.playSong(songPos);
+                            sendBroadcast(new Intent(PlayerFragment.trackChange));
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), "" + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+
+                }
+
+            }
+        };
+//headphones listeners
+        headPhones = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (isReallyPlaying()) {
+                    mPlayer.pause();
+                }
+            }
+        };
+
+
+        playReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getAction()) {
+                    case PLAY_SINGLE:
+                        songPos = intent.getIntExtra("player.position", 0);
+                        mPlayer.playSong(songPos);
+                        //sendBroadcast(new Intent(PlayerFragment.trackChange));
+                        break;
+
+                    case PLAY_SONG_BY_ID:
+                        playSongById(intent.getLongExtra("songId", 0));
+                        break;
+
+                }
+            }
+        };
     }
 
 
@@ -660,7 +635,6 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         } catch (Exception e) {
 
 
-
         }
     }
 
@@ -733,104 +707,6 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             setShakeListener(true);
         } else {
             setShakeListener(false);
-        }
-    }
-
-
-    private void setUpMediaSession() {
-        mSession = new MediaSessionCompat(this, "Random");
-        mSession.setCallback(new MediaSessionCompat.Callback() {
-            @Override
-            public void onPause() {
-                mPlayer.pause();
-                mPausedByTransientLossOfFocus = false;
-            }
-
-            @Override
-            public void onPlay() {
-                if (mPlayer != null) {
-                    mPlayer.start();
-                }
-            }
-
-            @Override
-            public void onSeekTo(long pos) {
-                //seek(pos);
-            }
-
-            @Override
-            public void onSkipToNext() {
-                handleNotificationNext();
-            }
-
-            @Override
-            public void onSkipToPrevious() {
-                handleNotificationPrev();
-            }
-
-            @Override
-            public void onStop() {
-                mPlayer.pause();
-                mPausedByTransientLossOfFocus = false;
-                handleSeek(0);
-                //releaseServiceUiAndStop();
-            }
-        });
-        mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-    }
-
-
-    @SuppressWarnings("deprecation")
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private void setUpRemoteControlClient() {
-        //Legacy for ICS
-        if (mRemoteControlClient == null) {
-            Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-            mediaButtonIntent.setComponent(mMediaButtonReceiverComponent);
-            PendingIntent mediaPendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, 0);
-
-            // create and register the remote control client
-            mRemoteControlClient = new RemoteControlClient(mediaPendingIntent);
-            mAudioManager.registerRemoteControlClient(mRemoteControlClient);
-        }
-
-        mRemoteControlClient.setTransportControlFlags(
-                RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
-                        RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
-                        RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
-                        RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
-                        RemoteControlClient.FLAG_KEY_MEDIA_STOP);
-    }
-
-
-    private void handleCommandIntent(Intent intent) {
-        final String action = intent.getAction();
-        final String command = SERVICECMD.equals(action) ? intent.getStringExtra(CMDNAME) : null;
-
-        //if (D) Log.d(TAG, "handleCommandIntent: action = " + action + ", command = " + command);
-
-        /*if (NotificationHelper.checkIntent(intent)) {
-            goToPosition(mPlayPos + NotificationHelper.getPosition(intent));
-            return;
-        }*/
-
-        if (CMDNEXT.equals(command) || NEXT_ACTION.equals(action)) {
-            handleNotificationNext();
-        } else if (CMDPREVIOUS.equals(command) || PREVIOUS_ACTION.equals(action)) {
-            //prev(PREVIOUS_FORCE_ACTION.equals(action));
-            handleNotificationPrev();
-        } else if (CMDTOGGLEPAUSE.equals(command) || TOGGLEPAUSE_ACTION.equals(action)) {
-            if (isReallyPlaying()) {
-                mPlayer.pause();
-                mPausedByTransientLossOfFocus = false;
-            } else {
-                mPlayer.start();
-            }
-        } else if (CMDPAUSE.equals(command) || PAUSE_ACTION.equals(action)) {
-            mPlayer.pause();
-            mPausedByTransientLossOfFocus = false;
-        } else if (CMDPLAY.equals(command)) {
-            mPlayer.start();
         }
     }
 

@@ -15,6 +15,7 @@ import com.example.thakur.randomplayer.Loaders.SongLoader;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Adapters.SongListAdapter;
 import com.example.thakur.randomplayer.Utilities.Helper;
+import com.example.thakur.randomplayer.Utilities.PreferencesUtility;
 import com.example.thakur.randomplayer.items.Song;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
@@ -34,6 +35,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
 
     private int accentColor;
     private String ateKey;
+    private boolean isDarkTheme = false;
 
 
     @Nullable
@@ -74,11 +76,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
     }
 
 
-    public void filter(String s){
-        if(songListAdapter !=null) {
-            songListAdapter.filter(s);
-        }
-    }
+
 
 
 
