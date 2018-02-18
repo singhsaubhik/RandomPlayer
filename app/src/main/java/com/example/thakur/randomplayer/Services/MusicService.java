@@ -1,7 +1,5 @@
 package com.example.thakur.randomplayer.Services;
 
-import android.annotation.TargetApi;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -130,6 +128,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     public void onCreate() {
         //audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         //audioManager.requestAudioFocus(this,AudioManager.STREAM_MUSIC,AudioManager.AUDIOFOCUS_GAIN);
+        initializeReciever();
         final PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
         wakeLock.setReferenceCounted(false);
@@ -201,9 +200,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         mPlayer.getmPlayer().setOnCompletionListener(this);
 
         registerReceiver(mReciever, intentFilter);
-        //registerReceiver(headPhones, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
-        //mPlayer.playSong(songPos);
-        //stopSelf(startId);
+
 
         return START_NOT_STICKY;
     }
@@ -638,11 +635,6 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         }
     }
 
-
-    public void setFolderSongTitle(String str) {
-        folderSongTitle = str;
-    }
-
     public void playFolder() {
         long id = RandomUtils.getIdFromTitle(getApplicationContext(), folderSongTitle);
         song_id = id;
@@ -702,13 +694,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         }
     }
 
-    private void initilizeShakeDetector() {
-        if (pref.getHearShake()) {
-            setShakeListener(true);
-        } else {
-            setShakeListener(false);
-        }
-    }
+
 
 
 }

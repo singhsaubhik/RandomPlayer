@@ -39,13 +39,6 @@ public class Constants {
 
     public static final String WITH_ANIMATIONS = "with_animations";
 
-    public static final String TIMBER1 = "timber1";
-    public static final String TIMBER2 = "timber2";
-    public static final String TIMBER3 = "timber3";
-    public static final String TIMBER4 = "timber4";
-    public static final String TIMBER5 = "timber5";
-    public static final String TIMBER6 = "timber6";
-
     public static final String NAVIGATE_SETTINGS = "navigate_settings";
     public static final String NAVIGATE_SEARCH = "navigate_search";
 
@@ -65,6 +58,8 @@ public class Constants {
 
 
     public static final String ACTIVITY_TRANSITION = "activity_transition";
+
+    public static final String HEADER_VIEW_POSITION = "header_view_position";
 
 
 

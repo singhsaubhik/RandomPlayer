@@ -53,8 +53,6 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
     PlayerActivity mplayerActivity = new PlayerActivity();
 
     private ArrayList<Song> songList = new ArrayList<>();
-    private ArrayList<Song> reference = new ArrayList<>();
-    private ArrayList<Song> filteredDataItems = new ArrayList<>();
 
 
     UserPreferenceHandler pref;
@@ -62,9 +60,8 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
     public SongListAdapter(Context context ,ArrayList<Song> arrayList)
     {
         this.context= (AppCompatActivity) context;
-        this.songList = arrayList;
-
-        filteredDataItems.addAll(songList);
+        this.songList.addAll(arrayList);
+        
 
         pref = new UserPreferenceHandler(context);
 
@@ -119,13 +116,13 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                 playerActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 
                 try {
-                    MyApp.getMyService().setSongList(filteredDataItems);
+                    MyApp.getMyService().setSongList(songList);
                     MyApp.getMyService().setSongPos(getAdapterPosition());
                     //
                     MyApp.getMyService().playAll();
-                    //MusicPlayerRemote.openQueue(filteredDataItems,getAdapterPosition(),true);
+                    //MusicPlayerRemote.openQueue(songList,getAdapterPosition(),true);
                     //Toast.makeText(context, "Played by ! songlist", Toast.LENGTH_SHORT).show();
-                    //MyApp.getMyService().saveQueue(filteredDataItems,getAdapterPosition(),true);
+                    //MyApp.getMyService().saveQueue(songList,getAdapterPosition(),true);
 
 
                     //playerActivity.putExtra("pos",position);
@@ -154,13 +151,13 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                                 new MaterialDialog.Builder(context).iconRes(R.mipmap.ic_launcher)
                                         .theme(Theme.DARK)
                                         .title("Delete song")
-                                        .content("Do you really want to delete : "+filteredDataItems.get(getAdapterPosition()).getName())
+                                        .content("Do you really want to delete : "+songList.get(getAdapterPosition()).getName())
                                         .positiveText("Yes")
                                         .negativeText("No")
                                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                                             @Override
                                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                long[] ids = {filteredDataItems.get(getAdapterPosition()).getSongId()};
+                                                long[] ids = {songList.get(getAdapterPosition()).getSongId()};
                                                 RandomUtils.deleteTracks(context,ids);
                                                 refresh(SongLoader.getSongList(context));
                                             }
@@ -175,23 +172,23 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                                 break;
 
                             case R.id.bittu_menu_setAsRintone:
-                                RandomUtils.setAsRingtone(context,songList.get(getAdapterPosition()).getPath());
+                                RandomUtils.SetRingtone(context,songList.get(getAdapterPosition()).getPath(),songList.get(getAdapterPosition()).getName());
                                 break;
 
                             case R.id.bittu_menu_shareTrack:
-                                RandomUtils.shareSongFile(context,filteredDataItems,getAdapterPosition());
+                                RandomUtils.shareSongFile(context,songList,getAdapterPosition());
                                 break;
 
                             case R.id.bittu_menu_showAlbum:
-                                context.startActivity(new Intent(context,AlbumContentList.class).putExtra("albumId",filteredDataItems.get(getAdapterPosition()).getAlbumId()));
+                                context.startActivity(new Intent(context,AlbumContentList.class).putExtra("albumId",songList.get(getAdapterPosition()).getAlbumId()));
                                 break;
 
                             case R.id.bittu_menu_showInfo:
-                                RandomUtils.showSongDetailDialog(context,filteredDataItems,getAdapterPosition());
+                                RandomUtils.showSongDetailDialog(context,songList.get(getAdapterPosition()));
                                 break;
 
                             case R.id.bittu_menu_addtoplaylist:
-                                AddPlaylistDialog.newInstance(filteredDataItems.get(getAdapterPosition())).show(context.getSupportFragmentManager(), "ADD_PLAYLIST");
+                                AddPlaylistDialog.newInstance(songList.get(getAdapterPosition())).show(context.getSupportFragmentManager(), "ADD_PLAYLIST");
                                 break;
                         }
                         return true;
@@ -226,14 +223,13 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
-        reference = filteredDataItems;
-        holder.title.setText(reference.get(position).getName());
-        holder.artist.setText(reference.get(position).getArtist());
+        holder.title.setText(songList.get(position).getName());
+        holder.artist.setText(songList.get(position).getArtist());
         //setAlbumArt(position,holder);
         //setOnClicks(holder,position);
 
         String path = RandomUtils.getAlbumArt(context,
-                reference.get(position).getAlbumId());
+                songList.get(position).getAlbumId());
 
         int size = dpToPx(70);
 
@@ -254,7 +250,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return filteredDataItems.size();
+        return songList.size();
     }
 
     public int dpToPx(int dp) {
@@ -265,15 +261,15 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
 
 
     private String getSong(int pos){
-        return filteredDataItems.get(pos).getName();
+        return songList.get(pos).getName();
     }
 
 
 
 
     public void refresh(ArrayList<Song> list){
-        filteredDataItems.clear();
-        filteredDataItems.addAll(list);
+        songList.clear();
+        songList.addAll(list);
         notifyDataSetChanged();
     }
 

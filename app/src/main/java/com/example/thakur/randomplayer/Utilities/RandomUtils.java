@@ -51,7 +51,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 /**
- * Created by Thakur on 29-01-2018.
+ * Created by Thakur on 29-01-2018
  */
 
 public class RandomUtils {
@@ -291,10 +291,10 @@ public class RandomUtils {
         //MusicPlayer.refresh();
     }
 
-    public static void showSongDetailDialog(Context context, ArrayList<Song> items, int position) {
+    public static void showSongDetailDialog(Context context, Song items) {
         MediaExtractor mex = new MediaExtractor();
         try {
-            mex.setDataSource(items.get(position).getPath());
+            mex.setDataSource(items.getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -304,20 +304,20 @@ public class RandomUtils {
         int bitRate = mf.getInteger(MediaFormat.KEY_BIT_RATE);
         int sampleRate = mf.getInteger(MediaFormat.KEY_SAMPLE_RATE);
         String mime = mf.getString(MediaFormat.KEY_MIME);
-        File songFile = new File(items.get(position).getPath());
+        File songFile = new File(items.getPath());
         float file_size = (songFile.length() / 1024);
         StringBuilder content = new StringBuilder();
         content.append("Song Name: ");
-        content.append(items.get(position).getName());
+        content.append(items.getName());
         content.append("\n\n");
         content.append("Album Name: ");
-        content.append(items.get(position).getAlbumName());
+        content.append(items.getAlbumName());
         content.append("\n\n");
         content.append("Artist Name: ");
-        content.append(items.get(position).getArtist());
+        content.append(items.getArtist());
         content.append("\n\n");
         content.append("File path: ");
-        content.append(items.get(position).getPath());
+        content.append(items.getPath());
         content.append("\n\n");
         content.append("File name: ");
         content.append(songFile.getName());
@@ -486,7 +486,7 @@ public class RandomUtils {
 
                     File newFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES)
                             .getAbsolutePath()
-                            + "/AB_Music_tone.mp3");
+                            + "/RandomPlayer_Music_tone.mp3");
                     try
                     {
                         newFile.createNewFile();
