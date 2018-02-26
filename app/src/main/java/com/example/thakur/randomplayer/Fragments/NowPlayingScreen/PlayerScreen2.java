@@ -43,7 +43,7 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener, See
     private static final String trackChange = "com.example.thakur.randomplayer.Services.trackchangelistener";
     private static final String PLAY_PAUSE = "com.example.thakur.randomplayer.Services.playpause";
 
-    private Song song;
+
     private ImageView album_art, blur_album_art, prev, next;
     private MusicService service;
     private Activity activity;
@@ -52,6 +52,7 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener, See
     private SeekBar seekBar;
     private Handler mHandler = new Handler();
     private ArrayList<Song> songList = new ArrayList<>();
+    private Song song = null;
 
     public PlayerScreen2() {
         // Required empty public constructor
@@ -71,10 +72,12 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener, See
         try {
             service = MyApp.getMyService();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         activity = getActivity();
-        songList = SongLoader.getSongList(activity);
+
+
+
 
 
         IntentFilter filter = new IntentFilter();
@@ -103,17 +106,16 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener, See
         seekBar.setOnSeekBarChangeListener(this);
 
 
-        if(service!=null) {
-            updateUI(service.getSongPos(), service.isReallyPlaying());
-        }else{
-            updateUI(service.getSongPos(), service.isReallyPlaying());
-        }
+        updateUI(true);
 
 
     }
 
-    private void updateUI(int pos, boolean isPaying) {
-        String path = RandomUtils.getAlbumArt(activity, songList.get(pos).getAlbumId());
+    private void updateUI(boolean loadImage) {
+        if(service!=null){
+            song = service.getCurrentSong();
+        }
+        String path = RandomUtils.getAlbumArt(activity, song.getAlbumId());
 
         if (RandomUtils.isPathValid(path)) {
             Glide.with(this).asBitmap().load(new File(path))
@@ -147,21 +149,25 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener, See
                     .into(album_art);
         }
 
-        seekBar.setProgress(service.getCurrentPosition());
-        seekBar.setMax((int) songList.get(pos).getDurationLong());
+        if(service.isReallyPlaying()) {
+            seekBar.setProgress(service.getCurrentPosition());
+        }
+        seekBar.setMax((int) song.getDurationLong());
         //seekBar.setProgress(mService.getCurrentPosition());
-        updatePlayPause(isPaying);
+        updatePlayPause();
 
 
     }
 
-    private void updatePlayPause(boolean isPlaying) {
-        if (!isPlaying) {
-            playpause.setImageResource(R.drawable.ic_play_arrow_white2_24dp);
-            stopRepeating();
-        } else {
-            playpause.setImageResource(R.drawable.ic_pause_white_24dp);
-            updateSeekbar(isPlaying);
+    private void updatePlayPause() {
+        if(service!=null) {
+            if (!service.isReallyPlaying()) {
+                playpause.setImageResource(R.drawable.ic_play_arrow_white2_24dp);
+                stopRepeating();
+            } else {
+                playpause.setImageResource(R.drawable.ic_pause_white_24dp);
+                updateSeekbar();
+            }
         }
     }
 
@@ -176,11 +182,11 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener, See
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case trackChange:
-                    updateUI(service.getSongPos(), service.isReallyPlaying());
+                    updateUI(true);
                     break;
 
                 case PLAY_PAUSE:
-                    updatePlayPause(service.isReallyPlaying());
+                    updatePlayPause();
                     break;
             }
         }
@@ -191,15 +197,15 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener, See
         if (view == playpause) {
 
             service.playPause();
-            updatePlayPause(service.isReallyPlaying());
+            updatePlayPause();
             activity.sendBroadcast(new Intent().setAction(MiniPlayer.miniplyerStatusChange));
         } else if (view == next) {
             service.handleNextSong();
-            updateUI(service.getSongPos(),service.isReallyPlaying());
+            updateUI(true);
             activity.sendBroadcast(new Intent().setAction(MiniPlayer.miniPlayerTrackChange));
         } else if (view == prev) {
             service.handlePrevious();
-            updateUI(service.getSongPos(), service.isReallyPlaying());
+            updateUI(true);
             activity.sendBroadcast(new Intent().setAction(MiniPlayer.miniPlayerTrackChange));
         }
     }
@@ -223,7 +229,7 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener, See
     }
 
 
-    public void updateSeekbar(final boolean isPlaying) {
+    public void updateSeekbar() {
         //seekBar.postDelayed(runnable, 1000);
         stopRepeating();
         mHandler.postDelayed(runnable, 1000);

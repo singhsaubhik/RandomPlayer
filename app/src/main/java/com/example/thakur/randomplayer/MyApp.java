@@ -17,6 +17,8 @@ public class MyApp extends Application {
     private static MyApp instance;
     private static SharedPreferences pref;
 
+    public static boolean isAppVisible = false;
+
     @Override
     public void onCreate() {
         instance = this;

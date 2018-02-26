@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import com.example.thakur.randomplayer.MyApp;
 import com.example.thakur.randomplayer.Provider.RecentStore;
 import com.example.thakur.randomplayer.Services.MusicService;
+import com.example.thakur.randomplayer.Utilities.Constants;
 import com.example.thakur.randomplayer.Utilities.PreferencesUtility;
 import com.example.thakur.randomplayer.Utilities.UserPreferenceHandler;
 import com.example.thakur.randomplayer.items.Song;
@@ -30,14 +32,14 @@ public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener
 {
     private Context context;
     private int currSong=0;
-    public MediaPlayer mPlayer= new MediaPlayer();
-    ArrayList<Song> songList = new ArrayList<>();
-    MusicService mService;
+    private MediaPlayer mPlayer= new MediaPlayer();
+    private ArrayList<Song> songList = new ArrayList<>();
+    private MusicService mService;
     private boolean isBind = false;
-    AudioManager audioManager ;
+    private AudioManager audioManager ;
 
     //service
-    MusicService service;
+    private MusicService service;
 
 
 
@@ -95,17 +97,17 @@ public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener
             Log.e("MUSIC SERVICE", "Error setting data source", e);
         }
 
-
-
-
-
-        //player.prepareAsync();
-
+        Intent in = new Intent();
+        in.setAction(Constants.HEADER_VIEW_POSITION);
+        context.sendBroadcast(in);
 
         RecentStore.getInstance(context).addSongId(songList.get(position).getSongId());
         mPlayer.start();
-        //new SongDatabase(context).insertSong(String.valueOf(songList.get(position).getSongId()),songList.get(position).getName());
 
+        /*if (MyApp.getMyService().getCurrentSong()!=null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            MyApp.getMyService().setSessionState();
+            MyApp.getMyService().setMediaSessionMetadata(true);
+        }*/
 
     }
 

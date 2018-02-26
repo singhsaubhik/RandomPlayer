@@ -9,10 +9,9 @@
     android:gravity="bottom"
     sothree:umanoDragView="@+id/dragView"
     sothree:umanoOverlay="true"
-    sothree:umanoPanelHeight="0dp"
-    sothree:umanoParallaxOffset="100dp"
-    sothree:umanoScrollableView="@+id/list"
-    sothree:umanoShadowHeight="4dp">
+    sothree:umanoPanelHeight="60dp"
+    sothree:umanoParallaxOffset="60dp"
+    sothree:umanoShadowHeight="0dp">
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"

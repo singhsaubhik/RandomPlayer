@@ -41,6 +41,7 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
     private MusicService mService;
     private boolean isBound = false;
 
+
     public MiniPlayer() {
         // Required empty public constructor
     }
@@ -63,12 +64,12 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        list = SongLoader.getSongList(getActivity());
+
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 
         View view = inflater.inflate(R.layout.fragment_mini_player, container, false);
@@ -88,13 +89,13 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
         try {
             mService = MyApp.getMyService();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
        if(mService!=null) {
-           updateUI(mService.getSongPos(),mService.isReallyPlaying());
+           updateUI(true);
        }else{
-           updateUI(0,false);
+           updateUI(true);
        }
 
 
@@ -111,39 +112,50 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    updateUI(MyApp.getMyService().getSongPos(), MyApp.getMyService().isReallyPlaying());
+                    updateUI(true);
                 }
             }, 100);
 
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
 
-    private void updateUI(int pos, boolean isPalying) {
-        String path = RandomUtils.getAlbumArt(context, list.get(pos).getAlbumId());
-        try {
-            Glide.with(this).load(new File(path))
-                    .into(image);
-            title.setText("" + list.get(pos).getName());
-        } catch (Exception e) {
-            Toast.makeText(context, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+    private void updateUI(boolean loadImage) {
+        Song song = null;
+        if(mService!=null){
+            song = mService.getCurrentSong();
         }
+        String path = RandomUtils.getAlbumArt(context, song.getAlbumId());
 
-        updatePlayPause(isPalying);
+        if(loadImage) {
+            if (RandomUtils.isPathValid(path)) {
+                Glide.with(this).load(new File(path))
+                        .into(image);
+            } else {
+                Glide.with(this).load(R.drawable.defualt_art2)
+                        .into(image);
+            }
+        }
+        title.setText(""+song.getName());
+
+
+        updatePlayPause();
 
 
     }
 
-    private void updatePlayPause(boolean isPlaying) {
-        if (isPlaying) {
-            playpause.setImageResource(R.drawable.ic_pause_white_24dp);
+    private void updatePlayPause() {
+        if(mService!=null) {
+            if (mService.isReallyPlaying()) {
+                playpause.setImageResource(R.drawable.ic_pause_white_24dp);
 
-        } else {
-            playpause.setImageResource(R.drawable.ic_play_arrow_white2_24dp);
+            } else {
+                playpause.setImageResource(R.drawable.ic_play_arrow_white2_24dp);
 
+            }
         }
     }
 
@@ -166,15 +178,15 @@ public class MiniPlayer extends Fragment implements View.OnClickListener {
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case trackchange:
-                    updateUI(MyApp.getMyService().getSongPos(), MyApp.getMyService().isReallyPlaying());
+                    updateUI(true);
                     break;
 
                 case miniPlayerTrackChange:
-                    updateUI(MyApp.getMyService().getSongPos(), MyApp.getMyService().isReallyPlaying());
+                    updateUI(true);
                     break;
 
                 case miniplyerStatusChange:
-                    updatePlayPause(MyApp.getMyService().isReallyPlaying());
+                    updatePlayPause();
                     break;
 
 

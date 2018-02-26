@@ -15,6 +15,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowActionBarOverlay">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -34,6 +35,7 @@
         <item name="colorAccent">@color/accent</item>
 
         <item name="windowActionBar">false</item>
+        <item name="android:windowActionBarOverlay">true</item>
 
 
     </style>
@@ -41,6 +43,7 @@
     <style name="Mytheme2">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="android:windowActionBarOverlay">true</item>
 
     </style>
 
@@ -55,7 +58,7 @@
         <item name="colorPrimary">@color/colorBlack</item>
         <item name="colorPrimaryDark">@color/colorBlack</item>
         <item name="colorAccent">@color/nowPlayingAccent</item>
-        <item name="android:windowActionBarOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -78,6 +81,7 @@
         <item name="progressDrawable">@drawable/progress_drawable</item>
         <item name="progressDrawableWithBackground">@drawable/progress_drawable_withbackground</item>
         <item name="ate_key">light_theme</item>
+        <item name="android:windowActionBarOverlay">true</item>
 
     </style>
     <style name="ThemeBaseDark" parent="Theme.AppCompat.NoActionBar">
@@ -94,6 +98,7 @@
         <item name="progressDrawable">@drawable/progress_drawable_dark</item>
         <item name="progressDrawableWithBackground">@drawable/progress_drawable_withbackground_dark</item>
         <item name="ate_key">dark_theme</item>
+        <item name="android:windowActionBarOverlay">true</item>
 
     </style>
     <style name="ThemeBaseBlack" parent="Theme.AppCompat.NoActionBar">
@@ -109,31 +114,35 @@
         <item name="progressBackgroundColor">@color/progressBackgroundColorDark</item>
         <item name="progressDrawable">@drawable/progress_drawable_black</item>
         <item name="progressDrawableWithBackground">@drawable/progress_drawable_withbackground_black</item>
+        <item name="android:windowActionBarOverlay">true</item>
 
     </style>
 
 
     <style name="AppThemeLight" parent="ThemeBaseLight">
+        <item name="windowActionBarOverlay">true</item>
     </style>
 
     <style name="AppThemeNormalLight" parent="ThemeBaseLight">
+
+        <item name="windowActionBarOverlay">true</item>
     </style>
 
     <style name="AppTheme.FullScreen.Light" parent="ThemeBaseLight">
+        <item name="windowActionBarOverlay">true</item>
     </style>
 
     <style name="AppThemeDark" parent="ThemeBaseDark">
-
-
+        <item name="windowActionBarOverlay">true</item>
     </style>
 
 
 
     <style name="AppTheme.FullScreen.Dark" parent="ThemeBaseDark">
-
+        <item name="windowActionBarOverlay">true</item>
     </style>
     <style name="AppThemeBlack" parent="ThemeBaseBlack">
-
+        <item name="windowActionBarOverlay">true</item>
 
     </style>
 
@@ -142,7 +151,7 @@
     </style>
 
     <style name="AppTheme.FullScreen.Black" parent="ThemeBaseBlack">
-
+        <item name="windowActionBarOverlay">true</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">

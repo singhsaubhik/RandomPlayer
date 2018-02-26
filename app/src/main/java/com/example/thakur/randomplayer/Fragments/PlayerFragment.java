@@ -317,7 +317,9 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
         }
 
         seekBar.setMax(songList.get(pos).getDurationLong());
-        seekBar.setProgress(mService.getCurrentPosition());
+        if(MyApp.getMyService().isReallyPlaying()) {
+            seekBar.setProgress(mService.getCurrentPosition());
+        }
 
         //tv.setText("" + songList.get(pos).getDuration());
 

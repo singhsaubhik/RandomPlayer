@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.text.Editable;
@@ -42,20 +42,14 @@ import com.example.thakur.randomplayer.BaseActivity.BaseThemedActivity;
 import com.example.thakur.randomplayer.BaseActivity.SearchActivity;
 import com.example.thakur.randomplayer.BaseActivity.SettingsActivity;
 import com.example.thakur.randomplayer.Fragments.*;
+import com.example.thakur.randomplayer.Fragments.NowPlayingScreen.PlayerScreen2;
 import com.example.thakur.randomplayer.Loaders.SongLoader;
 import com.example.thakur.randomplayer.Services.MusicService;
 import com.example.thakur.randomplayer.Utilities.Constants;
 import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Song;
 import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.holder.ImageHolder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -64,8 +58,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 
-public class MainActivity extends BaseThemedActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener,SlidingUpPanelLayout.PanelSlideListener {
+public class MainActivity extends BaseThemedActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener,SlidingUpPanelLayout.PanelSlideListener {
+
 
 
     private static MainActivity sMainActivity;
@@ -96,7 +90,7 @@ public class MainActivity extends BaseThemedActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupWindowAnimations();
-        connectToService();
+        //connectToService();
 
 
         isDarkTheme = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false);
@@ -115,9 +109,9 @@ public class MainActivity extends BaseThemedActivity
         adapter.add(new AlbumListFragment(), "AlbumList");
         adapter.add(new ArtistList(), "ArtistList");
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = findViewById(R.id.viewpager);
 
-        SmartTabLayout viewpagertab = (SmartTabLayout) findViewById(R.id.viewpagertab);
+        SmartTabLayout viewpagertab =  findViewById(R.id.viewpagertab);
         viewpagertab.setBackgroundColor(primaryColor);
 
         viewPager.setAdapter(adapter);
@@ -129,6 +123,7 @@ public class MainActivity extends BaseThemedActivity
         getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
 
 
+        loadPlayerScreens();
 
 
 
@@ -143,7 +138,7 @@ public class MainActivity extends BaseThemedActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        //setSongFragment();
+
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(MusicService.RECIEVE_SONG);
@@ -158,7 +153,7 @@ public class MainActivity extends BaseThemedActivity
 
         updateHeader();
 
-        registerReceiver(updateHeaderReceiver,new IntentFilter(PlayerFragment.trackChange));
+        registerReceiver(updateHeaderReceiver,new IntentFilter(Constants.HEADER_VIEW_POSITION));
 
     }
 
@@ -340,9 +335,7 @@ public class MainActivity extends BaseThemedActivity
         }
     }
 
-    private void filterList() {
 
-    }
 
 
     @Override
@@ -454,12 +447,18 @@ public class MainActivity extends BaseThemedActivity
 
 
     public void setDetailsToHeader() {
-        int pos = MyApp.getMyService().getSongPos();
-        String name = list.get(pos).getName();
-        String artist = list.get(pos).getArtist();
+        MusicService service = MyApp.getMyService();
+        Song song=null;
+        if(service!=null){
+            song = service.getCurrentSong();
+        }else{
+            song = list.get(0);
+        }
 
-        String path = RandomUtils.getAlbumArt(MainActivity.this,list.get(pos).getAlbumId());
 
+        String path = RandomUtils.getAlbumArt(MainActivity.this,song.getAlbumId());
+        String name = song.getName();
+        String artist = song.getArtist();
         if (name != null && artist != null) {
             songtitle.setText(name);
             songartist.setText(artist);
@@ -494,5 +493,27 @@ public class MainActivity extends BaseThemedActivity
         }
     };
 
+
+    private void initMiniPlayer(){
+        FragmentTransaction ft= getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.container_miniplayer,new MiniPlayer());
+        ft.commit();
+    }
+
+    private void initPlayerScreen(){
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.container_nowPlaying,new PlayerScreen2());
+        ft.commit();
+    }
+
+    private void loadPlayerScreens(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initMiniPlayer();
+                initPlayerScreen();
+            }
+        },500);
+    }
 
 }
