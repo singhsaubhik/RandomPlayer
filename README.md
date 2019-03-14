@@ -28,7 +28,7 @@ Material Design Music Player
 
 ## Changelog
 
-Changelog is available [here](https://github.com/naman14/Timber/blob/master/Changelog.md)
+Changelog is available [here](https://github.com/bittu8b/randomplayer)
 
 ## Credits
 
