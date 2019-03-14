@@ -1,99 +1,58 @@
 # Random Player
+[![Build Status](https://travis-ci.org/naman14/Timber.svg?branch=master)](https://travis-ci.org/naman14/Timber)
 
-[![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
-
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
-
-Random player is opensource, fast and material deisgn music player
-
-# New Features!
-
-  - It comes with awesome material design
-  - It uses a lot new tech.
+Material Design Music Player
 
 
-You can also:
-  - You can also make changes very easily as it is written in standard language.
+<a href='https://f-droid.org/repository/browse/?fdid'><img alt='Get it on F-Droid' src='https://guardianproject.info/wp-content/uploads/2014/07/logo-fdroid.png' height=60px/></a>
 
-Random Player is a lightweight android music player which comes a lot of features.  As [Saubhik Singh] writes on the [Gmail][df1]
+## Screenshots
 
+<img src="https://raw.githubusercontent.com/naman14/Timber/master/graphics/screen2.png" width="360" height="640">
+<img src="https://raw.githubusercontent.com/naman14/Timber/master/graphics/screen3.png" width="360" height="640">
+<img src="https://raw.githubusercontent.com/naman14/Timber/master/graphics/screen7.png" width="360" height="640">
+<img src="https://raw.githubusercontent.com/naman14/Timber/master/graphics/screen8.png" width="360" height="640">
+<img src="https://raw.githubusercontent.com/naman14/Timber/master/graphics/screen9.jpg" width="330" height="640">
+<img src="https://raw.githubusercontent.com/naman14/Timber/master/graphics/screen10.jpg" width="330" height="640">
+<img src="https://raw.githubusercontent.com/naman14/Timber/master/graphics/screen1.png" width="360" height="640">
+<img src="https://raw.githubusercontent.com/naman14/Timber/master/graphics/screen5.png" width="360" height="640">
+<img src="https://raw.githubusercontent.com/naman14/Timber/master/graphics/screen12.jpg" width="360" height="640">
+<img src="https://raw.githubusercontent.com/naman14/Timber/master/graphics/screen4.png" width="360" height="640">
+<img src="https://raw.githubusercontent.com/naman14/Timber/master/graphics/screen6.png" width="360" height="640">
 
+## Features
+- Material design
+- Browse Songs, Albums, Artists
+- Create and edit playlists
+- Homescreen widgets
+- Browse device folders
+- Dark theme and UI customisability
+- Playing queue in notification
 
-### Installation
+## Changelog
 
-Random Player can run any android device having [Android API](https://nodejs.org/) 19+.
+Changelog is available [here](https://github.com/naman14/Timber/blob/master/Changelog.md)
 
-Install the dependencies and devDependencies and start the server.
+## Credits
 
-```sh
-$ git clone https://github.com/Bittu8b/RandomPlaye.git
-```
+* CyanogenMod's [Eleven Music Player](https://github.com/CyanogenMod/android_packages_apps_Eleven)
+* [TimelyTextView](https://github.com/adnan-SM/TimelyTextView)
+* [MultiViewPager](https://github.com/Pixplicity/MultiViewPager)
+* [PlayPauseButton](https://github.com/recruit-lifestyle/PlayPauseButton)
+* [CircularSeekBar](https://github.com/devadvance/circularseekbar)
+* [Nammu](https://github.com/tajchert/Nammu)
 
-For production environments...
-
-```sh
-Generate Signed APK
-```
-
-
-
-
-### Development
-
-Want to contribute? Great!
-
-Random Player written in keeping mind of standard programing, so that anybody could understand easily. You can make changes and make a commit.
-
-Open your favorite Terminal and run these commands.
-
-First Tab:
-```sh
-$ git clone https://github.com/Bittu8b/RandomPlaye.git
-   Make changes in your favorite IDE (Android Studio)
-$ git add .
-$ git commit -m "Message"
-$ git push repo your_branch
-```
-
+# Donate
+Paypal donation email-
+saubhik.singh01@gmail.com
 
 
+## License
 
+>(c) 2016 Saubhik Singh 
 
+>This is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. 
 
+>This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. 
 
-### Todos
-
- - Write MORE Tests
- - Add Night Mode
-
-License
-----
-
-MIT
-
-
-**Free Software, Hell Yeah!**
-
-[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
-
-
-   [dill]: <https://github.com/joemccann/dillinger>
-   [git-repo-url]: <https://github.com/joemccann/dillinger.git>
-   [Saubhik Singh]: <http://saubhik.singh01@gmail.com>
-   [df1]: <http://daringfireball.net/projects/markdown/>
-   [markdown-it]: <https://github.com/markdown-it/markdown-it>
-   [Ace Editor]: <http://ace.ajax.org>
-   [node.js]: <http://nodejs.org>
-   [Twitter Bootstrap]: <http://twitter.github.com/bootstrap/>
-   [jQuery]: <http://jquery.com>
-   [@tjholowaychuk]: <http://twitter.com/tjholowaychuk>
-   [express]: <http://expressjs.com>
-   [AngularJS]: <http://angularjs.org>
-   [Gulp]: <http://gulpjs.com>
-
-   [PlDb]: <https://github.com/joemccann/dillinger/tree/master/plugins/dropbox/README.md>
-   [PlGh]: <https://github.com/joemccann/dillinger/tree/master/plugins/github/README.md>
-   [PlGd]: <https://github.com/joemccann/dillinger/tree/master/plugins/googledrive/README.md>
-   [PlOd]: <https://github.com/joemccann/dillinger/tree/master/plugins/onedrive/README.md>
-   [PlMe]: <https://github.com/joemccann/dillinger/tree/master/plugins/medium/README.md>
-   [PlGa]: <https://github.com/RahulHP/dillinger/blob/master/plugins/googleanalytics/README.md>
+>You should have received a copy of the GNU General Public License along with this app. If not, see <https://www.gnu.org/licenses/>.
