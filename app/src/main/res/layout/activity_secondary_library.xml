@@ -8,7 +8,6 @@
     tools:context="com.example.thakur.randomplayer.PlayList"
     android:fitsSystemWindows="true"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
-    android:theme="@style/Mytheme"
 
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -60,7 +59,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/play_queue_title"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/action_bar_size"
+                android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
 
                 />

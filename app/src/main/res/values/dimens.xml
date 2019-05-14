@@ -25,7 +25,7 @@
     <dimen name="parallax_img_height_player">300dp</dimen>
     <dimen name="parallax_label_bg_height">100dp</dimen>
 
-    <dimen name="action_bar_size">56dp</dimen>
+    <dimen name="action_bar_size">40dp</dimen>
 
     <!-- Secondary library -->
     <dimen name="sl_expanded_title_margin_start">48dp</dimen>

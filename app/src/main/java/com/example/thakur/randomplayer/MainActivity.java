@@ -1,5 +1,6 @@
 package com.example.thakur.randomplayer;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,6 +31,7 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,21 +61,20 @@ import java.io.File;
 import java.util.ArrayList;
 
 
-public class MainActivity extends BaseThemedActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener,SlidingUpPanelLayout.PanelSlideListener {
-
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, View.OnClickListener {
 
 
     private static MainActivity sMainActivity;
     private ArrayList<Song> list = new ArrayList<>();
     private MusicService mService;
     private ImageView albumart;
-    private TextView songtitle,songartist;
+    private TextView songtitle, songartist;
     private ViewPagerAdapter adapter;
     private ViewPager viewPager;
 
-
-
-    private SlidingUpPanelLayout slidingUpPanelLayout;
+    //widget
+    private ImageView widget_album_art,widget_playpause;
+    private TextView widget_title,widget_artist;
 
 
     public static boolean running = true;
@@ -85,7 +87,10 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
     int primaryColor;
     boolean isDarkTheme;
 
+    RelativeLayout mini_player;
 
+
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +104,7 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
 
         setContentView(R.layout.activity_main);
 
-        primaryColor = Config.primaryColor(this,getATEKey());
+//        primaryColor = Config.primaryColor(this, getATEKey());
 
         sMainActivity = this;
         running = true;
@@ -111,20 +116,32 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
 
         viewPager = findViewById(R.id.viewpager);
 
-        SmartTabLayout viewpagertab =  findViewById(R.id.viewpagertab);
-        viewpagertab.setBackgroundColor(primaryColor);
+        SmartTabLayout viewpagertab = findViewById(R.id.viewpagertab);
+//        viewpagertab.setBackgroundColor(primaryColor);
 
         viewPager.setAdapter(adapter);
         viewpagertab.setViewPager(viewPager);
 
-        slidingUpPanelLayout =  findViewById(R.id.sliding_layout);
-        Toolbar toolbar =  findViewById(R.id.toolbar);
+        widget_album_art = findViewById(R.id.widget_album_art);
+        widget_playpause = findViewById(R.id.widget_playpause);
+        widget_title = findViewById(R.id.widget_title);
+        widget_artist = findViewById(R.id.widget_artist);
+        mini_player = findViewById(R.id.ll);
+
+        widget_playpause.setOnClickListener(this);
+        mini_player.setOnClickListener(this);
+
+
+
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        try {
+            toolbar.setCollapsible(false);
+        } catch (Exception ignored) {
+
+        }
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-
-
-        loadPlayerScreens();
-
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -136,8 +153,6 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
 
 
         IntentFilter filter = new IntentFilter();
@@ -152,8 +167,10 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
         initNavHeader();
 
         updateHeader();
+        updateWidget(true);
 
-        registerReceiver(updateHeaderReceiver,new IntentFilter(Constants.HEADER_VIEW_POSITION));
+        registerReceiver(updateHeaderReceiver, new IntentFilter(Constants.HEADER_VIEW_POSITION));
+
 
     }
 
@@ -167,16 +184,8 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        else if(getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED){
-            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        }
-        else if (viewPager.getCurrentItem() != adapter.getItemId(0)) {
+        } else if (viewPager.getCurrentItem() != adapter.getItemId(0)) {
             viewPager.setCurrentItem(0, true);
-        } else if (slidingUpPanelLayout != null &&
-                (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED
-                        || slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
-            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         } else {
 
             Intent startMain = new Intent(Intent.ACTION_MAIN);
@@ -216,7 +225,7 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
                     public void run() {
                         startActivity(new Intent(MainActivity.this, SearchActivity.class));
                     }
-                },100);
+                }, 100);
                 //handleSearch();
                 break;
         }
@@ -317,7 +326,7 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
                 isBound = false;
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         super.onStop();
     }
@@ -334,8 +343,6 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
             startService(serviceIntent);
         }
     }
-
-
 
 
     @Override
@@ -362,52 +369,7 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
     }
 
 
-
-
-
-    @Override
-    public void onPanelSlide(View panel, float slideOffset) {
-
-    }
-
-    @Override
-    public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-
-        switch (newState) {
-            case COLLAPSED:
-                onPanelCollapsed(panel);
-                break;
-            case EXPANDED:
-                onPanelExpanded(panel);
-                break;
-            case ANCHORED:
-                collapsePanel(); // this fixes a bug where the panel would get stuck for some reason
-                break;
-        }
-    }
-
-    private void onPanelCollapsed(View panel) {
-    }
-
-    private void onPanelExpanded(View panel) {
-        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-    }
-
-    private void collapsePanel() {
-        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-    }
-
-    public SlidingUpPanelLayout.PanelState getPanelState() {
-        return slidingUpPanelLayout == null ? null : slidingUpPanelLayout.getPanelState();
-    }
-
-
-
-    public void expandPanel() {
-        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-    }
-
-    private void gotoSettings(){
+    private void gotoSettings() {
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -416,11 +378,11 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
                 startActivity(i);
                 (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             }
-        },200);
+        }, 200);
 
     }
 
-    private void gotoNowPlaying(){
+    private void gotoNowPlaying() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -434,29 +396,28 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
         }, 200);
     }
 
-    private void initNavHeader(){
+    private void initNavHeader() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View header = navigationView.inflateHeaderView(R.layout.nav_header_main);
 
-        albumart =  header.findViewById(R.id.album_art);
-        songtitle =  header.findViewById(R.id.song_title);
-        songartist =  header.findViewById(R.id.song_artist);
+        albumart = header.findViewById(R.id.album_art);
+        songtitle = header.findViewById(R.id.song_title);
+        songartist = header.findViewById(R.id.song_artist);
 
     }
 
 
-
     public void setDetailsToHeader() {
         MusicService service = MyApp.getMyService();
-        Song song=null;
-        if(service!=null){
+        Song song = null;
+        if (service != null) {
             song = service.getCurrentSong();
-        }else{
+        } else {
             song = list.get(0);
         }
 
 
-        String path = RandomUtils.getAlbumArt(MainActivity.this,song.getAlbumId());
+        String path = RandomUtils.getAlbumArt(MainActivity.this, song.getAlbumId());
         String name = song.getName();
         String artist = song.getArtist();
         if (name != null && artist != null) {
@@ -464,11 +425,11 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
             songartist.setText(artist);
         }
 
-        if(RandomUtils.isPathValid(path)){
+        if (RandomUtils.isPathValid(path)) {
             Glide.with(MainActivity.this).load(new File(path))
                     .apply(new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888))
                     .into(albumart);
-        }else{
+        } else {
             Glide.with(MainActivity.this).load(R.drawable.defualt_art2)
                     .apply(new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888))
                     .into(albumart);
@@ -477,43 +438,62 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
 
     }
 
-    private void updateHeader(){
+    private void updateHeader() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 setDetailsToHeader();
             }
-        },1200);
+        }, 1200);
     }
 
     BroadcastReceiver updateHeaderReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             setDetailsToHeader();
+            updateWidget(true);
         }
     };
 
+    private void updateWidget(boolean loadImage){
+        Song song = MyApp.getMyService().getCurrentSong();
 
-    private void initMiniPlayer(){
-        FragmentTransaction ft= getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container_miniplayer,new MiniPlayer());
-        ft.commit();
-    }
-
-    private void initPlayerScreen(){
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container_nowPlaying,new PlayerScreen2());
-        ft.commit();
-    }
-
-    private void loadPlayerScreens(){
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                initMiniPlayer();
-                initPlayerScreen();
+        if(loadImage){
+            String path = RandomUtils.getAlbumArt(this,song.getAlbumId());
+            if(RandomUtils.isPathValid(path)){
+                Glide.with(this).load(new File(path))
+                        .into(widget_album_art);
+            }else{
+                Glide.with(this).load(R.drawable.dispacito_64)
+                        .into(widget_album_art);
             }
-        },500);
+        }
+
+        widget_title.setText(""+song.getName());
+        widget_artist.setText(""+song.getArtist());
+        if(MyApp.getMyService().isReallyPlaying()){
+            widget_playpause.setImageResource(R.drawable.ic_pause_white_24dp);
+        }else{
+            widget_playpause.setImageResource(R.drawable.ic_play_arrow_white2_24dp);
+        }
     }
 
+
+    @Override
+    public void onClick(View v) {
+        if(v==widget_playpause){
+            if(MyApp.getMyService().isReallyPlaying()){
+                MyApp.getMyService().playPause();
+                updateWidget(false);
+            }else{
+                MyApp.getMyService().playPause();
+                updateWidget(false);
+            }
+        }else if(v==mini_player){
+            Intent playerActivity = new Intent(MainActivity.this,PlayerActivity.class);
+            playerActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(playerActivity);
+            (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+        }
+    }
 }

@@ -42,10 +42,10 @@ public class SettingsActivity extends BaseThemedActivity implements ColorChooser
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        if (PreferencesUtility.getInstance(this).getTheme().equals("dark"))
+        /*if (PreferencesUtility.getInstance(this).getTheme().equals("dark"))
             setTheme(R.style.AppThemeNormalDark);
         else if (PreferencesUtility.getInstance(this).getTheme().equals("black"))
-            setTheme(R.style.AppThemeNormalBlack);
+            setTheme(R.style.AppThemeNormalBlack);*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
@@ -81,8 +81,9 @@ public class SettingsActivity extends BaseThemedActivity implements ColorChooser
     @StyleRes
     @Override
     public int getActivityTheme() {
-        return PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false) ?
-                R.style.AppThemeDark : R.style.AppThemeLight;
+        //return PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false) ?
+               // R.style.AppThemeDark : R.style.AppThemeLight;
+        return R.style.Theme_Bhai_NoActionBar;
     }
 
     @Override

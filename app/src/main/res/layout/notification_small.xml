@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="#000"
     android:orientation="horizontal"
     android:padding="10dp">
 
@@ -11,14 +12,15 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_weight="0"
-        android:src="@drawable/default_art" />
+        app:srcCompat="@drawable/default_art" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginStart="10dp">
 
         <TextView
             android:id="@+id/noti_name"
@@ -48,7 +50,8 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/ic_skip_previous_white_48dp" />
+            android:src="@drawable/ic_skip_previous_white_48dp"
+            android:layout_marginStart="10dp" />
 
         <ImageView
             android:id="@+id/noti_play_button"
@@ -56,7 +59,8 @@
             android:layout_height="45dp"
             android:layout_marginLeft="10dp"
 
-            android:src="@drawable/ic_play_arrow_white_48dp" />
+            android:src="@drawable/ic_play_arrow_white_48dp"
+            android:layout_marginStart="10dp" />
 
         <ImageView
             android:id="@+id/noti_next_button"
@@ -64,6 +68,7 @@
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"
 
-            android:src="@drawable/ic_skip_next_white_48dp" />
+            android:src="@drawable/ic_skip_next_white_48dp"
+            android:layout_marginStart="10dp" />
     </LinearLayout>
 </LinearLayout>

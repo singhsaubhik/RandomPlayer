@@ -16,6 +16,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -60,6 +62,13 @@ public class Welcome extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        View decorView = getWindow().getDecorView();
+        int ui = View.SYSTEM_UI_FLAG_FULLSCREEN;//View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+
+        decorView.setSystemUiVisibility(ui);
+        if (Build.VERSION.SDK_INT >= 21)
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         pref = new UserPreferenceHandler(Welcome.this);
         setContentView(R.layout.activity_welcome2);
 

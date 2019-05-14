@@ -24,8 +24,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
-import com.example.thakur.randomplayer.Loaders.SongLoader;
-import com.example.thakur.randomplayer.MiniPlayer;
 import com.example.thakur.randomplayer.MyApp;
 import com.example.thakur.randomplayer.R;
 import com.example.thakur.randomplayer.Services.MusicService;
@@ -198,15 +196,15 @@ public class PlayerScreen2 extends Fragment implements View.OnClickListener, See
 
             service.playPause();
             updatePlayPause();
-            activity.sendBroadcast(new Intent().setAction(MiniPlayer.miniplyerStatusChange));
+
         } else if (view == next) {
             service.handleNextSong();
             updateUI(true);
-            activity.sendBroadcast(new Intent().setAction(MiniPlayer.miniPlayerTrackChange));
+
         } else if (view == prev) {
             service.handlePrevious();
             updateUI(true);
-            activity.sendBroadcast(new Intent().setAction(MiniPlayer.miniPlayerTrackChange));
+
         }
     }
 

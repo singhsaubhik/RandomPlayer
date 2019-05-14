@@ -6,8 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -162,7 +165,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
         mService = MyApp.getMyService();
 
         ateKey = Helper.getATEKey(getActivity());
-        accentColor = Config.accentColor(getActivity(),ateKey);
+        accentColor = R.color.colorAccent;
         /*android.support.v7.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -218,6 +221,9 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
         shuffle = view.findViewById(R.id.shuffle);
         repeat.setOnClickListener(this);
         shuffle.setOnClickListener(this);
+
+        /* shuffle and repeat background*/
+
 
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
