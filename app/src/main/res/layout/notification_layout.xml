@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
@@ -10,13 +11,13 @@
         android:layout_height="@dimen/noti_big_height"
         android:layout_weight="0"
         android:scaleType="centerCrop"
-        android:src="@drawable/default_art" />
+        app:srcCompat="@drawable/default_art" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/noti_big_height"
         android:layout_weight="1"
-        android:background="@color/colorPrimary"
+        android:background="#000"
         android:orientation="vertical">
 
         <LinearLayout

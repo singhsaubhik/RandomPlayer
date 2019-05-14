@@ -62,6 +62,8 @@ public final class PreferencesUtility {
     private static final String COLORED_PLAYING_CONTROL = "colored_playing_control";
     private static final String DARK_THEME = "isdarktheme";
 
+    private static final String LAST_PLAYED_SONG_ID = "last_played_song_id";
+
     private static PreferencesUtility sInstance;
 
     private static SharedPreferences mPreferences;
@@ -292,6 +294,14 @@ public final class PreferencesUtility {
 
     public boolean isDarkTheme(){
         return mPreferences.getBoolean(DARK_THEME,false);
+    }
+
+    public void setLastPlayedSongId(long songId){
+        mPreferences.edit().putLong(LAST_PLAYED_SONG_ID,songId).apply();
+    }
+
+    public long getLastPlayedSongId(){
+        return mPreferences.getLong(LAST_PLAYED_SONG_ID,0);
     }
 
     /*public void updateService(Bundle extras) {

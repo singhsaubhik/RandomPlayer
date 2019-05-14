@@ -20,7 +20,7 @@ import com.example.thakur.randomplayer.Utilities.Helper;
 
 import java.net.Inet4Address;
 
-public class PlayerActivity extends BaseThemedActivity {
+public class PlayerActivity extends AppCompatActivity {
 
 
     public boolean isBind = false;

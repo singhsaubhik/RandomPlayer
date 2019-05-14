@@ -16,6 +16,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -41,10 +43,10 @@ public class Welcome extends AppCompatActivity {
             MusicService playerService = playerBinder.getMusicService();
             MyApp.setMyService(playerService);
             mBound=true;
-            Log.v(Welcome.class.getSimpleName(),"LAUNCH MAIN ACTIVITY");
-            startActivity(new Intent(Welcome.this, MainActivity.class));
+            //Log.v(Welcome.class.getSimpleName(),"LAUNCH MAIN ACTIVITY");
+            //startActivity(new Intent(Welcome.this, MainActivity.class));
 
-            finish();
+            ///finish();
         }
 
         @Override
@@ -60,7 +62,14 @@ public class Welcome extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pref = new UserPreferenceHandler(getApplicationContext());
+
+        View decorView = getWindow().getDecorView();
+        int ui = View.SYSTEM_UI_FLAG_FULLSCREEN;//View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+
+        decorView.setSystemUiVisibility(ui);
+        if (Build.VERSION.SDK_INT >= 21)
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        pref = new UserPreferenceHandler(Welcome.this);
         setContentView(R.layout.activity_welcome2);
 
 
@@ -77,14 +86,18 @@ public class Welcome extends AppCompatActivity {
                             pref.setIsFirstRun(false);
                         }
                     } else {
+                        connectToService();
                         startActivity(new Intent(Welcome.this, MainActivity.class));
+                        finish();
 
                     }
                 }
             }, 200);
 
         }else{
+            connectToService();
             startActivity(new Intent(Welcome.this, MainActivity.class));
+            finish();
         }
 
 
@@ -96,6 +109,7 @@ public class Welcome extends AppCompatActivity {
     public void showPermissionRationale(final PermissionToken token) {
         new AlertDialog.Builder(this).setTitle("Permission required")
                 .setMessage("To run all feature in this app we need some permissions please allow them.\nBelieve us there is no harm!!")
+                .setIcon(R.mipmap.ic_launcher)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -168,7 +182,7 @@ public class Welcome extends AppCompatActivity {
             Intent playerServiceIntent = new Intent(this, MusicService.class);
             bindService(playerServiceIntent, playerServiceConnection, Context.BIND_AUTO_CREATE);
         }catch (Exception e){
-
+            e.printStackTrace();
         }
     }
 
@@ -201,7 +215,10 @@ public class Welcome extends AppCompatActivity {
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED
                     //&& grantResults[2] == PackageManager.PERMISSION_GRANTED
                         ) {
-                    bindService();
+                    connectToService();
+                    startActivity(new Intent(Welcome.this, MainActivity.class));
+                    finish();
+
                 } else {
 
                     if(grantResults[0] == PackageManager.PERMISSION_DENIED){
@@ -224,6 +241,15 @@ public class Welcome extends AppCompatActivity {
             }
             break;
 
+        }
+    }
+
+
+    private void connectToService() {
+        if (!MusicService.isServiceRunning) {
+            Intent serviceIntent = new Intent(Welcome.this, MusicService.class);
+            bindService(serviceIntent, playerServiceConnection, BIND_AUTO_CREATE);
+            startService(serviceIntent);
         }
     }
 }

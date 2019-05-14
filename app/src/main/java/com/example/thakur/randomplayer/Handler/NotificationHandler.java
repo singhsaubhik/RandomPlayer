@@ -91,6 +91,7 @@ public class NotificationHandler {
             notificationCompat.bigContentView.setTextViewText(R.id.noti_artist, song.getArtist());
             notificationCompat.contentView.setTextViewText(R.id.noti_name, song.getName());
             notificationCompat.contentView.setTextViewText(R.id.noti_artist, song.getArtist());
+
             Intent playClick = new Intent();
             playClick.setAction(MusicService.ACTION_PAUSE_SONG);
             PendingIntent playClickIntent = PendingIntent.getBroadcast(context, 21021, playClick, 0);

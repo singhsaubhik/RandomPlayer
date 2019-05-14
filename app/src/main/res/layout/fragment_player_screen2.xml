@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp">
             <ImageView
-                android:background="@color/primary"
+
                 app:srcCompat="@drawable/ic_share_24dp"
                 android:layout_marginLeft="20dp"
                 android:layout_gravity="center"
@@ -98,7 +98,7 @@
                 android:layout_marginStart="20dp" />
 
             <ImageView
-                android:background="@color/primary"
+
                 app:srcCompat="@drawable/ic_add_white_24dp"
                 android:layout_marginLeft="10dp"
                 android:layout_gravity="center"
@@ -108,7 +108,6 @@
 
             <ImageView
                 app:srcCompat="@drawable/ic_equalizer_24dp"
-                android:background="@color/primary"
                 android:layout_marginLeft="10dp"
                 android:layout_gravity="center"
                 android:layout_width="30dp"
@@ -117,7 +116,6 @@
 
             <ImageView
                 app:srcCompat="@drawable/ic_queue_24dp"
-                android:background="@color/primary"
                 android:layout_marginLeft="10dp"
                 android:layout_gravity="center"
                 android:layout_width="30dp"
@@ -126,7 +124,7 @@
 
             <ImageView
                 app:srcCompat="@drawable/ic_shuffle_36dp"
-                android:background="@color/primary"
+                
                 android:layout_marginLeft="10dp"
                 android:layout_gravity="center"
                 android:layout_width="30dp"
@@ -135,7 +133,7 @@
 
             <ImageView
                 app:srcCompat="@drawable/ic_repeat_24dp"
-                android:background="@color/primary"
+
                 android:layout_marginLeft="10dp"
                 android:layout_gravity="center"
                 android:layout_width="30dp"

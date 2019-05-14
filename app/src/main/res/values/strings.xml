@@ -567,6 +567,7 @@ that this copyright notice remain intact.</string>
     <string name="now_playing">Now Playing Screen</string>
     <string name="nothing_found">Nothing Found</string>
     <string name="search_library">Search Library</string>
+    <string name="notification_channel">channel_01</string>
 
 
 </resources>

@@ -8,11 +8,11 @@
             android:title="Play List" />
         <item
             android:id="@+id/nav_folder"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_folder_special_black_24dp"
             android:title="Folder" />
         <item
             android:id="@+id/nav_nowplaying"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_play_circle_filled_32dp"
             android:title="Now Playing" />
 
     </group>
