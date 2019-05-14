@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.thakur.randomplayer">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -23,19 +24,18 @@
         android:required="true" />
 
     <application
-
         android:name=".MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppThemeNormalLight">
+        android:theme="@style/Theme.Bhai.NoActionBar">
         <activity
             android:screenOrientation="portrait"
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/Mytheme" />
+            android:theme="@style/Theme.Bhai.NoActionBar" />
 
         <service
             android:name=".Services.MusicService"
@@ -45,6 +45,7 @@
         <activity android:name=".PlayerActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:theme="@style/Theme.Bhai.NoActionBar"
             android:screenOrientation="portrait"
             android:name=".AlbumContentList"
             android:label="@string/title_activity_album_content_list" />
@@ -57,12 +58,14 @@
         </activity>
         <activity
             android:name=".PlayList"
-            android:theme="@style/Mytheme" />
+            android:theme="@style/Theme.Bhai.NoActionBar" />
         <activity android:name=".PlayListList" />
         <activity android:name=".BaseActivity.BaseServiceActivity" />
         <activity android:name=".BaseActivity.BaseThemedActivity" />
         <activity android:name=".BaseActivity.SettingsActivity" />
-        <activity android:name=".BaseActivity.SearchActivity" />
+        <activity android:name=".BaseActivity.SearchActivity"
+
+            />
 
         <receiver android:name=".Handler.MediaButtonIntentReceiver">
             <intent-filter>
