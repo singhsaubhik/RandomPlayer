@@ -19,6 +19,7 @@ import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.Slide;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -51,8 +52,7 @@ import com.example.thakur.randomplayer.Services.MusicService;
 import com.example.thakur.randomplayer.Utilities.Constants;
 import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Song;
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.Drawer;
+
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -80,9 +80,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static boolean running = true;
     public boolean isBound;
 
-    //Drawer layout
-    private AccountHeader headerResult = null;
-    private Drawer result = null;
 
     int primaryColor;
     boolean isDarkTheme;
@@ -141,7 +138,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
+
+        try {
+            getSupportActionBar().setDisplayShowCustomEnabled(true);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -167,7 +169,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initNavHeader();
 
         updateHeader();
-        updateWidget(true);
+//        updateWidget(true);
+
+        Log.e("From main",""+list.get(1).getPath());
 
         registerReceiver(updateHeaderReceiver, new IntentFilter(Constants.HEADER_VIEW_POSITION));
 
@@ -313,6 +317,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReciever);
+        unregisterReceiver(updateHeaderReceiver);
         running = false;
         //unbindService(mConnection1);
 

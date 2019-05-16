@@ -147,14 +147,15 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     BroadcastReceiver mReciever, headPhones, playReceiver;
 
 
+
+
     @Override
     public void onCreate() {
         //audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         //audioManager.requestAudioFocus(this,AudioManager.STREAM_MUSIC,AudioManager.AUDIOFOCUS_GAIN);
         initializeReciever();
-        final PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
-        wakeLock.setReferenceCounted(false);
+        initializeWakelock();
+
 
         final HandlerThread thread = new HandlerThread("MusicPlayerHandler",
                 android.os.Process.THREAD_PRIORITY_BACKGROUND);
@@ -250,7 +251,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         Intent i = new Intent();
         i.setAction(PlayerFragment.trackChange);
         sendBroadcast(i);
-        updateNotificationPlayer();
+        //updateNotificationPlayer();
 
     }
 
@@ -292,6 +293,16 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         PreferencesUtility.getInstance(this).setLastPlayedSongId(songList.get(songPos).getSongId());
         MusicPlaybackQueueStore.getInstance(this).saveQueues(songList, songList);
         super.onDestroy();
+    }
+
+    private void initializeWakelock(){
+        final PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        try {
+            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
+            wakeLock.acquire(5000*60);
+        }catch (Exception e){
+            Log.e(TAG,e.getMessage());
+        }
     }
 
     private void initLastPlayedSong() {
@@ -365,7 +376,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
 
                     case PLAYING_STATUS_CHANGED:
-                        updateNotificationPlayer();
+//                        updateNotificationPlayer();
                         break;
 
                     case DISCRETE_VIEW_CLICK:
@@ -443,7 +454,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 mPlayer.playSong(songPos);
             }
         }
-        updateNotificationPlayer();
+//        updateNotificationPlayer();
 
 
     }
@@ -464,7 +475,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 }
             }
         }
-        updateNotificationPlayer();
+//        updateNotificationPlayer();
 
     }
 
@@ -477,7 +488,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            updateNotificationPlayer();
+//            updateNotificationPlayer();
         } else {
             mPlayer.start();
             isPlaying = true;
@@ -486,7 +497,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            updateNotificationPlayer();
+//            updateNotificationPlayer();
 
 
         }
@@ -548,7 +559,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             setSongList(AlbumLoader.getAlbumSongList(getApplicationContext(), album_id));
             mPlayer.playSong(songPos);
             isPlaying = true;
-            updateNotificationPlayer();
+//            updateNotificationPlayer();
 
         } catch (Exception e) {
             Toast.makeText(this, "Can't play due to" + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -562,13 +573,13 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             //mPlayer.setPlayerList(songList);
             mPlayer.playSong(songPos);
             isPlaying = true;
-            updateNotificationPlayer();
+//            updateNotificationPlayer();
             //PostNotification();
 
 
         } catch (Exception e) {
             Toast.makeText(this, "Can't play due to " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            //updateNotificationPlayer();
+//            updateNotificationPlayer();
         }
     }
 
@@ -611,7 +622,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
         }
         sendBroadcast(playPause);
-        updateNotificationPlayer();
+//        updateNotificationPlayer();
 
     }
 
@@ -640,7 +651,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             }
         }
         sendBroadcast(new Intent(PlayerFragment.trackChange));
-        updateNotificationPlayer();
+//        updateNotificationPlayer();
 
 
     }
@@ -661,7 +672,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 }
             }
         }
-        updateNotificationPlayer();
+//        updateNotificationPlayer();
         sendBroadcast(new Intent(PlayerFragment.trackChange));
 
     }
@@ -696,7 +707,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     public void playSongById() {
         try {
             mPlayer.playSongByID(song_id);
-            updateNotificationPlayer();
+//            updateNotificationPlayer();
 
         } catch (Exception e) {
 

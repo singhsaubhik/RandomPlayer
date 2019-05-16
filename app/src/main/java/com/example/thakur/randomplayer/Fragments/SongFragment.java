@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +52,8 @@ public class SongFragment extends android.support.v4.app.Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
-        songList = SongLoader.getAllSongs(getActivity());
+        songList = SongLoader.getSongList(context);
+        Log.e("form song fragment",""+songList.get(1).getPath());
         songListAdapter = new SongListAdapter(context, songList);
         mRecycler = view.findViewById(R.id.song_recyclerview);
 

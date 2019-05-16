@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -184,6 +185,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                                 break;
 
                             case R.id.bittu_menu_showInfo:
+                                //Log.e("asd",""+songList.get(0).getPath());
                                 RandomUtils.showSongDetailDialog(context,songList.get(getAdapterPosition()));
                                 break;
 

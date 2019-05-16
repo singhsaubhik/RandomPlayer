@@ -21,8 +21,10 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.FileUriExposedException;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.StrictMode;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -200,7 +202,7 @@ public class RandomUtils {
     }
 
 
-    public static int[] getAvailableColor(Context context,Palette palette) {
+    public static int[] getAvailableColor(Context context, Palette palette) {
         int[] temp = new int[3];
         try {
             //int[] temp = new int[3];
@@ -224,7 +226,7 @@ public class RandomUtils {
                 temp[1] = ContextCompat.getColor(context, android.R.color.white);
                 temp[2] = 0xffe5e5e5;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             temp[0] = ContextCompat.getColor(context, R.color.colorPrimary);
             temp[1] = ContextCompat.getColor(context, android.R.color.white);
             temp[2] = 0xffe5e5e5;
@@ -294,12 +296,19 @@ public class RandomUtils {
     }
 
     public static void showSongDetailDialog(Context context, Song items) {
+
         MediaExtractor mex = new MediaExtractor();
+
+
         try {
+
             mex.setDataSource(items.getPath());
+
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("lkdfskfls", "/lkslfdkl;sdkfl;");
+            Log.e("Msg", e.getMessage());
         }
+
 
         MediaFormat mf = mex.getTrackFormat(0);
 
@@ -355,8 +364,7 @@ public class RandomUtils {
     }
 
 
-
-    public static void setAsRingtone(Context context,String filepath) {
+    public static void setAsRingtone(Context context, String filepath) {
         File ringtoneFile = new File(filepath);
 
         ContentValues content = new ContentValues();
@@ -385,28 +393,30 @@ public class RandomUtils {
     }
 
 
-
     public static void shareSongFile(Context context, ArrayList<Song> items, int position) {
-        Intent share = new Intent(Intent.ACTION_SEND);
-        share.setType("audio/*");
-        share.putExtra(Intent.EXTRA_STREAM,
-                Uri.parse("file:///" + items.get(position).getPath()));
-        context.startActivity(Intent.createChooser(share,
-                context.getString(R.string.share_song_file)));
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        try {
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("audio/*");
+            share.putExtra(Intent.EXTRA_STREAM,
+                    Uri.parse("file:///" + items.get(position).getPath()));
+            context.startActivity(Intent.createChooser(share,
+                    context.getString(R.string.share_song_file)));
+        }catch (Exception e){
+            Log.e("Loggg",e.getMessage());
+        }
     }
 
 
-
-
-    public static boolean isPathValid(String path){
+    public static boolean isPathValid(String path) {
         return path != "" && path != null && isFileExist(path);
     }
 
-    private static boolean isFileExist(String path){
+    private static boolean isFileExist(String path) {
         File file = new File(path);
         return file.exists();
     }
-
 
 
     public static int getWindowWidth(Context context) {
@@ -426,9 +436,7 @@ public class RandomUtils {
     }
 
 
-
-
-    public static Bitmap getBitmapOfVector(@NonNull Context context , @DrawableRes int id, int height, int width) {
+    public static Bitmap getBitmapOfVector(@NonNull Context context, @DrawableRes int id, int height, int width) {
         Bitmap bm;
         Drawable vectorDrawable = null;
         if (Build.VERSION.SDK_INT >= 21) {
@@ -448,20 +456,18 @@ public class RandomUtils {
     }
 
 
-
     public static int dpToPx(@NonNull Context context, int dp) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
 
-
-    public static void SetRingtone(final Context context, final String filePath , final String songTitle){
-        if(!checkSystemWritePermission(context)){
+    public static void SetRingtone(final Context context, final String filePath, final String songTitle) {
+        if (!checkSystemWritePermission(context)) {
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    switch (which){
+                    switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
                             openAndroidPermissionsMenu(context);
                             //Yes button clicked
@@ -479,7 +485,7 @@ public class RandomUtils {
                     .setPositiveButton("Sure", dialogClickListener)
                     .setNegativeButton("Not now", dialogClickListener).show();
 
-        }else {
+        } else {
 
             Executors.newSingleThreadExecutor().execute(new Runnable() {
                 @Override
@@ -489,19 +495,16 @@ public class RandomUtils {
                     File newFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES)
                             .getAbsolutePath()
                             + "/RandomPlayer_Music_tone.mp3");
-                    try
-                    {
+                    try {
                         newFile.createNewFile();
-                        copy(k,newFile);
-                    }
-                    catch (IOException e)
-                    {
+                        copy(k, newFile);
+                    } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
 
 
-                    if(!k.canRead()){
+                    if (!k.canRead()) {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
@@ -513,7 +516,7 @@ public class RandomUtils {
                     }
                     ContentValues values = new ContentValues();
                     values.put(MediaStore.MediaColumns.DATA, newFile.getAbsolutePath());
-                    values.put(MediaStore.MediaColumns.TITLE, songTitle+" Tone");
+                    values.put(MediaStore.MediaColumns.TITLE, songTitle + " Tone");
                     values.put(MediaStore.MediaColumns.SIZE, k.length());
                     values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3");
                     values.put(MediaStore.Audio.Media.DURATION, 230);
@@ -545,11 +548,8 @@ public class RandomUtils {
             });
 
 
-
         }
     }
-
-
 
 
     private static void copy(File src, File dst) throws IOException {
@@ -576,8 +576,6 @@ public class RandomUtils {
     }
 
 
-
-
     private static void openAndroidPermissionsMenu(Context context) {
         Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
         intent.setData(Uri.parse("package:" + context.getPackageName()));
@@ -585,65 +583,60 @@ public class RandomUtils {
     }
 
 
-
-
-    public static boolean isConnectedToInternet(){
+    public static boolean isConnectedToInternet() {
         ConnectivityManager
                 cm = (ConnectivityManager) MyApp.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork != null
                 && activeNetwork.isConnectedOrConnecting()) {
             return true;
-        }else {
+        } else {
             //Toast.makeText(MyApp.getContext(), "No internet connection!", Toast.LENGTH_LONG).show();
             return false;
         }
     }
 
 
-
-    public static int getIdFromTitle(Context context , String title){
+    public static int getIdFromTitle(Context context, String title) {
         ContentResolver cr = context.getContentResolver();
-        if(title.contains("'")){
+        if (title.contains("'")) {
             //title = ((char)34+title+(char)34);
             //fuck you bug
             //you bugged my mind
-            title = title.replaceAll("'","''");
+            title = title.replaceAll("'", "''");
         }
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection =  MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND "
-                +MediaStore.Audio.Media.TITLE  + "= '" +   title  +"'";
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND "
+                + MediaStore.Audio.Media.TITLE + "= '" + title + "'";
         String[] projection = {
                 MediaStore.Audio.Media._ID
         };
-        Cursor cursor=cr.query(
+        Cursor cursor = cr.query(
                 uri,
                 projection,
                 selection,
                 null,
                 MediaStore.Audio.Media.TITLE + " ASC");
 
-        if(cursor!=null){
+        if (cursor != null) {
             cursor.moveToFirst();
             int id = cursor.getInt(0);
             cursor.close();
-            return  id;
+            return id;
         }
         return 0;
     }
 
 
-
-
-    public static String getTitleFromFilePath(Context context ,String filePath){
-        if(filePath.contains("\"")){
+    public static String getTitleFromFilePath(Context context, String filePath) {
+        if (filePath.contains("\"")) {
             //filePath = RandomUtils.escapeDoubleQuotes(filePath);
         }
         ContentResolver cr = context.getContentResolver();
         Uri videosUri = MediaStore.Audio.Media.getContentUri("external");
         String[] projection = {MediaStore.Audio.Media.TITLE};
-        Cursor cursor = cr.query(videosUri, projection, MediaStore.Audio.Media.DATA + " LIKE ?", new String[] { filePath }, null);
-        if(cursor!=null && cursor.getCount()!=0) {
+        Cursor cursor = cr.query(videosUri, projection, MediaStore.Audio.Media.DATA + " LIKE ?", new String[]{filePath}, null);
+        if (cursor != null && cursor.getCount() != 0) {
             cursor.moveToFirst();
             String id = "";
             try {
@@ -654,11 +647,10 @@ public class RandomUtils {
             }
             cursor.close();
             return id;
-        }else {
+        } else {
             return null;
         }
     }
-
 
 
     public static Bitmap decodeUri(Context c, Uri uri, final int requiredSize)
@@ -669,12 +661,11 @@ public class RandomUtils {
 
         BitmapFactory.decodeStream(c.getContentResolver().openInputStream(uri), null, o);
 
-        int width_tmp = o.outWidth
-                , height_tmp = o.outHeight;
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
         int scale = 1;
 
-        while(true) {
-            if(width_tmp / 2 < requiredSize || height_tmp / 2 < requiredSize)
+        while (true) {
+            if (width_tmp / 2 < requiredSize || height_tmp / 2 < requiredSize)
                 break;
             width_tmp /= 2;
             height_tmp /= 2;
@@ -685,8 +676,6 @@ public class RandomUtils {
         o2.inSampleSize = scale;
         return BitmapFactory.decodeStream(c.getContentResolver().openInputStream(uri), null, o2);
     }
-
-
 
 
 }

@@ -23,6 +23,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -68,9 +69,13 @@ public class SearchActivity extends BaseThemedActivity implements SearchView.OnQ
 
         mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_serach_activity);
+        try {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }catch (Exception e){
+            Log.e("SearchActivity",""+e.getMessage());
+        }
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -106,6 +111,7 @@ public class SearchActivity extends BaseThemedActivity implements SearchView.OnQ
 
         menu.findItem(R.id.menu_search).expandActionView();
         return super.onCreateOptionsMenu(menu);
+
     }
 
 

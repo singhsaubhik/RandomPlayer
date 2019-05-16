@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Karim Abou Zeid (kabouzeid)
+ * @author Thakur
  */
 public class SongLoader {
     protected static final String BASE_SELECTION = AudioColumns.IS_MUSIC + "=1" + " AND " + AudioColumns.TITLE + " != ''";
