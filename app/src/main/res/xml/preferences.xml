@@ -29,14 +29,14 @@
         <!--android:summary="@string/choose_theme_throughout"-->
         <!--android:title="@string/select_theme" />-->
 
-        <com.afollestad.appthemeengine.prefs.ATECheckBoxPreference
-            android:defaultValue="false"
-            android:key="dark_theme"
-            android:persistent="true"
-            android:summary="This selects dark theme"
-            android:title="Dark Theme"
-            android:widgetLayout="@layout/ate_preference_checkbox"
-            app:ateKey_pref_checkBox="?ate_key" />
+        <!--<com.afollestad.appthemeengine.prefs.ATECheckBoxPreference-->
+            <!--android:defaultValue="false"-->
+            <!--android:key="dark_theme"-->
+            <!--android:persistent="true"-->
+            <!--android:summary="This selects dark theme"-->
+            <!--android:title="Dark Theme"-->
+            <!--android:widgetLayout="@layout/ate_preference_checkbox"-->
+            <!--app:ateKey_pref_checkBox="?ate_key" />-->
 
         <com.afollestad.appthemeengine.prefs.ATEColorPreference
             android:key="primary_color"
@@ -60,13 +60,13 @@
             android:title="Colored status"
             app:ateKey_pref_checkBox="ate_key" />
 
-        <com.afollestad.appthemeengine.prefs.ATECheckBoxPreference
-            android:defaultValue="true"
-            android:key="colored_nav_bar"
-            android:persistent="false"
-            android:summary="Colored navigation bar"
-            android:title="Navigation Color"
-            app:ateKey_pref_checkBox="?ate_key" />
+        <!--<com.afollestad.appthemeengine.prefs.ATECheckBoxPreference-->
+            <!--android:defaultValue="true"-->
+            <!--android:key="colored_nav_bar"-->
+            <!--android:persistent="false"-->
+            <!--android:summary="Colored navigation bar"-->
+            <!--android:title="Navigation Color"-->
+            <!--app:ateKey_pref_checkBox="?ate_key" />-->
 
         <com.afollestad.appthemeengine.prefs.ATECheckBoxPreference
             android:defaultValue="false"

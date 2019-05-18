@@ -22,6 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -35,7 +36,7 @@ import com.example.thakur.randomplayer.Utilities.Constants;
 import com.example.thakur.randomplayer.Utilities.PreferencesUtility;
 
 
-public class SettingsActivity extends BaseThemedActivity implements ColorChooserDialog.ColorCallback, ATEActivityThemeCustomizer {
+public class SettingsActivity extends AppCompatActivity implements ColorChooserDialog.ColorCallback, ATEActivityThemeCustomizer {
 
     String action;
 
@@ -88,16 +89,16 @@ public class SettingsActivity extends BaseThemedActivity implements ColorChooser
 
     @Override
     public void onColorSelection(@NonNull ColorChooserDialog dialog, @ColorInt int selectedColor) {
-        final Config config = ATE.config(this, getATEKey());
-        switch (dialog.getTitle()) {
-            case R.string.primary_color:
-                config.primaryColor(selectedColor);
-                break;
-            case R.string.accent_color:
-                config.accentColor(selectedColor);
-                break;
-        }
-        config.commit();
+//        final Config config = ATE.config(this, getATEKey());
+//        switch (dialog.getTitle()) {
+//            case R.string.primary_color:
+//                config.primaryColor(selectedColor);
+//                break;
+//            case R.string.accent_color:
+//                config.accentColor(selectedColor);
+//                break;
+//        }
+       // config.commit();
         recreate(); // recreation needed to reach the checkboxes in the preferences layout
     }
 

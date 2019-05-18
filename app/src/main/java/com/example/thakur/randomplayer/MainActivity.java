@@ -12,12 +12,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
@@ -29,24 +26,18 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.appthemeengine.Config;
-import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.thakur.randomplayer.Adapters.ViewPagerAdapter;
-import com.example.thakur.randomplayer.BaseActivity.BaseThemedActivity;
 import com.example.thakur.randomplayer.BaseActivity.SearchActivity;
 import com.example.thakur.randomplayer.BaseActivity.SettingsActivity;
 import com.example.thakur.randomplayer.Fragments.*;
-import com.example.thakur.randomplayer.Fragments.NowPlayingScreen.PlayerScreen2;
 import com.example.thakur.randomplayer.Loaders.SongLoader;
 import com.example.thakur.randomplayer.Services.MusicService;
 import com.example.thakur.randomplayer.Utilities.Constants;
@@ -54,7 +45,6 @@ import com.example.thakur.randomplayer.Utilities.RandomUtils;
 import com.example.thakur.randomplayer.items.Song;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 
 import java.io.File;
@@ -169,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initNavHeader();
 
         updateHeader();
-//        updateWidget(true);
+        updateWidget(true);
 
         Log.e("From main",""+list.get(1).getPath());
 
@@ -461,7 +451,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     };
 
     private void updateWidget(boolean loadImage){
-        Song song = MyApp.getMyService().getCurrentSong();
+        Song song = null;
+        try {
+            song = MyApp.getMyService().getCurrentSong();
+        }catch (Exception e){
+            song = list.get(0);
+            e.printStackTrace();
+
+        }
 
         if(loadImage){
             String path = RandomUtils.getAlbumArt(this,song.getAlbumId());

@@ -57,9 +57,21 @@
         <item name="cardBackgroundColor">@color/window_background_black</item>
     </style>
 
-    <style name="Theme.AppFullScreen.Black.NoActionBar" parent="Theme.AppCompat.NoActionBar" />-->
+    <style name="Theme.AppFullScreen.Black.NoActionBar" parent="Theme.AppCompat.NoActionBar" />
 
     <style name="Theme.Bhai.NoActionBar" parent="Theme.AppCompat.NoActionBar" />
+
+    <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">
+            #000
+        </item>
+        <item name="colorPrimaryDark">
+            #000
+        </item>
+        <item name="colorAccent">
+            #FFF
+        </item>
+    </style>
 
     
 
