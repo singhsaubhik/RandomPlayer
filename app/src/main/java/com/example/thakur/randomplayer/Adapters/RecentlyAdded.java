@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * Created by Thakur on 14-11-2017.
  */
 
-public class RecentlyAdded extends RecyclerView.Adapter<RecentlyAdded.RecentlyAddedViewHolder>{
+public class RecentlyAdded extends RecyclerView.Adapter<RecentlyAdded.RecentlyAddedViewHolder> {
     private Context context;
     private ArrayList<Song> list = new ArrayList<>();
 
@@ -32,7 +32,7 @@ public class RecentlyAdded extends RecyclerView.Adapter<RecentlyAdded.RecentlyAd
 
     @Override
     public RecentlyAddedViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.songs_list_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.songs_list_item, parent, false);
         context = view.getContext();
         return new RecentlyAddedViewHolder(view);
     }
@@ -41,14 +41,13 @@ public class RecentlyAdded extends RecyclerView.Adapter<RecentlyAdded.RecentlyAd
     public void onBindViewHolder(RecentlyAddedViewHolder holder, int position) {
         holder.song_name.setText(list.get(position).getName());
         holder.artist_name.setText(list.get(position).getArtist());
-        String path = RandomUtils.getAlbumArt(context,list.get(position).getAlbumId());
+        String path = RandomUtils.getAlbumArt(context, list.get(position).getAlbumId());
 
-        if(RandomUtils.isPathValid(path)){
+        if (RandomUtils.isPathValid(path)) {
             Picasso.with(context).load(new File(path))
                     .placeholder(R.drawable.default_art)
                     .into(holder.album_art);
-        }
-        else{
+        } else {
             Picasso.with(context)
                     .load(R.drawable.dispacito_64)
                     .into(holder.album_art);
@@ -58,11 +57,11 @@ public class RecentlyAdded extends RecyclerView.Adapter<RecentlyAdded.RecentlyAd
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list.size() > 0 ? list.size() : 0;
     }
 
-    public class RecentlyAddedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView song_name,artist_name;
+    public class RecentlyAddedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView song_name, artist_name;
         ImageView album_art;
 
         public RecentlyAddedViewHolder(View itemView) {
@@ -82,8 +81,8 @@ public class RecentlyAdded extends RecyclerView.Adapter<RecentlyAdded.RecentlyAd
                 MyApp.getMyService().playAll();
                 //((PlayList)context).overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
 
-            }catch (Exception e){
-                Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(context, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }

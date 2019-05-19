@@ -93,7 +93,7 @@ public class ArtistSubListAdapter extends RecyclerView.Adapter<ArtistSubListAdap
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return items.size() > 0 ? items.size() : 0;
     }
 
     public class SimpleItemViewHolder extends RecyclerView.ViewHolder {

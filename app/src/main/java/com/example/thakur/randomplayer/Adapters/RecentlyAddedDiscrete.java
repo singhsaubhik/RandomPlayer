@@ -56,7 +56,7 @@ public class RecentlyAddedDiscrete extends RecyclerView.Adapter<RecentlyAddedDis
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list.size() > 0 ? list.size() : 0;
     }
 
     public class RecentlyAddedDiscreteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

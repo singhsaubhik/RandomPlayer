@@ -38,7 +38,7 @@ import java.util.ArrayList;
  */
 public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.SimpleItemViewHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
-    private ArrayList<Artist> items,filteredDataItems;
+    private ArrayList<Artist> items, filteredDataItems;
     private ArtistList fragment;
     private Context context;
     private int expandedPosition = -1;
@@ -54,7 +54,7 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
 
     @Override
     public SimpleItemViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                      int viewType) {
+                                                   int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.artist_list_item, parent, false);
         return new SimpleItemViewHolder(itemView);
@@ -64,8 +64,8 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
     public void onBindViewHolder(final SimpleItemViewHolder holder,
                                  final int position) {
 
-        holder.img.setImageBitmap(RandomUtils.getBitmapOfVector(context , R.drawable.default_artist_art,
-                RandomUtils.dpToPx(context ,50), RandomUtils.dpToPx(context , 50)));
+        holder.img.setImageBitmap(RandomUtils.getBitmapOfVector(context, R.drawable.default_artist_art,
+                RandomUtils.dpToPx(context, 50), RandomUtils.dpToPx(context, 50)));
         holder.name.setText(items.get(position).getArtistName());
         getArtistImg(holder, position);
         holder.songCount.setText(context.getResources().getString(R.string.songs)
@@ -103,7 +103,7 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
         holder.songsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // Intent i = new Intent(context, ArtistActivity.class);
+                // Intent i = new Intent(context, ArtistActivity.class);
                 //i.putExtra("name", items.get(position).getArtistName());
                 //i.putExtra("id", items.get(position).getArtistId());
                 //context.startActivity(i);
@@ -164,7 +164,7 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
     }
 
     private void collapseWithoutAnimation(SimpleItemViewHolder holder) {
-        if(Build.VERSION.SDK_INT>=21) {
+        if (Build.VERSION.SDK_INT >= 21) {
             holder.mainView.setElevation(0);
             holder.expandedArea.setLayoutParams(new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(0)));
@@ -173,7 +173,7 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
     }
 
     private void expandWithoutAnimation(SimpleItemViewHolder holder) {
-        if(Build.VERSION.SDK_INT>=21) {
+        if (Build.VERSION.SDK_INT >= 21) {
             holder.mainView.setElevation(12);
             holder.expandedArea.setLayoutParams(new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(expandSize)));
@@ -183,7 +183,7 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return items.size() > 0 ? items.size() : 0;
     }
 
 
@@ -203,9 +203,9 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
                 new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animator) {
-                        if(Build.VERSION.SDK_INT>=21)
-                        view.setElevation(
-                                (Integer) animator.getAnimatedValue());
+                        if (Build.VERSION.SDK_INT >= 21)
+                            view.setElevation(
+                                    (Integer) animator.getAnimatedValue());
                     }
 
                 });
@@ -262,14 +262,14 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
             ((MainActivity) fragment.getActivity()).finish();
     }
 
-    private String getString(int pos){
+    private String getString(int pos) {
         return items.get(pos).getArtistName();
     }
 
     @NonNull
     @Override
     public String getSectionName(int position) {
-        return getString(position).substring(0,1);
+        return getString(position).substring(0, 1);
     }
 
     public class SimpleItemViewHolder extends RecyclerView.ViewHolder {
@@ -293,7 +293,6 @@ public class ArtistsListAdapter extends RecyclerView.Adapter<ArtistsListAdapter.
             rv = (RecyclerView) itemView.findViewById(R.id.artist_sub_rv);
         }
     }
-
 
 
 }

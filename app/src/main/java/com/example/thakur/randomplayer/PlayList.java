@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.thakur.randomplayer.Adapters.RecentlyAdded;
 import com.example.thakur.randomplayer.Adapters.RecentlyAddedDiscrete;
@@ -67,12 +69,13 @@ public class PlayList extends AppCompatActivity {
     private RecentlyAddedDiscrete discrete_adapter;
     private ArrayList<Song> list = new ArrayList<>();
     private ImageView header_image;
-    private int startedBy=0;
+    private int startedBy = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(Build.VERSION.SDK_INT>19)
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        if (Build.VERSION.SDK_INT > 19)
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(R.layout.activity_secondary_library);
 
         Toolbar toolbar = findViewById(R.id.play_queue_title);
@@ -85,7 +88,8 @@ public class PlayList extends AppCompatActivity {
             playlistsMap.put("RecentAdded", playlistLastAdded);
             playlistsMap.put("MostPlayed", playlistToptracks);
             playlistsMap.put("UserPlaylist", playlistUsercreated);
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
 
         }
 
@@ -98,38 +102,33 @@ public class PlayList extends AppCompatActivity {
         //setList();
 
 
-
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(manager);
 
 
-
-        LinearLayoutManager manager1 = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false);
+        LinearLayoutManager manager1 = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         discrete_recycler.setLayoutManager(manager1);
-
 
 
         //setHeaderImage();
 
         try {
             setUpSongs();
-        }catch (Exception e){
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
 
 
     }
 
-    private void setHeaderImage(){
+    private void setHeaderImage() {
 
-        if(RandomUtils.isPathValid(path)){
+        if (RandomUtils.isPathValid(path)) {
             Picasso.with(getApplicationContext())
                     .load(new File(path))
                     .placeholder(R.drawable.default_art)
                     .into(header_image);
-        }
-        else{
+        } else {
             Picasso.with(getApplicationContext())
                     .load(R.drawable.defualt_art2)
                     .placeholder(R.drawable.default_art)
@@ -138,18 +137,21 @@ public class PlayList extends AppCompatActivity {
     }
 
 
-
-
-
     private class loadRecentlyPlayed extends AsyncTask<String, Void, String> {
 
+        List<Song> recentsongs;
         @Override
         protected String doInBackground(String... params) {
             TopTracksLoader loader = new TopTracksLoader(PlayList.this, TopTracksLoader.QueryType.RecentSongs);
-            List<Song> recentsongs = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
+            recentsongs = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
+
+            if(recentsongs.size()<=0){
+                return "Executed";
+            }
+
             recentlyAdded = new RecentlyAdded((ArrayList<Song>) recentsongs);
             discrete_adapter = new RecentlyAddedDiscrete((ArrayList<Song>) recentsongs);
-            path = RandomUtils.getAlbumArt(PlayList.this,recentsongs.get(0).getAlbumId());
+            path = RandomUtils.getAlbumArt(PlayList.this, recentsongs.get(0).getAlbumId());
             //mAdapter = new SongsListAdapter(mContext, recentsongs, true, animate);
             //mAdapter.setPlaylistId(playlistID);
             return "Executed";
@@ -157,8 +159,12 @@ public class PlayList extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            setRecyclerViewAapter();
-            setHeaderImage();
+            if (recentsongs.size() > 0) {
+                setRecyclerViewAapter(false);
+                setHeaderImage();
+            } else {
+                setRecyclerViewAapter(true);
+            }
 
         }
 
@@ -171,19 +177,28 @@ public class PlayList extends AppCompatActivity {
 
     private class loadLastAdded extends AsyncTask<String, Void, String> {
 
+        List<Song> lastadded;
         @Override
         protected String doInBackground(String... params) {
-            List<Song> lastadded = LastAddedLoader.getLastAddedSongs(PlayList.this);
+            lastadded = LastAddedLoader.getLastAddedSongs(PlayList.this);
+
+            if(lastadded.size()<=0){
+                return "Executed";
+            }
             recentlyAdded = new RecentlyAdded((ArrayList<Song>) lastadded);
             discrete_adapter = new RecentlyAddedDiscrete((ArrayList<Song>) lastadded);
-            path = RandomUtils.getAlbumArt(PlayList.this,lastadded.get(0).getAlbumId());
+            path = RandomUtils.getAlbumArt(PlayList.this, lastadded.get(0).getAlbumId());
             return "Executed";
         }
 
         @Override
         protected void onPostExecute(String result) {
-            setRecyclerViewAapter();
-            setHeaderImage();
+            if (lastadded.size() > 0) {
+                setRecyclerViewAapter(false);
+                setHeaderImage();
+            } else {
+                setRecyclerViewAapter(true);
+            }
         }
 
         @Override
@@ -193,21 +208,32 @@ public class PlayList extends AppCompatActivity {
     }
 
     private class loadTopTracks extends AsyncTask<String, Void, String> {
+        List<Song> toptracks;
 
         @Override
         protected String doInBackground(String... params) {
             TopTracksLoader loader = new TopTracksLoader(PlayList.this, TopTracksLoader.QueryType.TopTracks);
-            List<Song> toptracks = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
-            recentlyAdded = new RecentlyAdded((ArrayList<Song>) toptracks);
+            toptracks = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
+
+            if(toptracks.size()>0) {
+                recentlyAdded = new RecentlyAdded((ArrayList<Song>) toptracks);
+            }else{
+                return "Executed";
+            }
             discrete_adapter = new RecentlyAddedDiscrete((ArrayList<Song>) toptracks);
-            path = RandomUtils.getAlbumArt(PlayList.this,toptracks.get(0).getAlbumId());
+            path = RandomUtils.getAlbumArt(PlayList.this, toptracks.get(0).getAlbumId());
             return "Executed";
         }
 
         @Override
         protected void onPostExecute(String result) {
-            setRecyclerViewAapter();
-            setHeaderImage();
+            if (toptracks.size() > 0) {
+                setRecyclerViewAapter(false);
+                setHeaderImage();
+            } else {
+                setRecyclerViewAapter(true);
+            }
+
         }
 
         @Override
@@ -219,13 +245,13 @@ public class PlayList extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            playlistID = getIntent().getLongExtra(Constants.PLAYLIST_ID,0);
+            playlistID = getIntent().getLongExtra(Constants.PLAYLIST_ID, 0);
             List<Song> playlistsongs = PlaylistSongLoader.getSongsInPlaylist(PlayList.this, playlistID);
             recentlyAdded = new RecentlyAdded((ArrayList<Song>) playlistsongs);
             discrete_adapter = new RecentlyAddedDiscrete((ArrayList<Song>) playlistsongs);
             try {
                 path = RandomUtils.getAlbumArt(PlayList.this, playlistsongs.get(0).getAlbumId());
-            }catch (Exception e){
+            } catch (Exception e) {
                 path = "";
                 //Toast.makeText(PlayList.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -234,7 +260,7 @@ public class PlayList extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            setRecyclerViewAapter();
+            setRecyclerViewAapter(false);
             setHeaderImage();
         }
 
@@ -244,9 +270,14 @@ public class PlayList extends AppCompatActivity {
     }
 
 
-    private void setRecyclerViewAapter() {
-        recyclerView.setAdapter(recentlyAdded);
-        discrete_recycler.setAdapter(discrete_adapter);
+    private void setRecyclerViewAapter(boolean isEmpty) {
+        if (isEmpty) {
+            recyclerView.setVisibility(View.GONE);
+            Toast.makeText(this, "List is empty", Toast.LENGTH_SHORT).show();
+        } else {
+            recyclerView.setAdapter(recentlyAdded);
+            discrete_recycler.setAdapter(discrete_adapter);
+        }
     }
 
     private void setUpSongs() {

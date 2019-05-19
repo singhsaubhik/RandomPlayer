@@ -126,7 +126,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemHolder
 
     @Override
     public int getItemCount() {
-        return searchResults.size();
+        return searchResults.size() > 0 ? searchResults.size() : 0;
     }
 
     /*private void setOnPopupMenuListener(ItemHolder itemHolder, final int position) {

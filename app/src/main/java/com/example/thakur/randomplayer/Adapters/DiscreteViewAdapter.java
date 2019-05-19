@@ -32,19 +32,18 @@ public class DiscreteViewAdapter extends RecyclerView.Adapter<DiscreteViewAdapte
 
     @Override
     public DiscreteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.discreteview_layout,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.discreteview_layout, parent, false);
         context = view.getContext();
-        return  new DiscreteViewHolder(view);
+        return new DiscreteViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(DiscreteViewHolder holder, int position) {
-        String path = RandomUtils.getAlbumArt(context,list.get(position).getAlbumId());
-        if(RandomUtils.isPathValid(path)){
+        String path = RandomUtils.getAlbumArt(context, list.get(position).getAlbumId());
+        if (RandomUtils.isPathValid(path)) {
             Picasso.with(context).load(new File(path))
                     .into(holder.imageView);
-        }
-        else{
+        } else {
             Picasso.with(context).load(R.drawable.discrete_default70dp)
                     .into(holder.imageView);
         }
@@ -53,12 +52,13 @@ public class DiscreteViewAdapter extends RecyclerView.Adapter<DiscreteViewAdapte
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list.size() > 0 ? list.size() : 0;
     }
 
-    public class DiscreteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class DiscreteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView imageView;
+
         public DiscreteViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.discrete_image);
@@ -70,7 +70,7 @@ public class DiscreteViewAdapter extends RecyclerView.Adapter<DiscreteViewAdapte
 
             Intent i = new Intent();
             i.setAction(MusicService.DISCRETE_VIEW_CLICK);
-            i.putExtra("discreteView.pos",getAdapterPosition());
+            i.putExtra("discreteView.pos", getAdapterPosition());
             context.sendBroadcast(i);
             context.sendBroadcast(new Intent(MusicService.PLAYING_STATUS_CHANGED));
 

@@ -49,7 +49,7 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
 
     @Override
     public PlayListListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.discreteview_layout_playlist_list,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.discreteview_layout_playlist_list, parent, false);
         context = view.getContext();
         return new PlayListListViewHolder(view);
     }
@@ -59,8 +59,8 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
 
         holder.title.setText(list.get(position).getPlaylistName());
 
-        final String path = RandomUtils.getAlbumArt(context,list.get(position).getCover_albumId());
-        if(RandomUtils.isPathValid(path)) {
+        final String path = RandomUtils.getAlbumArt(context, list.get(position).getCover_albumId());
+        if (RandomUtils.isPathValid(path)) {
             Glide.with(context).asBitmap().load(new File(path)).apply(new RequestOptions().fitCenter())
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
@@ -70,14 +70,14 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
                             b.generate(new Palette.PaletteAsyncListener() {
                                 @Override
                                 public void onGenerated(@NonNull Palette palette) {
-                                    int[] i = RandomUtils.getAvailableColor(context,palette);
+                                    int[] i = RandomUtils.getAvailableColor(context, palette);
                                     holder.layout.setBackgroundColor(i[0]);
                                     holder.title.setTextColor(i[1]);
                                 }
                             });
                         }
                     });
-        }else {
+        } else {
             Glide.with(context).asBitmap().load(R.drawable.defualt_art2).apply(new RequestOptions().fitCenter())
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
@@ -88,7 +88,7 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
                             b.generate(new Palette.PaletteAsyncListener() {
                                 @Override
                                 public void onGenerated(@NonNull Palette palette) {
-                                    int[] i = RandomUtils.getAvailableColor(context,palette);
+                                    int[] i = RandomUtils.getAvailableColor(context, palette);
                                     holder.layout.setBackgroundColor(i[0]);
                                     holder.title.setTextColor(i[1]);
                                 }
@@ -102,13 +102,14 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list.size() > 0 ? list.size() : 0;
     }
 
-    public class PlayListListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        ImageView imageView,menu;
+    public class PlayListListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        ImageView imageView, menu;
         TextView title;
         LinearLayout layout;
+
         public PlayListListViewHolder(View itemView) {
             super(itemView);
 
@@ -123,30 +124,30 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
 
         @Override
         public void onClick(View v) {
-            if(v==itemView){
-                switch (getAdapterPosition()){
+            if (v == itemView) {
+                switch (getAdapterPosition()) {
                     case 0:
-                        Intent in = new Intent(context,PlayList.class);
+                        Intent in = new Intent(context, PlayList.class);
                         //in.putExtra("playlistposition",getAdapterPosition());
                         in.setAction("RecentAdded");
                         context.startActivity(in);
                         break;
 
                     case 1:
-                        Intent in2 = new Intent(context,PlayList.class);
+                        Intent in2 = new Intent(context, PlayList.class);
                         in2.setAction("RecentPlayed");
                         context.startActivity(in2);
                         break;
 
                     case 2:
-                        Intent in3 = new Intent(context,PlayList.class);
+                        Intent in3 = new Intent(context, PlayList.class);
                         in3.setAction("MostPlayed");
                         context.startActivity(in3);
                         break;
 
                     default:
-                        Intent i = new Intent(context,PlayList.class);
-                        i.putExtra(Constants.ARTIST_ID,list.get(getAdapterPosition()).getPlaylistId());
+                        Intent i = new Intent(context, PlayList.class);
+                        i.putExtra(Constants.ARTIST_ID, list.get(getAdapterPosition()).getPlaylistId());
                         i.setAction("UserPlaylist");
                         context.startActivity(i);
 
@@ -155,16 +156,15 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
 
                 }
 
-            }
-            else if(v==menu){
-                PopupMenu pm = new PopupMenu(context,v);
+            } else if (v == menu) {
+                PopupMenu pm = new PopupMenu(context, v);
                 pm.inflate(R.menu.playlist_menu);
                 pm.show();
 
                 pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch(menuItem.getItemId()){
+                        switch (menuItem.getItemId()) {
 
                             case R.id.playlist_menu_list_playall:
                                 break;
@@ -176,7 +176,7 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
 
                                 new MaterialDialog.Builder(context)
 
-                                        .title("Delete Playlist : "+list.get(getAdapterPosition()).getPlaylistName())
+                                        .title("Delete Playlist : " + list.get(getAdapterPosition()).getPlaylistName())
                                         .content("Are you sure want to delete ?")
                                         .positiveText(R.string.delete_playlist1)
                                         .negativeText(R.string.cancel)
@@ -194,8 +194,8 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
                                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                                             @Override
                                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                PlaylistLoader.deletePlaylists(context,list.get(getAdapterPosition()).getPlaylistId());
-                                                refresh((ArrayList<Playlist>) PlaylistLoader.getPlaylists(context,false));
+                                                PlaylistLoader.deletePlaylists(context, list.get(getAdapterPosition()).getPlaylistId());
+                                                refresh((ArrayList<Playlist>) PlaylistLoader.getPlaylists(context, false));
                                             }
                                         })
                                         .show();
@@ -229,12 +229,11 @@ public class PlayListListAdapter extends RecyclerView.Adapter<PlayListListAdapte
         }
     }
 
-    public void refresh(ArrayList<Playlist> list){
+    public void refresh(ArrayList<Playlist> list) {
         this.list.clear();
         this.list.addAll(list);
         notifyDataSetChanged();
     }
-
 
 
 }

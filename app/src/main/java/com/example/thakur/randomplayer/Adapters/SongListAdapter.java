@@ -46,8 +46,7 @@ import java.util.ArrayList;
  * Created by Thakur on 22-09-2017
  */
 
-public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyViewHolder> implements FastScrollRecyclerView.SectionedAdapter,PopupMenu.OnMenuItemClickListener{
-
+public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyViewHolder> implements FastScrollRecyclerView.SectionedAdapter, PopupMenu.OnMenuItemClickListener {
 
 
     private AppCompatActivity context;
@@ -58,25 +57,20 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
 
     UserPreferenceHandler pref;
 
-    public SongListAdapter(Context context ,ArrayList<Song> arrayList)
-    {
-        this.context= (AppCompatActivity) context;
+    public SongListAdapter(Context context, ArrayList<Song> arrayList) {
+        this.context = (AppCompatActivity) context;
         this.songList.addAll(arrayList);
-        
+
 
         pref = new UserPreferenceHandler(context);
 
     }
 
 
-
-
-
-
     @NonNull
     @Override
     public String getSectionName(int position) {
-        return getSong(position).substring(0,1);
+        return getSong(position).substring(0, 1);
     }
 
     @Override
@@ -84,13 +78,14 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
         return false;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener , View.OnLongClickListener{
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         private ItemClickListener itemClickListener;
 
         public View mainView;
-        public TextView title , artist;
-        public ImageView img,popUp;
+        public TextView title, artist;
+        public ImageView img, popUp;
+
         public MyViewHolder(View itemView) {
             super(itemView);
             mainView = itemView;
@@ -112,8 +107,8 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
         public void onClick(View view) {
             //itemClickListener.onClick(view,getAdapterPosition(),false);
 
-            if(view == itemView){
-                Intent playerActivity = new Intent(context,PlayerActivity.class);
+            if (view == itemView) {
+                Intent playerActivity = new Intent(context, PlayerActivity.class);
                 playerActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 
                 try {
@@ -128,23 +123,21 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
 
                     //playerActivity.putExtra("pos",position);
                     context.startActivity(playerActivity);
-                    ((MainActivity)context).overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+                    ((MainActivity) context).overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
-                }catch (Exception e){
-                    Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(context, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-            }
+            } else if (view == popUp) {
 
-            else if(view==popUp){
-
-                PopupMenu popupMenu = new PopupMenu(context,view);
+                PopupMenu popupMenu = new PopupMenu(context, view);
                 popupMenu.inflate(R.menu.bittu_menu);
                 popupMenu.show();
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()){
+                        switch (item.getItemId()) {
                             case R.id.bittu_menu_playOnly:
                                 break;
 
@@ -152,14 +145,14 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                                 new MaterialDialog.Builder(context).iconRes(R.mipmap.ic_launcher)
                                         .theme(Theme.DARK)
                                         .title("Delete song")
-                                        .content("Do you really want to delete : "+songList.get(getAdapterPosition()).getName())
+                                        .content("Do you really want to delete : " + songList.get(getAdapterPosition()).getName())
                                         .positiveText("Yes")
                                         .negativeText("No")
                                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                                             @Override
                                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                                 long[] ids = {songList.get(getAdapterPosition()).getSongId()};
-                                                RandomUtils.deleteTracks(context,ids);
+                                                RandomUtils.deleteTracks(context, ids);
                                                 refresh(SongLoader.getSongList(context));
                                             }
                                         })
@@ -173,20 +166,20 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                                 break;
 
                             case R.id.bittu_menu_setAsRintone:
-                                RandomUtils.SetRingtone(context,songList.get(getAdapterPosition()).getPath(),songList.get(getAdapterPosition()).getName());
+                                RandomUtils.SetRingtone(context, songList.get(getAdapterPosition()).getPath(), songList.get(getAdapterPosition()).getName());
                                 break;
 
                             case R.id.bittu_menu_shareTrack:
-                                RandomUtils.shareSongFile(context,songList,getAdapterPosition());
+                                RandomUtils.shareSongFile(context, songList, getAdapterPosition());
                                 break;
 
                             case R.id.bittu_menu_showAlbum:
-                                context.startActivity(new Intent(context,AlbumContentList.class).putExtra("albumId",songList.get(getAdapterPosition()).getAlbumId()));
+                                context.startActivity(new Intent(context, AlbumContentList.class).putExtra("albumId", songList.get(getAdapterPosition()).getAlbumId()));
                                 break;
 
                             case R.id.bittu_menu_showInfo:
                                 //Log.e("asd",""+songList.get(0).getPath());
-                                RandomUtils.showSongDetailDialog(context,songList.get(getAdapterPosition()));
+                                RandomUtils.showSongDetailDialog(context, songList.get(getAdapterPosition()));
                                 break;
 
                             case R.id.bittu_menu_addtoplaylist:
@@ -211,15 +204,12 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
     }
 
 
-
-
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.songs_list_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.songs_list_item, parent, false);
 
         return new MyViewHolder(view);
     }
-
 
 
     @Override
@@ -235,16 +225,15 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
 
         int size = dpToPx(70);
 
-        if(RandomUtils.isPathValid(path)) {
+        if (RandomUtils.isPathValid(path)) {
             Glide.with(context).load(new File(path))
                     .apply(new RequestOptions().override(size).format(DecodeFormat.PREFER_ARGB_8888))
                     .into(holder.img);
-        }else{
+        } else {
             Glide.with(context).load(R.drawable.dispacito_64)
                     .apply(new RequestOptions().override(size))
                     .into(holder.img);
         }
-
 
 
     }
@@ -252,7 +241,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return songList.size();
+        return songList.size() > 0 ? songList.size() : 0;
     }
 
     public int dpToPx(int dp) {
@@ -261,21 +250,16 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
     }
 
 
-
-    private String getSong(int pos){
+    private String getSong(int pos) {
         return songList.get(pos).getName();
     }
 
 
-
-
-    public void refresh(ArrayList<Song> list){
+    public void refresh(ArrayList<Song> list) {
         songList.clear();
         songList.addAll(list);
         notifyDataSetChanged();
     }
-
-
 
 
 }

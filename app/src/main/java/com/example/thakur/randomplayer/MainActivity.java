@@ -156,12 +156,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         list = SongLoader.getSongList(MainActivity.this);
-        initNavHeader();
 
-        updateHeader();
-        updateWidget(true);
+        if(list.size()>0) {
+            initNavHeader();
 
-        Log.e("From main",""+list.get(1).getPath());
+            updateHeader();
+            updateWidget(true);
+        }else{
+            Toast.makeText(this, "Empty List", Toast.LENGTH_SHORT).show();
+        }
+
+//        Log.e("From main",""+list.get(1).getPath());
 
         registerReceiver(updateHeaderReceiver, new IntentFilter(Constants.HEADER_VIEW_POSITION));
 

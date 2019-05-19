@@ -23,7 +23,7 @@ public class AlbumContentAdapter extends RecyclerView.Adapter<AlbumContentAdapte
     private Context context;
     private ArrayList<Song> albumList = new ArrayList<>();
 
-    public AlbumContentAdapter(Context context,ArrayList<Song> a){
+    public AlbumContentAdapter(Context context, ArrayList<Song> a) {
         this.context = context;
         this.albumList = a;
     }
@@ -31,7 +31,7 @@ public class AlbumContentAdapter extends RecyclerView.Adapter<AlbumContentAdapte
 
     @Override
     public MyAlbumViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.album_content_list,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.album_content_list, parent, false);
         return new MyAlbumViewHolder(view);
     }
 
@@ -43,10 +43,10 @@ public class AlbumContentAdapter extends RecyclerView.Adapter<AlbumContentAdapte
 
     @Override
     public int getItemCount() {
-        return albumList.size();
+        return (albumList.size() > 0 ? albumList.size() : -1);
     }
 
-    public class MyAlbumViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class MyAlbumViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tv;
 
         public MyAlbumViewHolder(View itemView) {
@@ -58,15 +58,15 @@ public class AlbumContentAdapter extends RecyclerView.Adapter<AlbumContentAdapte
 
         @Override
         public void onClick(View v) {
-            handleOnClick(v,getAdapterPosition());
+            handleOnClick(v, getAdapterPosition());
         }
 
     }
 
-    private void handleOnClick(View v , int pos) {
+    private void handleOnClick(View v, int pos) {
         UserPreferenceHandler pref = new UserPreferenceHandler(context);
-       MyApp.getMyService().setAblbumId(albumList.get(pos).getAlbumId());
-       MyApp.getMyService().setSongPos(pos);
-       MyApp.getMyService().playAlbum();
+        MyApp.getMyService().setAblbumId(albumList.get(pos).getAlbumId());
+        MyApp.getMyService().setSongPos(pos);
+        MyApp.getMyService().playAlbum();
     }
 }

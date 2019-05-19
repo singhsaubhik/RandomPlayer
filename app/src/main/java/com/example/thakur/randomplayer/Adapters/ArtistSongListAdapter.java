@@ -111,7 +111,7 @@ public class ArtistSongListAdapter extends RecyclerView.Adapter<ArtistSongListAd
 
     @Override
     public int getItemCount() {
-        return items.size() + 1;
+        return items.size() > 0 ? items.size() : 0;
     }
 
     @Override

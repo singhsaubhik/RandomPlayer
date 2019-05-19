@@ -41,27 +41,24 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
     private ArrayList<Album> albumList = new ArrayList<>();
     private Context context;
 
-    public AlbumListAdapter(Context context, ArrayList<Album> arrayList)
-    {
+    public AlbumListAdapter(Context context, ArrayList<Album> arrayList) {
         this.context = context;
         albumList = arrayList;
 
     }
 
 
-
     @NonNull
     @Override
     public String getSectionName(int position) {
-        return getSong(position).substring(0,1);
+        return getSong(position).substring(0, 1);
     }
 
 
-    public class AlbumViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-    {
+    public class AlbumViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ItemClickListener clickListener;
-        TextView albumListName,artist;
+        TextView albumListName, artist;
         ImageView albumArt;
         LinearLayout layout;
 
@@ -77,12 +74,9 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
         }
 
 
-
-
-
         @Override
         public void onClick(View view) {
-            setOnCLick(view,getAdapterPosition());
+            setOnCLick(view, getAdapterPosition());
             //Toast.makeText(context, "Hi "+getAdapterPosition(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -90,7 +84,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
 
     @Override
     public AlbumViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.album_grid_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.album_grid_item, parent, false);
         return new AlbumViewHolder(view);
     }
 
@@ -102,11 +96,11 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
         int size = dpToPx(300);
 
         //
-         String path = albumList.get(position).getAlbumArtPath();
+        String path = albumList.get(position).getAlbumArtPath();
         //String path = RandomUtils.getAlbumArt(context,albumList.get(position).getAlbumId());
 
 
-        if(RandomUtils.isPathValid(path)) {
+        if (RandomUtils.isPathValid(path)) {
             Glide.with(context).asBitmap().load(new File(path)).apply(new RequestOptions().override(size))
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
@@ -117,7 +111,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
                             b.generate(new Palette.PaletteAsyncListener() {
                                 @Override
                                 public void onGenerated(@NonNull Palette palette) {
-                                    int[] colors = RandomUtils.getAvailableColor(context,palette);
+                                    int[] colors = RandomUtils.getAvailableColor(context, palette);
                                     holder.layout.setBackgroundColor(colors[0]);
                                     holder.albumListName.setTextColor(colors[1]);
                                     holder.artist.setTextColor(colors[2]);
@@ -125,8 +119,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
                             });
                         }
                     });
-        }
-        else{
+        } else {
             Glide.with(context).asBitmap().load(R.drawable.defualt_art2).apply(new RequestOptions().override(size))
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
@@ -137,7 +130,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
                             b.generate(new Palette.PaletteAsyncListener() {
                                 @Override
                                 public void onGenerated(@NonNull Palette palette) {
-                                    int[] colors = RandomUtils.getAvailableColor(context,palette);
+                                    int[] colors = RandomUtils.getAvailableColor(context, palette);
                                     holder.layout.setBackgroundColor(colors[0]);
                                     holder.albumListName.setTextColor(colors[1]);
                                     holder.artist.setTextColor(colors[2]);
@@ -151,9 +144,8 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
 
     @Override
     public int getItemCount() {
-        return albumList.size();
+        return albumList.size() > 0 ? albumList.size() : 0;
     }
-
 
 
     public int dpToPx(int dp) {
@@ -161,23 +153,17 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
-    public void setOnCLick(View view , int position)
-    {
-        Log.v("AlbumListAdapter","You clicked");
+    public void setOnCLick(View view, int position) {
+        Log.v("AlbumListAdapter", "You clicked");
         Intent in = new Intent(context, AlbumContentList.class);
-        in.putExtra("albumId",albumList.get(position).getAlbumId());
+        in.putExtra("albumId", albumList.get(position).getAlbumId());
         context.startActivity(in);
-        ((MainActivity)context).overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+        ((MainActivity) context).overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
     }
 
 
-
-
-
-
-
-    private String getSong(int pos){
+    private String getSong(int pos) {
         return albumList.get(pos).getAlbumTitle();
     }
 
