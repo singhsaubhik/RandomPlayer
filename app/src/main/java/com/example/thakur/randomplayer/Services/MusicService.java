@@ -2,6 +2,7 @@ package com.example.thakur.randomplayer.Services;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -13,6 +14,7 @@ import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaMetadata;
@@ -26,6 +28,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -147,12 +150,8 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     BroadcastReceiver mReciever, headPhones, playReceiver;
 
 
-
-
     @Override
     public void onCreate() {
-        //audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        //audioManager.requestAudioFocus(this,AudioManager.STREAM_MUSIC,AudioManager.AUDIOFOCUS_GAIN);
         initializeReciever();
         initializeWakelock();
 
@@ -237,7 +236,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         Toast.makeText(this, "" + songPos, Toast.LENGTH_SHORT).show();
 
 
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
 
@@ -251,7 +250,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         Intent i = new Intent();
         i.setAction(PlayerFragment.trackChange);
         sendBroadcast(i);
-        //updateNotificationPlayer();
+        updateNotificationPlayer();
 
     }
 
@@ -295,13 +294,13 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         super.onDestroy();
     }
 
-    private void initializeWakelock(){
+    private void initializeWakelock() {
         final PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         try {
             wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
-            wakeLock.acquire(5000*60);
-        }catch (Exception e){
-            Log.e(TAG,e.getMessage());
+            wakeLock.acquire(5000 * 60);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
         }
     }
 
@@ -376,7 +375,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
 
                     case PLAYING_STATUS_CHANGED:
-//                        updateNotificationPlayer();
+                        updateNotificationPlayer();
                         break;
 
                     case DISCRETE_VIEW_CLICK:
@@ -454,7 +453,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 mPlayer.playSong(songPos);
             }
         }
-//        updateNotificationPlayer();
+        updateNotificationPlayer();
 
 
     }
@@ -475,7 +474,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 }
             }
         }
-//        updateNotificationPlayer();
+        updateNotificationPlayer();
 
     }
 
@@ -488,7 +487,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             } catch (Exception e) {
                 e.printStackTrace();
             }
-//            updateNotificationPlayer();
+            updateNotificationPlayer();
         } else {
             mPlayer.start();
             isPlaying = true;
@@ -497,7 +496,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             } catch (Exception e) {
                 e.printStackTrace();
             }
-//            updateNotificationPlayer();
+            updateNotificationPlayer();
 
 
         }
@@ -573,13 +572,14 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             //mPlayer.setPlayerList(songList);
             mPlayer.playSong(songPos);
             isPlaying = true;
-//            updateNotificationPlayer();
-            //PostNotification();
+
+            updateNotificationPlayer();
+//            PostNotification();
 
 
         } catch (Exception e) {
             Toast.makeText(this, "Can't play due to " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//            updateNotificationPlayer();
+            updateNotificationPlayer();
         }
     }
 
@@ -622,7 +622,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
         }
         sendBroadcast(playPause);
-//        updateNotificationPlayer();
+        updateNotificationPlayer();
 
     }
 
@@ -651,7 +651,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             }
         }
         sendBroadcast(new Intent(PlayerFragment.trackChange));
-//        updateNotificationPlayer();
+        updateNotificationPlayer();
 
 
     }
@@ -672,7 +672,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 }
             }
         }
-//        updateNotificationPlayer();
+        updateNotificationPlayer();
         sendBroadcast(new Intent(PlayerFragment.trackChange));
 
     }
@@ -707,7 +707,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     public void playSongById() {
         try {
             mPlayer.playSongByID(song_id);
-//            updateNotificationPlayer();
+            updateNotificationPlayer();
 
         } catch (Exception e) {
 
@@ -729,7 +729,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         }
         //playAll();
         //playSongById();
-        //updateNotificationPlayer();
+        updateNotificationPlayer();
     }
 
     public Song getCurrentSong() {
@@ -786,6 +786,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
             public void onPause() {
                 Log.d(TAG, "onPause called (media button pressed)");
+                Toast.makeText(MusicService.this, "Pause clicked", Toast.LENGTH_SHORT).show();
 
                 onPlayPauseButtonClicked();
 
@@ -830,9 +831,9 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 Log.d(TAG, "onPlay: " + " current " + currentTime);
                 if (currentTime - lastTimePlayPauseClicked < 500) {
                     Log.d(TAG, "onPlay: nextTrack on multiple play pause click");
-                    if(currentTime - lastTimePlayPauseClicked<500){
+                    if (currentTime - lastTimePlayPauseClicked < 500) {
                         handlePrevious();
-                    }else {
+                    } else {
                         handleNextSong();
                     }
                     return;
@@ -956,6 +957,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
                 if (mMediaSession != null) {
                     mediaStyle.setMediaSession(mMediaSession.getSessionToken());
+
                 }
 
 
@@ -1003,18 +1005,31 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                     builder.setPriority(Notification.PRIORITY_MAX);
                 }
 
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                    builder.setChannelId(getString(R.string.notification_channel));
+//                }
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    builder.setChannelId(getString(R.string.notification_channel));
+                    NotificationChannel channel = new NotificationChannel("saubhik", "myservice", NotificationManager.IMPORTANCE_HIGH);
+                    channel.setLightColor(Color.BLUE);
+                    channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+
+                    assert mNotificationManager != null;
+                    mNotificationManager.createNotificationChannel(channel);
+                    builder.setChannelId("saubhik");
+
                 }
 
                 notification = builder.build();
+
+
 
                 if (isReallyPlaying()) {
                     //builder.setOngoing(true);
                     startForeground(99, notification);
                 } else {
                     stopForeground(false);
-                    mNotificationManager.notify(99, notification);
+                    mNotificationManager.notify(931, notification);
                 }
 
             }
@@ -1050,9 +1065,10 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     }
 
 
-    class MediaStoreObserver extends ContentObserver implements Runnable{
+    class MediaStoreObserver extends ContentObserver implements Runnable {
 
         private Handler mHandler;
+
         /**
          * Creates a content observer.
          *
@@ -1066,17 +1082,17 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         @Override
         public void onChange(boolean selfChange) {
             mHandler.removeCallbacks(this);
-            mHandler.postDelayed(this,500);
+            mHandler.postDelayed(this, 500);
         }
 
         @Override
         public void run() {
-            Log.d("Service ","refreshing");
+            Log.d("Service ", "refreshing");
             refresh();
         }
     }
 
-    public void refresh(){
+    public void refresh() {
 
     }
 }

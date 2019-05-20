@@ -1,14 +1,17 @@
 package com.example.thakur.randomplayer.Handler;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 
+import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 
@@ -44,9 +47,9 @@ public class NotificationHandler {
     private Notification.Builder createBuiderNotification(boolean removable) {
 
         Intent notificationIntent = new Intent(context, PlayerActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 //        notificationIntent.setAction(MusicService.ACTION_NOTI_CLICK);
-        PendingIntent contentIntent = PendingIntent.getActivity(context,0,notificationIntent,0);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
         Intent deleteIntent = new Intent();
         deleteIntent.setAction(MusicService.ACTION_NOTI_REMOVE);
         PendingIntent deletePendingIntent = PendingIntent.getBroadcast(context, 0, deleteIntent, 0);
@@ -66,7 +69,22 @@ public class NotificationHandler {
 
     public void setNotificationPlayer(boolean removable) {
         //createID();
-        notificationCompat = createBuiderNotification(removable).build();
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification.Builder builder = createBuiderNotification(removable);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("saubhik", "myservice", NotificationManager.IMPORTANCE_HIGH);
+            channel.setLightColor(Color.BLUE);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+
+            assert notificationManager != null;
+            notificationManager.createNotificationChannel(channel);
+            builder.setChannelId("saubhik");
+
+
+        }
+
+        notificationCompat = builder.build();
         RemoteViews notiLayoutBig = new RemoteViews(context.getPackageName(),
                 R.layout.notification_layout);
         RemoteViews notiCollapsedView = new RemoteViews(context.getPackageName(),
@@ -74,12 +92,21 @@ public class NotificationHandler {
         if (Build.VERSION.SDK_INT >= 16) {
             notificationCompat.bigContentView = notiLayoutBig;
         }
+
+
+
+
+
         notificationCompat.contentView = notiCollapsedView;
         notificationCompat.priority = Notification.PRIORITY_MAX;
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
         if (!removable)
             service.startForeground(NOTIFICATION_ID, notificationCompat);
-        notificationManager.notify(NOTIFICATION_ID, notificationCompat);
+        try {
+            notificationManager.notify(NOTIFICATION_ID, notificationCompat);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         notificationActive = true;
     }
 
@@ -128,7 +155,6 @@ public class NotificationHandler {
                             notificationCompat.contentView.setImageViewBitmap(R.id.noti_album_art, bitmap);
 
 
-
                             //notificationManager.notify(NOTIFICATION_ID, notificationCompat);
 
                         }
@@ -146,14 +172,13 @@ public class NotificationHandler {
 
                 }
 
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 setDefaultImageView();
                 //notificationManager.notify(NOTIFICATION_ID,notificationCompat);
             }
 
 
-            notificationManager.notify(NOTIFICATION_ID,notificationCompat);
+            notificationManager.notify(NOTIFICATION_ID, notificationCompat);
         }
 
     }
@@ -161,11 +186,11 @@ public class NotificationHandler {
     private void setDefaultImageView() {
 
         notificationCompat.bigContentView.setImageViewBitmap(R.id.noti_album_art,
-                RandomUtils.getBitmapOfVector(context , R.drawable.default_art,
-                        RandomUtils.dpToPx(context , 100), RandomUtils.dpToPx(context , 100)));
+                RandomUtils.getBitmapOfVector(context, R.drawable.default_art,
+                        RandomUtils.dpToPx(context, 100), RandomUtils.dpToPx(context, 100)));
         notificationCompat.contentView.setImageViewBitmap(R.id.noti_album_art,
-                RandomUtils.getBitmapOfVector(context , R.drawable.default_art,
-                        RandomUtils.dpToPx(context , 50), RandomUtils.dpToPx(context , 50)));
+                RandomUtils.getBitmapOfVector(context, R.drawable.default_art,
+                        RandomUtils.dpToPx(context, 50), RandomUtils.dpToPx(context, 50)));
         //notificationManager.notify(NOTIFICATION_ID, notificationCompat);
     }
 
@@ -185,24 +210,23 @@ public class NotificationHandler {
         return notificationCompat;
     }
 
-    public void createID(){
+    public void createID() {
         Date now = new Date();
-        NOTIFICATION_ID = Integer.parseInt(new SimpleDateFormat("ddHHmmss",  Locale.US).format(now));
+        NOTIFICATION_ID = Integer.parseInt(new SimpleDateFormat("ddHHmmss", Locale.US).format(now));
 
     }
 
-    public void setPlayPause(boolean isPlaying){
+    public void setPlayPause(boolean isPlaying) {
 
         if (isPlaying) {
             //playStateRes = R.drawable.ic_pause_white_36dp;
             notificationCompat.bigContentView
-                    .setImageViewResource(R.id.noti_play_button,R.drawable.ic_pause_white_36dp );
-            notificationCompat.contentView.setImageViewResource(R.id.noti_play_button,R.drawable.ic_pause_white_36dp);
-        }
-        else {
+                    .setImageViewResource(R.id.noti_play_button, R.drawable.ic_pause_white_36dp);
+            notificationCompat.contentView.setImageViewResource(R.id.noti_play_button, R.drawable.ic_pause_white_36dp);
+        } else {
             //playStateRes = R.drawable.ic_play_arrow_white_48dp;
             notificationCompat.bigContentView
-                    .setImageViewResource(R.id.noti_play_button,R.drawable.ic_play_arrow_white_48dp);
+                    .setImageViewResource(R.id.noti_play_button, R.drawable.ic_play_arrow_white_48dp);
             notificationCompat.contentView
                     .setImageViewResource(R.id.noti_play_button, R.drawable.ic_play_arrow_white_48dp);
         }
