@@ -84,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity implements ColorChooserD
     public int getActivityTheme() {
         //return PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false) ?
                // R.style.AppThemeDark : R.style.AppThemeLight;
-        return R.style.Theme_Bhai_NoActionBar;
+        return R.style.Bittu;
     }
 
     @Override

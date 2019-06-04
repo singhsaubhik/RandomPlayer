@@ -34,9 +34,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
     private FastScrollRecyclerView mRecycler;
     private Context context;
 
-    private int accentColor;
-    private String ateKey;
-    private boolean isDarkTheme = false;
+
 
 
     @Nullable
@@ -57,11 +55,9 @@ public class SongFragment extends android.support.v4.app.Fragment {
         songListAdapter = new SongListAdapter(context, songList);
         mRecycler = view.findViewById(R.id.song_recyclerview);
 
-        ateKey = Helper.getATEKey(getActivity());
-        accentColor = Config.accentColor(getActivity(),ateKey);
 
-        mRecycler.setThumbColor(accentColor);
-        mRecycler.setPopupBgColor(accentColor);
+        mRecycler.setThumbColor(getResources().getColor(R.color.colorAccent));
+        mRecycler.setPopupBgColor(getResources().getColor(R.color.colorAccent));
 
 
 

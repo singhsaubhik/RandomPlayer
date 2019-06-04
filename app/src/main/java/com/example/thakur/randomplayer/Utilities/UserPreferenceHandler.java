@@ -54,6 +54,8 @@ public class UserPreferenceHandler {
         }
     }
 
+
+
     public boolean isRepeatAllEnabled() {
         return shp.getBoolean(REPEAT_ALL, false);
     }

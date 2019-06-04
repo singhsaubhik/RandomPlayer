@@ -3,7 +3,7 @@
     android:id="@+id/search_header_holder"
     android:layout_width="500dp"
     android:layout_height="match_parent"
-    android:background="@color/appBackground"
+    android:background="@color/colorPrimaryBlack"
     android:orientation="vertical"
     android:padding="10dp">
 

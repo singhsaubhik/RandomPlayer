@@ -28,26 +28,55 @@ import static android.content.Context.AUDIO_SERVICE;
  * Created by Thakur on 04-09-2017
  */
 
-public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener
-{
+public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener {
     private Context context;
-    private int currSong=0;
-    private MediaPlayer mPlayer= new MediaPlayer();
+    private int currSong = 0;
+    private MediaPlayer mPlayer = new MediaPlayer();
     private ArrayList<Song> songList = new ArrayList<>();
     private MusicService mService;
     private boolean isBind = false;
-    private AudioManager audioManager ;
+    private AudioManager audioManager;
 
     //service
     private MusicService service;
 
+    // Preference Handler
+    private UserPreferenceHandler pref;
 
 
-    public void init(ArrayList<Song> songs)
-    {
+    public void init(ArrayList<Song> songs) {
         //mPlayer = new MediaPlayer();
         mPlayer.reset();
         songList = songs;
+
+        long pref_song_id = pref.getLastPlayed();
+
+        for (int i = 0; i < songList.size(); i++) {
+            if (pref_song_id == songList.get(i).getSongId()) {
+
+                currSong = i;
+                break;
+            }
+        }
+
+        long songId = songList.get(currSong).getSongId();
+
+        Uri trackUri = ContentUris.withAppendedId(
+                android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                songId);
+        //set the data source
+        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        try {
+            mPlayer.setDataSource(context.getApplicationContext(), trackUri);
+            mPlayer.prepare();
+            //audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+
+        } catch (Exception e) {
+            Log.e("MUSIC SERVICE", "Error setting data source", e);
+            MusicService.isPlaying = false;
+        }
+
 
     }
 
@@ -56,28 +85,26 @@ public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener
         this.context = context;
         audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
         service = MyApp.getMyService();
+        pref = new UserPreferenceHandler(context);
     }
 
     public void setCurrSong(int currSong) {
         this.currSong = currSong;
     }
 
-    public void playSong(int position){
+
+    public void playSong(int position) {
         //play
 
-        if(mPlayer.isPlaying()){
+        if (mPlayer.isPlaying()) {
             mPlayer.stop();
+            MusicService.isPlaying = false;
         }
         mPlayer.reset();
-        //player= MediaPlayer.create(this,R.raw.a);
-        //player.reset();
 
-        //get song
-
-        //get title
-        Song song = new Song();
+        Song song;
         song = songList.get(position);
-        String songTitle=song.getName();
+        String songTitle = song.getName();
         //get id
         long currSong = song.getSongId();
         //set uri
@@ -87,13 +114,12 @@ public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener
         //set the data source
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-        try{
-            mPlayer.setDataSource(context.getApplicationContext(),trackUri);
+        try {
+            mPlayer.setDataSource(context.getApplicationContext(), trackUri);
             mPlayer.prepare();
-            audioManager.requestAudioFocus(this,AudioManager.STREAM_MUSIC,AudioManager.AUDIOFOCUS_GAIN);
+            audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             Log.e("MUSIC SERVICE", "Error setting data source", e);
         }
 
@@ -103,17 +129,12 @@ public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener
 
         RecentStore.getInstance(context).addSongId(songList.get(position).getSongId());
         mPlayer.start();
-
-        /*if (MyApp.getMyService().getCurrentSong()!=null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
-            MyApp.getMyService().setSessionState();
-            MyApp.getMyService().setMediaSessionMetadata(true);
-        }*/
-
+        MusicService.isPlaying = true;
     }
 
-    public void playSongByID(long songId){
+    public void playSongByID(long songId) {
 
-        if(mPlayer.isPlaying()){
+        if (mPlayer.isPlaying()) {
             mPlayer.stop();
         }
         mPlayer.reset();
@@ -132,117 +153,122 @@ public class PlayerHandler implements AudioManager.OnAudioFocusChangeListener
         //set the data source
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-        try{
-            mPlayer.setDataSource(context.getApplicationContext(),trackUri);
+        try {
+            mPlayer.setDataSource(context.getApplicationContext(), trackUri);
             mPlayer.prepare();
-            audioManager.requestAudioFocus(this,AudioManager.STREAM_MUSIC,AudioManager.AUDIOFOCUS_GAIN);
+            audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             Log.e("MUSIC SERVICE", "Error setting data source", e);
+            MusicService.isPlaying = false;
         }
-
-
-
 
 
         //player.prepareAsync();
 
 
         mPlayer.start();
+        MusicService.isPlaying = true;
 
 
     }
 
-    public void start()
-    {
-        try{
-            audioManager.requestAudioFocus(this,AudioManager.STREAM_MUSIC,AudioManager.AUDIOFOCUS_GAIN);
+    public void start() {
+        try {
+            audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            if (MyApp.getMyService() != null) {
+
+            }
+            int d = (int)pref.getLastPlayedDur();
+
+            mPlayer.seekTo(d);
             mPlayer.start();
+            MusicService.isPlaying = true;
             //service.updateNotificationPlayer();
             context.sendBroadcast(new Intent(MusicService.PLAYING_STATUS_CHANGED));
             MyApp.getMyService().setShakeListener(new UserPreferenceHandler(context).getHearShake());
-        }catch (Exception e){
-            Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(context, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            MusicService.isPlaying = false;
         }
     }
 
-    public void pause(){
-        try{
+    public void pause() {
+        try {
             mPlayer.pause();
             //service.updateNotificationPlayer();
+            MusicService.isPlaying = false;
             context.sendBroadcast(new Intent(MusicService.PLAYING_STATUS_CHANGED));
             MyApp.getMyService().setShakeListener(false);
-        }catch (Exception e){
+        } catch (Exception e) {
+            MusicService.isPlaying = false;
 
         }
     }
+
 
     public MediaPlayer getmPlayer() {
         return mPlayer;
     }
 
-    public int getDurationn()
-    {
+    public int getDurationn() {
         return mPlayer.getDuration();
     }
 
-    public int getCurrPos()
-    {
+    public int getCurrPos() {
         return mPlayer.getCurrentPosition();
     }
 
-    public void seek(int progress)
-    {
+    public void seek(int progress) {
         mPlayer.seekTo(progress);
     }
 
 
-
-
-    public void seekSong(int value){
+    public void seekSong(int value) {
         mService.seeTo(value);
     }
 
-    public void setPlayerList(ArrayList<Song> s){
+    public void setPlayerList(ArrayList<Song> s) {
         songList.addAll(s);
     }
 
-    public void clearList(){
-        try{
+    public void clearList() {
+        try {
             songList.clear();
 
-        }catch (Exception e){
-            Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(context, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onAudioFocusChange(int focusChange) {
-        switch (focusChange){
+        switch (focusChange) {
             case -1:
-                if(mPlayer.isPlaying()){
+                if (mPlayer.isPlaying()) {
                     mPlayer.pause();
+                    MusicService.isPlaying = false;
                     context.sendBroadcast(new Intent(MusicService.PLAYING_STATUS_CHANGED));
                 }
                 break;
 
             case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT:
-                if(mPlayer.isPlaying()){
+                if (mPlayer.isPlaying()) {
                     mPlayer.pause();
+                    MusicService.isPlaying = false;
                     context.sendBroadcast(new Intent(MusicService.PLAYING_STATUS_CHANGED));
                 }
                 break;
 
             case AudioManager.AUDIOFOCUS_GAIN:
-                if(mPlayer.isPlaying()){
-                    mPlayer.setVolume(1.0f,1.0f);
+                if (mPlayer.isPlaying()) {
+                    mPlayer.setVolume(1.0f, 1.0f);
                 }
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                if(mPlayer.isPlaying()){
-                    mPlayer.setVolume(0.3f,0.3f);
+                if (mPlayer.isPlaying()) {
+                    mPlayer.setVolume(0.3f, 0.3f);
                 }
                 break;
 

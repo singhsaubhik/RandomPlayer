@@ -20,15 +20,12 @@
         android:background="#77000000" />
 
 
-
-
-
     <RelativeLayout
         android:id="@+id/blurView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true">
         <!--Any child View here, TabLayout for example-->
         <RelativeLayout
@@ -43,35 +40,50 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
-                    <TextView
-
-                        android:id="@+id/song_title"
+                    <android.support.v7.widget.Toolbar
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:ellipsize="marquee"
-                        android:fadingEdge="horizontal"
-                        android:marqueeRepeatLimit="marquee_forever"
-                        android:scrollHorizontally="true"
-                        android:singleLine="true"
-                        android:textAlignment="center"
-                        android:textColor="#fffcfc"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
+                        android:layout_height="?attr/actionBarSize"
+                        android:background="#54424242">
 
-                        />
 
-                    <TextView
-                        android:id="@+id/artist_name_player"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/song_title"
-                        android:maxLines="1"
-                        android:text="Artist"
-                        android:textAlignment="center"
-                        android:textColor="#e6e3e3"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+
+                                android:id="@+id/song_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:ellipsize="marquee"
+                                android:fadingEdge="horizontal"
+                                android:marqueeRepeatLimit="marquee_forever"
+                                android:scrollHorizontally="true"
+                                android:singleLine="true"
+                                android:textAlignment="center"
+                                android:textColor="#fffcfc"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+
+                                />
+
+                            <TextView
+                                android:id="@+id/artist_name_player"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/song_title"
+                                android:maxLines="1"
+                                android:text="Artist"
+                                android:textAlignment="center"
+                                android:textColor="#e6e3e3"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+
+                    </android.support.v7.widget.Toolbar>
                 </RelativeLayout>
             </FrameLayout>
 
@@ -90,14 +102,13 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="70dp"
                 app:cs_circle_color="#ffffff"
-                app:cs_circle_progress_color="@color/primary"
+                app:cs_circle_progress_color="#000"
                 app:cs_circle_stroke_width="4dp"
                 app:cs_negative_enabled="false"
-                app:cs_pointer_color="@color/primary"
+                app:cs_pointer_color="#000"
                 app:cs_pointer_stroke_width="10dp"
 
                 />
-
 
 
             <LinearLayout
@@ -151,8 +162,8 @@
                     android:id="@+id/divider"
                     android:layout_width="2dp"
                     android:layout_height="25dp"
-                    android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
                     android:layout_toRightOf="@+id/cuurentText"
                     android:background="#fff" />
@@ -175,9 +186,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
 
-                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/clocks"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/clocks">
+                android:layout_alignParentLeft="true">
 
 
                 <ImageButton
@@ -189,8 +200,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="30dp"
                     android:layout_marginRight="30dp"
-                    android:layout_toLeftOf="@+id/playpuse"
                     android:layout_toStartOf="@+id/playpuse"
+                    android:layout_toLeftOf="@+id/playpuse"
                     android:background="@null"
                     app:srcCompat="@drawable/ic_skip_previous_36dp" />
 
@@ -198,9 +209,9 @@
                     android:id="@+id/playpuse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="#000"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
+                    android:backgroundTint="#000"
                     app:fabSize="normal"
                     app:srcCompat="@drawable/ic_play_arrow_white2_24dp" />
 
@@ -211,8 +222,8 @@
                     android:layout_height="wrap_content"
 
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="30dp"
                     android:layout_marginStart="30dp"
+                    android:layout_marginLeft="30dp"
                     android:layout_toEndOf="@+id/playpuse"
                     android:layout_toRightOf="@+id/playpuse"
                     android:background="@null"
@@ -222,13 +233,12 @@
             </RelativeLayout>
 
 
-
             <com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView
-                android:layout_marginTop="10dp"
                 android:id="@+id/discrete_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                android:layout_marginTop="10dp"
                 app:msrv_snap_count="3" />
 
 

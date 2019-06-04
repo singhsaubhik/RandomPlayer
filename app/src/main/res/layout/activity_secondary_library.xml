@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/sl_image_dimen"
         android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay"
+
         android:background="@color/colorTransparent"
         >
 

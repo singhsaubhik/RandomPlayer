@@ -73,7 +73,7 @@ public class NotificationHandler {
         Notification.Builder builder = createBuiderNotification(removable);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("saubhik", "myservice", NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel channel = new NotificationChannel("saubhik", "myservice", NotificationManager.IMPORTANCE_LOW);
             channel.setLightColor(Color.BLUE);
             channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
 

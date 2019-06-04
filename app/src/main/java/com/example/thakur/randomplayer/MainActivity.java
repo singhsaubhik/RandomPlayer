@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ViewPager viewPager;
 
     //widget
-    private ImageView widget_album_art,widget_playpause;
-    private TextView widget_title,widget_artist;
+    private ImageView widget_album_art, widget_playpause;
+    private TextView widget_title, widget_artist;
 
 
     public static boolean running = true;
@@ -77,15 +77,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     RelativeLayout mini_player;
 
 
-    @SuppressLint("RestrictedApi")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupWindowAnimations();
+//        setupWindowAnimations();
         //connectToService();
 
-
-        isDarkTheme = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false);
 
         mService = MyApp.getMyService();
 
@@ -119,19 +117,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mini_player.setOnClickListener(this);
 
 
-
-
         Toolbar toolbar = findViewById(R.id.toolbar);
-        try {
-            toolbar.setCollapsible(false);
-        } catch (Exception ignored) {
 
-        }
         setSupportActionBar(toolbar);
+
+
+//        try {
+//            toolbar.setCollapsible(false);
+//        } catch (Exception ignored) {
+//
+//        }
 
         try {
             getSupportActionBar().setDisplayShowCustomEnabled(true);
-        }catch (Exception e){
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -157,18 +157,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         list = SongLoader.getSongList(MainActivity.this);
 
-        if(list.size()>0) {
+        if (list.size() > 0) {
             initNavHeader();
 
             updateHeader();
             updateWidget(true);
-        }else{
+        } else {
             Toast.makeText(this, "Empty List", Toast.LENGTH_SHORT).show();
         }
 
 //        Log.e("From main",""+list.get(1).getPath());
 
         registerReceiver(updateHeaderReceiver, new IntentFilter(Constants.HEADER_VIEW_POSITION));
+        registerReceiver(listenStatusChanged,new IntentFilter(MusicService.PLAYING_STATUS_CHANGED));
 
 
     }
@@ -225,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         startActivity(new Intent(MainActivity.this, SearchActivity.class));
                     }
                 }, 100);
-                //handleSearch();
+
                 break;
         }
 
@@ -313,6 +314,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onDestroy();
         unregisterReceiver(mReciever);
         unregisterReceiver(updateHeaderReceiver);
+        unregisterReceiver(listenStatusChanged);
         running = false;
         //unbindService(mConnection1);
 
@@ -455,52 +457,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     };
 
-    private void updateWidget(boolean loadImage){
+    private void updateWidget(boolean loadImage) {
         Song song = null;
         try {
             song = MyApp.getMyService().getCurrentSong();
-        }catch (Exception e){
+        } catch (Exception e) {
             song = list.get(0);
             e.printStackTrace();
 
         }
 
-        if(loadImage){
-            String path = RandomUtils.getAlbumArt(this,song.getAlbumId());
-            if(RandomUtils.isPathValid(path)){
+        if (loadImage) {
+            String path = RandomUtils.getAlbumArt(this, song.getAlbumId());
+            if (RandomUtils.isPathValid(path)) {
                 Glide.with(this).load(new File(path))
                         .into(widget_album_art);
-            }else{
+            } else {
                 Glide.with(this).load(R.drawable.dispacito_64)
                         .into(widget_album_art);
             }
         }
 
-        widget_title.setText(""+song.getName());
-        widget_artist.setText(""+song.getArtist());
-        if(MyApp.getMyService().isReallyPlaying()){
+        widget_title.setText("" + song.getName());
+        widget_artist.setText("" + song.getArtist());
+        if (MusicService.isPlaying) {
             widget_playpause.setImageResource(R.drawable.ic_pause_white_24dp);
-        }else{
+        } else {
             widget_playpause.setImageResource(R.drawable.ic_play_arrow_white2_24dp);
         }
     }
 
+    private BroadcastReceiver listenStatusChanged = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateWidget(false);
+        }
+    };
+
 
     @Override
     public void onClick(View v) {
-        if(v==widget_playpause){
-            if(MyApp.getMyService().isReallyPlaying()){
+        if (v == widget_playpause) {
+            if (MyApp.getMyService().isReallyPlaying()) {
                 MyApp.getMyService().playPause();
                 updateWidget(false);
-            }else{
+            } else {
                 MyApp.getMyService().playPause();
                 updateWidget(false);
             }
-        }else if(v==mini_player){
-            Intent playerActivity = new Intent(MainActivity.this,PlayerActivity.class);
+        } else if (v == mini_player) {
+            Intent playerActivity = new Intent(MainActivity.this, PlayerActivity.class);
             playerActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(playerActivity);
-            (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+            (MainActivity.this).overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         }
     }
 }

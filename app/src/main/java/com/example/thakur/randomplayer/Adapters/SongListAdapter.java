@@ -50,7 +50,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
 
 
     private AppCompatActivity context;
-    PlayerActivity mplayerActivity = new PlayerActivity();
+
 
     private ArrayList<Song> songList = new ArrayList<>();
 
@@ -139,6 +139,16 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.MyView
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.bittu_menu_playOnly:
+                                ArrayList<Song> list = new ArrayList<>();
+                                try {
+                                    list.add(songList.get(getAdapterPosition()));
+                                    MyApp.getMyService().setSongList(list);
+                                    MyApp.getMyService().setSongPos(0);
+                                    MyApp.getMyService().playAll();
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                                 break;
 
                             case R.id.bittu_menu_deleteTrack:

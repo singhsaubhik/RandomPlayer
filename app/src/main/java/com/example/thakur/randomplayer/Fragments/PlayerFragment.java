@@ -24,6 +24,7 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +53,6 @@ import com.example.thakur.randomplayer.items.Song;
 import com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView;
 
 
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -75,7 +75,6 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
 
     private String ateKey;
     private int accentColor;
-
 
 
     //discrete recyclerview
@@ -111,7 +110,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
                         stopRepeating();
                     } else {
                         //initUI(mService.getSongPos());
-                        updateUI(mService.getSongPos(),true);
+                        updateUI(mService.getSongPos(), true);
                     }
                     break;
 
@@ -136,7 +135,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
                     break;
 
                 case MusicService.PLAYING_STATUS_CHANGED:
-                    updateUI(mService.getSongPos(),false);
+                    updateUI(mService.getSongPos(), false);
                     //stopRepeating();
                     break;
 
@@ -161,6 +160,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         //Toast.makeText(view.getContext(), "View created and sngPos="+songPos, Toast.LENGTH_SHORT).show();
         mService = MyApp.getMyService();
 
@@ -225,7 +225,6 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
         /* shuffle and repeat background*/
 
 
-
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         height = displayMetrics.heightPixels;
@@ -240,7 +239,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
         discrete.setAdapter(adapter);
 
 
-        updateUI(mService.getSongPos(),true);
+        updateUI(mService.getSongPos(), true);
 
 
     }
@@ -252,22 +251,21 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
         public void run() {
 
 
-            {
-                if (mService.isReallyPlaying()) {
+            if (mService.isReallyPlaying()) {
 
 
-                    seekBar.setProgress(seekBar.getProgress() + 1000);
-                    tv.setText(songList.get(mService.getSongPos()).getFormatedTime((long) seekBar.getProgress()));
-                    //sec++;
-                    mHandler.postDelayed(this, 1000);
-                    //seekBar.postDelayed(this,1000);
-                }
+                seekBar.setProgress(seekBar.getProgress() + 1000);
+                tv.setText(songList.get(mService.getSongPos()).getFormatedTime((long) seekBar.getProgress()));
+                //sec++;
+                mHandler.postDelayed(this, 1000);
+                //seekBar.postDelayed(this,1000);
             }
+
         }
     };
 
 
-    private void updateUI(int pos,boolean loadImage) {
+    private void updateUI(int pos, boolean loadImage) {
 
 
         totalTime.setText("" + songList.get(pos).getDuration());
@@ -285,10 +283,13 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
                             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                 Palette.Builder p = Palette.from(resource);
 
+
+
                                 p.generate(new Palette.PaletteAsyncListener() {
                                     @Override
                                     public void onGenerated(@NonNull Palette palette) {
-                                        if(PreferencesUtility.getInstance(getActivity()).isColoredPlayingControl()){
+                                        if (PreferencesUtility.getInstance(getActivity()).isColoredPlayingControl()) {
+
                                             setColoredControl(palette);
                                         }
 
@@ -323,8 +324,10 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
         }
 
         seekBar.setMax(songList.get(pos).getDurationLong());
-        if(MyApp.getMyService().isReallyPlaying()) {
+        if (MyApp.getMyService().isReallyPlaying()) {
             seekBar.setProgress(mService.getCurrentPosition());
+        } else {
+            seekBar.setProgress(mService.getLastProgress());
         }
 
         //tv.setText("" + songList.get(pos).getDuration());
@@ -423,14 +426,14 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
         //seekBar.setProgress(seekBar.getProgress());
 
         //updateUIPosition(mService.getSongPos());
-        updateUI(mService.getSongPos(),true);
+        updateUI(mService.getSongPos(), true);
         super.onResume();
     }
 
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        updateUI(mService.getSongPos(),true);
+        updateUI(mService.getSongPos(), true);
     }
 
     @Override
@@ -482,7 +485,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
             repeat.setImageResource(R.drawable.ic_repeat_one_24dp);
         }
 
-        updateUI(mService.getSongPos(),false);
+        updateUI(mService.getSongPos(), false);
     }
 
     private void handleShuffle() {
@@ -497,21 +500,21 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
             shuffle.setImageResource(R.drawable.ic_shuffle_36dp);
             //updateUI(mService.getSongPos());
         }
-        updateUI(mService.getSongPos(),false);
+        updateUI(mService.getSongPos(), false);
     }
 
     public void handleNext() {
         if (mService.getSongPos() == songList.size() - 1) {
             if (pref.isRepeatAllEnabled()) {
                 mService.handleNextSong();
-                updateUI(mService.getSongPos(),true);
+                updateUI(mService.getSongPos(), true);
             }
 
         } else {
 
 
             mService.handleNextSong();
-            updateUI(mService.getSongPos(),true);
+            updateUI(mService.getSongPos(), true);
         }
 
     }
@@ -519,7 +522,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
     private void handlePrev() {
         mService.handlePrevious();
         //initUI(mService.getSongPos());
-        updateUI(mService.getSongPos(),true);
+        updateUI(mService.getSongPos(), true);
     }
 
 
@@ -528,19 +531,19 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
             if (pref.isRepeatAllEnabled()) {
                 //mService.handleNextSong();
                 //initUI(mService.getSongPos());
-                updateUI(mService.getSongPos(),true);
+                updateUI(mService.getSongPos(), true);
             }
 
         } else {
             //mService.handleNextSong();
             //initUI(mService.getSongPos());
-            updateUI(mService.getSongPos(),true);
+            updateUI(mService.getSongPos(), true);
         }
     }
 
     private void notificationPrevious() {
         //initUI(mService.getSongPos());
-        updateUI(mService.getSongPos(),true);
+        updateUI(mService.getSongPos(), true);
     }
 
     private class setBlurredAlbumArt extends AsyncTask<Bitmap, Void, Drawable> {
@@ -584,12 +587,14 @@ public class PlayerFragment extends Fragment implements View.OnClickListener, Ci
         blurredAlbumArt.execute(loadedImage);
     }
 
-    private void setColoredControl(Palette palette){
-        Palette.Swatch swatch = palette.getMutedSwatch();
+    private void setColoredControl(Palette palette) {
+
         try {
+            Palette.Swatch swatch = palette.getMutedSwatch();
             seekBar.setCircleProgressColor(swatch.getRgb());
             seekBar.setPointerColor(swatch.getRgb());
-        }catch (Exception e){
+        } catch (Exception e) {
+            Log.e("Pallete Swatch error : ",e.getMessage());
             seekBar.setCircleProgressColor(getResources().getColor(R.color.primary));
             seekBar.setPointerColor(getResources().getColor(R.color.primary));
         }
