@@ -1,21 +1,18 @@
 # Random Player
-[![Build Status](https://travis-ci.org/naman14/Timber.svg?branch=master)](https://travis-ci.org/naman14/Timber)
 
 Material Design Music Player
 
 
-<a href='https://f-droid.org/repository/browse/?fdid'><img alt='Get it on F-Droid' src='https://guardianproject.info/wp-content/uploads/2014/07/logo-fdroid.png' height=60px/></a>
-
 ## Screenshots
 
-<img src="https://raw.githubusercontent.com/Bittu8b/RandomPlayer/master/graphics/img1.jpg" width="360" height="640">
-<img src="https://raw.githubusercontent.com/Bittu8b/RandomPlayer/master/graphics/img10.jpg" width="360" height="640">
-<img src="https://raw.githubusercontent.com/Bittu8b/RandomPlayer/master/graphics/img11.jpg" width="360" height="640">
-<img src="https://raw.githubusercontent.com/Bittu8b/RandomPlayer/master/graphics/img12.jpg" width="360" height="640">
-<img src="https://raw.githubusercontent.com/Bittu8b/RandomPlayer/master/graphics/img14.jpg" width="330" height="640">
-<img src="https://raw.githubusercontent.com/Bittu8b/RandomPlayer/master/graphics/img2.jpg" width="330" height="640">
-<img src="https://raw.githubusercontent.com/Bittu8b/RandomPlayer/master/graphics/img4.jpg" width="360" height="640">
-<img src="https://raw.githubusercontent.com/Bittu8b/RandomPlayer/master/graphics/img7.jpg" width="360" height="640">
+<img src="https://raw.githubusercontent.com/singhsaubhik/RandomPlayer/master/graphics/img1.jpg" width="360" height="640">
+<img src="https://raw.githubusercontent.com/singhsaubhik/RandomPlayer/master/graphics/img10.jpg" width="360" height="640">
+<img src="https://raw.githubusercontent.com/singhsaubhik/RandomPlayer/master/graphics/img11.jpg" width="360" height="640">
+<img src="https://raw.githubusercontent.com/singhsaubhik/RandomPlayer/master/graphics/img12.jpg" width="360" height="640">
+<img src="https://raw.githubusercontent.com/singhsaubhik/RandomPlayer/master/graphics/img14.jpg" width="330" height="640">
+<img src="https://raw.githubusercontent.com/singhsaubhik/RandomPlayer/master/graphics/img2.jpg" width="330" height="640">
+<img src="https://raw.githubusercontent.com/singhsaubhik/RandomPlayer/master/graphics/img4.jpg" width="360" height="640">
+<img src="https://raw.githubusercontent.com/singhsaubhik/RandomPlayer/master/graphics/img7.jpg" width="360" height="640">
 
 ## Features
 - Material design
@@ -28,7 +25,7 @@ Material Design Music Player
 
 ## Changelog
 
-Changelog is available [here](https://github.com/bittu8b/randomplayer)
+Changelog is available [here](https://github.com/singhsaubhik/randomplayer)
 
 ## Credits
 
